@@ -101,7 +101,8 @@ class PureHttp {
                       .handRefreshToken({ refreshToken: data.refreshToken })
                       .then(res => {
                         const token = res.data.accessToken;
-                        config.headers["Authorization"] = formatToken(token);
+                        // config.headers["Authorization"] = formatToken(token);
+                        config.headers["Authorization"] = formatToken('Bearer etlrUznqPaTsHENkv9ENFIBpyjXeSPon-PfhImDPkTwmHV91w5nzfozTu9YPEnhgNAIsr1qOyCjFP1f5p6aQd-TFhUBX7sZ0ERxEx0QoAJzFg81YUOY33s1SE_SDPN1-')
                         PureHttp.requests.forEach(cb => cb(token));
                         PureHttp.requests = [];
                       })
@@ -111,8 +112,11 @@ class PureHttp {
                   }
                   resolve(PureHttp.retryOriginalRequest(config));
                 } else {
+                  // config.headers["Authorization"] = formatToken(
+                  //   data.accessToken
+                  // );
                   config.headers["Authorization"] = formatToken(
-                    data.accessToken
+                    "Bearer etlrUznqPaTsHENkv9ENFIBpyjXeSPon-PfhImDPkTwmHV91w5nzfozTu9YPEnhgNAIsr1qOyCjFP1f5p6aQd-TFhUBX7sZ0ERxEx0QoAJzFg81YUOY33s1SE_SDPN1-"
                   );
                   resolve(config);
                 }
