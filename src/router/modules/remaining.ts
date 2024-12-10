@@ -9,7 +9,8 @@ export default [
     name: "pdf",
     meta: {
       title: "签署盖章",
-      icon: "mdi-cube-scan"
+      icon: "mdi-cube-scan",
+      showLink:false,
     },
     component: () => import("@/views/mh/pdf/index.vue")
   },
@@ -19,7 +20,8 @@ export default [
     name: "home",
     meta: {
       title: "Componets",
-      icon: "mdi-cube-scan"
+      icon: "mdi-cube-scan",
+      showLink:false,
     },
     component: mhLayout,
     children: [
@@ -29,7 +31,7 @@ export default [
         meta: {
           title: "全国电子印章管理与服务平台—公安备案、全国互认、一键核验",
           icon: "mdi-alpha-s",
-          keepAlive: false
+          keepAlive: false,
         },
         component: () => import("@/views/mh/home.vue"),
         children: []
@@ -40,7 +42,7 @@ export default [
         meta: {
           title: "产品中心-全国电子印章管理与服务平台",
           icon: "mdi-alpha-c",
-          keepAlive: false
+          keepAlive: false,
         },
         component: () => import("@/views/mh/product.vue"),
         children: []
@@ -107,7 +109,8 @@ export default [
     name: "signSeal",
     meta: {
       title: "签章首页",
-      icon: "mdi-cube-scan"
+      icon: "mdi-cube-scan",
+      showLink:false,
     },
     component: () => import("@/views/signSeal/index.vue")
   },
@@ -116,7 +119,8 @@ export default [
     name: "verify",
     meta: {
       title: "签章验证",
-      icon: "mdi-cube-scan"
+      icon: "mdi-cube-scan",
+      showLink:false,
     },
     component: () => import("@/views/verify/index.vue")
   },

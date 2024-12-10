@@ -6,6 +6,7 @@ import Btn from "@/views/signSeal/SignManage/btn/index.vue";
 
 const getList = async () => {
   const { data } = await getSignRequestFile(1);
+  console.log(data)
 };
 
 const columns: TableColumnList = [

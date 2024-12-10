@@ -84,7 +84,7 @@ class PureHttp {
           "/mh/service",
           "/mh/feedback",
           "/mh/about",
-          // "/SignManage"
+          "/SignManage"
         ];
         return whiteList.some(url => config.url.endsWith(url))
           ? config
