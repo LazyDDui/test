@@ -1,4 +1,4 @@
-import { $t } from "@/plugins/i18n";
+import {$t} from "@/plugins/i18n";
 
 const Layout = () => import("@/layout/index.vue");
 const mhLayout = () => import("@/mhLayout/index.vue");
@@ -110,6 +110,15 @@ export default [
       icon: "mdi-cube-scan"
     },
     component: () => import("@/views/signSeal/index.vue")
+  },
+  {
+    path: "/verify",
+    name: "verify",
+    meta: {
+      title: "签章验证",
+      icon: "mdi-cube-scan"
+    },
+    component: () => import("@/views/verify/index.vue")
   },
   {
     path: "/login",
