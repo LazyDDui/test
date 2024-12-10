@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import {fp} from "@/utils";
 import {addDialog} from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
@@ -12,28 +13,80 @@ const useSeal = () => {
     hideFooter: true
   });
 };
+import {defineComponent, h, ref, toRaw} from "vue";
+
+const list = ref<Array>([
+  {
+    name: '申领印章',
+    src: 'signSeal/u3009.png'
+  },
+  {
+    name: '印章使用',
+    src: 'signSeal/u3009.png'
+  },
+  {
+    name: '签章验证',
+    src: 'signSeal/u3009.png'
+  },
+  {
+    name: 'api管理',
+    src: 'signSeal/u3009.png'
+  },
+])
+const radio = ref(0)
+const radioChange = (val) => {
+  console.log(val)
+  if (val == 2) {
+    list.value = [
+      {
+        name: '申领印章',
+        src: 'signSeal/u3009.png'
+      },
+      {
+        name: '印章使用',
+        src: 'signSeal/u3009.png'
+      },
+      {
+        name: '签章验证',
+        src: 'signSeal/u3009.png'
+      },
+      {
+        name: 'api管理',
+        src: 'signSeal/u3009.png'
+      },
+    ]
+  } else {
+    list.value = [
+      {
+        name: '申领印章',
+        src: 'signSeal/u3009.png'
+      },
+      {
+        name: '印章使用',
+        src: 'signSeal/u3009.png'
+      },
+      {
+        name: '签章验证',
+        src: 'signSeal/u3009.png'
+      },
+    ]
+  }
+}
 </script>
 
 <template>
   <div class="shContainer">
     <div class="shBox">
+      <el-radio-group v-model="radio" @change="radioChange">
+        <el-radio :value="0">未认证过</el-radio>
+        <el-radio :value="1">个人已认证</el-radio>
+        <el-radio :value="2">企业已认证</el-radio>
+      </el-radio-group>
       <div class="header">
         <div class="w">
-          <div class="box">
-            <h2>申领印章</h2>
-            <img :src="fp('signSeal/u3009.png')" width="70" height="70"/>
-          </div>
-          <div class="box" @click="useSeal">
-            <h2>印章使用</h2>
-            <img :src="fp('signSeal/u3009.png')" width="70" height="70"/>
-          </div>
-          <div class="box">
-            <h2>签章验证</h2>
-            <img :src="fp('signSeal/u3009.png')" width="70" height="70"/>
-          </div>
-          <div class="box">
-            <h2>api管理</h2>
-            <img :src="fp('signSeal/u3009.png')" width="70" height="70"/>
+          <div class="box" v-for="(item,index) in list" :key="index">
+            <h2>{{ item.name }}</h2>
+            <img :src="fp(item.src)" width="70" height="70">
           </div>
         </div>
       </div>
@@ -42,24 +95,15 @@ const useSeal = () => {
           <div class="left1">
             <div class="title">
               <p class="more tip">
-                <img
-                  width="14"
-                  height="16"
-                  src="../../../public/signSeal/u3029.png"
-                />
+                <img width="14" height="16" :src="fp('signSeal/u3029.png')">
                 <span class="pdl-5">认证信息</span>
               </p>
-              <p class="more blue">
-                <span class="pdr-5">切换认证</span
-                ><img
-                width="16"
-                height="20"
-                src="../../../public/signSeal/u3032.png"
-              />
+              <p class="more blue"><span class="pdr-5">切换认证</span><img width="16" height="20"
+                                                                           :src="fp('signSeal/u3032.png')">
               </p>
             </div>
             <div class="content">
-              <h2 class="h-2">成都xxx科技有限公司</h2>
+              <h2 class="h_2">成都xxx科技有限公司</h2>
               <p class="p-2">91510***********UL39</p>
               <p>
                 <span class="black tag">企业单位</span>
@@ -70,11 +114,7 @@ const useSeal = () => {
           <div class="left2">
             <div class="title">
               <p class="more tip">
-                <img
-                  width="14"
-                  height="16"
-                  src="../../../public/signSeal/u3075.png"
-                />
+                <img width="14" height="16" :src="fp('signSeal/u3075.png')">
                 <span class="pdl-5">印章管理</span>
               </p>
               <p class="more blue">
@@ -82,12 +122,12 @@ const useSeal = () => {
                 ><img
                 width="16"
                 height="20"
-                src="../../../public/signSeal/u3032.png"
+                :src="fp('signSeal/u3032.png')"
               />
               </p>
             </div>
             <div class="content">
-              <h2 class="h-2">5</h2>
+              <h2 class="h_2">5</h2>
               <p class="p-2">总数量</p>
             </div>
           </div>
@@ -98,7 +138,7 @@ const useSeal = () => {
               <img
                 width="14"
                 height="16"
-                src="../../../public/signSeal/u3075.png"
+                :src="fp('signSeal/u3075.png')"
               />
               <span class="pdl-5">印章管理</span>
             </p>
@@ -107,7 +147,7 @@ const useSeal = () => {
               ><img
               width="16"
               height="20"
-              src="../../../public/signSeal/u3032.png"
+              :src="fp('signSeal/u3032.png')"
             />
             </p>
           </div>
@@ -141,7 +181,6 @@ const useSeal = () => {
       height: 100%;
 
       .box {
-        cursor: pointer;
         padding: 5px 25px;
         display: flex;
         justify-content: space-around;
@@ -149,6 +188,7 @@ const useSeal = () => {
         background-color: #e5f1fe;
         border: 1px solid #fff;
         border-radius: 10px;
+        cursor: pointer;
 
         h2 {
           font-size: 32px;
@@ -183,7 +223,7 @@ const useSeal = () => {
           align-items: center;
           padding-top: 40px;
 
-          .h-2 {
+          .h_2 {
             font-size: 22px;
             font-weight: bold;
           }
@@ -191,14 +231,14 @@ const useSeal = () => {
           .p-2 {
             font-weight: 400;
             font-style: normal;
-            color: #7f7f7f;
+            color: #7F7F7F;
           }
 
           .tag {
             font-weight: 400;
             font-style: normal;
             font-size: 12px;
-            color: #ffffff;
+            color: #FFFFFF;
           }
 
           .black {
@@ -257,7 +297,7 @@ const useSeal = () => {
           align-items: center;
           padding-top: 40px;
 
-          .h-2 {
+          .h_2 {
             font-size: 22px;
             font-weight: bold;
           }
@@ -265,7 +305,7 @@ const useSeal = () => {
           .p-2 {
             font-weight: 400;
             font-style: normal;
-            color: #7f7f7f;
+            color: #7F7F7F;
           }
         }
 
