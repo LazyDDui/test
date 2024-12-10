@@ -3,15 +3,16 @@ import { ref } from "vue";
 import { ElMessage, UploadInstance } from "element-plus";
 import { storeToRefs } from "pinia";
 import { preSign, sealUpload } from "@/api/test";
-import {http} from "@/utils/http";
+import { http } from "@/utils/http";
 import { useRoute, useRouter } from "vue-router";
 import { fp } from "@/utils";
-import {deviceDetection} from "@pureadmin/utils";
+import { deviceDetection } from "@pureadmin/utils";
+import { useMainStore } from "@/store/useMainStore";
 
-const isMobile = deviceDetection();
+const { screen } = storeToRefs(useMainStore());
 
-const route = useRoute()
-const id = route.query.id
+const route = useRoute();
+const id = route.query.id;
 
 const upload = ref<UploadInstance>();
 const router = useRouter();
@@ -21,7 +22,6 @@ const url = ref({
   fileUrl: "",
   preSignUrl: ""
 });
-
 
 // const handleExceed: UploadProps["onExceed"] = (files) => {
 //   upload.value!.clearFiles();
@@ -44,43 +44,41 @@ const change = async (e: any) => {
   url.value = data;
   localStorage.setItem("pdf", JSON.stringify(url.value.fileUrl));
   console.log(data);
-
 };
 
 // const { screen } = storeToRefs(useMainStore());
-
-
 
 const sign = () => {
   const formData = new FormData();
   formData.append("file", f.value);
   if (url.value.fileUrl && url.value.preSignUrl) {
     preSign(url.value.preSignUrl, formData).then(() => {
-      http.post("/saas/sign/init", {
-        custNo: id,
-        callBackUrl: window.location.href,
-        signDataList: [
-          {
-            fileTransNo: "111",
-            signList: [],
-            fileTransferMode: "01",
-            fileUrl: url.value.fileUrl,
-            docName:"any"
+      http
+        .post("/app/sign/init", {
+          data: {
+            custNo: id,
+            callBackUrl: window.location.href,
+            signDataList: [
+              {
+                fileTransNo: "111",
+                signList: [],
+                fileTransferMode: "01",
+                fileUrl: url.value.fileUrl,
+                docName: "any"
+              }
+            ]
           }
-        ],
-
-      }).then((res) => {
-        localStorage.setItem("sealInfo", JSON.stringify(res.data));
-        ElMessage.success("已发起");
-        router.push("/pdf?cusNo="+id);
-      });
+        })
+        .then(res => {
+          localStorage.setItem("sealInfo", JSON.stringify(res.data));
+          ElMessage.success("已发起");
+          router.push("/pdf?cusNo=" + id);
+        });
     });
-  }else {
+  } else {
     ElMessage.error("请先上传文件");
   }
 };
-
-
 </script>
 
 <template>
@@ -88,23 +86,39 @@ const sign = () => {
     <div class="tc head">
       <h2>发起签章</h2>
     </div>
-    <div class="search-area" :style="{width:`${screen.width - 200}px`}">
+    <div
+      class="search-area"
+      :style="{
+        width: `${screen.width - 200}px`,
+        background: `url('${fp('verify/vertifyBg.jpg')}')`
+      }"
+    >
       <el-upload
-        type="file"
         ref="upload"
+        type="file"
         action="#"
         :limit="1"
         :auto-upload="false"
         @change="change"
       >
-        <el-button style="width: 800px;background-color: white;height: 64px;margin-top: 10px;" @click="submitUpload">
-          <img alt="upload" style="width: 30px;height: 20px;" :src="fp('verify/下载.png')">
+        <el-button
+          style="
+            width: 800px;
+            background-color: white;
+            height: 64px;
+            margin-top: 10px;
+          "
+          @click="submitUpload"
+        >
+          <img
+            alt="upload"
+            style="width: 30px; height: 20px"
+            :src="fp('verify/下载.png')"
+          />
           <div class="upload">上传PDF、OFD格式文档</div>
         </el-button>
       </el-upload>
-      <el-button class="check" @click="sign">
-        发起签章
-      </el-button>
+      <el-button class="check" @click="sign"> 发起签章</el-button>
     </div>
   </div>
 </template>
@@ -141,7 +155,6 @@ const sign = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url("../../../public/verify/vertifyBg.jpg");
     background-size: 100% 100%;
   }
 }

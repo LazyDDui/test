@@ -28,7 +28,7 @@ const toSubject = () => {
 
 
 const downloadBA = (r) => {
-  http.post("/saas/seal/viewRecordUni", {
+  http.post("/app/seal/viewRecordUni", {
     data:{
       sealSn: r.id
     }

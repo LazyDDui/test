@@ -25,21 +25,21 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
       host: "0.0.0.0",
       // 本地跨域代理 https://cn.vitejs.dev/config/server-options.html#server-proxy
       proxy: {
-        "/saas": {
+        "/app": {
           // 请求接口中要替换的标识
           // target: 'https://test.batonedata.com', // 代理地址
-          target: "http://182.151.13.73:9190",
-          changeOrigin: true, // 是否允许跨域
-          secure: false
-        },
-        "/biz": {
-          // 请求接口中要替换的标识
-          // target: 'https://test.batonedata.com', // 代理地址
-          target: "http://182.151.13.73:9191",
-          rewrite: path => path.replace(/^\/biz/, ""),
+          target: "http://192.168.101.115:9999",
           changeOrigin: true, // 是否允许跨域
           secure: false
         }
+        // "/biz": {
+        //   // 请求接口中要替换的标识
+        //   // target: 'https://test.batonedata.com', // 代理地址
+        //   target: "http://192.168.101.115:9999",
+        //   rewrite: path => path.replace(/^\/biz/, ""),
+        //   changeOrigin: true, // 是否允许跨域
+        //   secure: false
+        // }
       },
       // 预热文件以提前转换和缓存结果，降低启动期间的初始页面加载时长并防止转换瀑布
       warmup: {

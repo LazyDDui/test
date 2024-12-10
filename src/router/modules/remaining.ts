@@ -1,13 +1,17 @@
-import {$t} from "@/plugins/i18n";
+import { $t } from "@/plugins/i18n";
 
 const Layout = () => import("@/layout/index.vue");
 const mhLayout = () => import("@/mhLayout/index.vue");
 
 export default [
   {
-    path: "/",
-    name: "",
-    redirect: "/mh/home"
+    path: "/pdf",
+    name: "pdf",
+    meta: {
+      title: "签署盖章",
+      icon: "mdi-cube-scan"
+    },
+    component: () => import("@/views/mh/pdf/index.vue")
   },
   {
     path: "/mh",

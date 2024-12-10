@@ -4,7 +4,7 @@ import { onMounted, ref, toRaw } from "vue";
 import { getSealImg } from "@/api/test";
 import { ElMessage } from "element-plus";
 import { useRoute } from "vue-router";
-import {http} from "@/utils/http";
+import { http } from "@/utils/http";
 
 const sign = ref();
 const psw = ref();
@@ -27,7 +27,7 @@ const error = ref(false);
 
 const getSeal = async () => {
   const { data } = await getSealImg(id);
-  imgList.value = data.map((item) => ({
+  imgList.value = data.map(item => ({
     ...item,
     id: item.sealSn,
     img: "data:image/jpeg;base64," + item.sealPerPic
@@ -61,10 +61,10 @@ const submit = async () => {
     const sealInfo = JSON.parse(localStorage.getItem("sealInfo"));
     show.value = false;
 
-    const qfArr = imgList.value.filter((item) => item.y);
+    const qfArr = imgList.value.filter(item => item.y);
     let r: any[] = [];
 
-    if (qfAll) {
+    if (qfAll.value) {
       for (let i = 0; i < qfArr.length; i++) {
         for (let j = 0; j < pdfInfo.value.numPages; j++) {
           r.push({
@@ -76,7 +76,7 @@ const submit = async () => {
         }
       }
     } else {
-      r = qfArr.map((item) => {
+      r = qfArr.map(item => {
         return {
           sealSn: item.sealSn,
           posPages: 1,
@@ -100,13 +100,11 @@ const submit = async () => {
     if (info.value.all) {
       for (let i = 0; i < containArr.length; i++) {
         for (let j = 0; j < pdfInfo.value.numPages; j++) {
-
           sealArr.push({
             ...containArr[i],
             posPages: j + 1,
             sealSignType: "0"
           });
-
         }
       }
     }
@@ -123,44 +121,52 @@ const submit = async () => {
     //     };
     //   }),...r])
 
-    http.post(`/saas/sign/commit`, {
-      data:{
-        appno: sealInfo.appno,
-        pinCode: psw.value,
-        smsCode: "",
-        signDataList: [
-          {
-            fileTransNo: `111`,
-            signList: info.value.all ?
-              [...sealArr, ...r]
-              : [...sealList.value.map((item: any) => {
-                return {
-                  sealSn: item.sealUrl.sealSn,
-                  posPages: item.pageNum,
-                  posX: Number((item.left / item.width).toFixed(3)),
-                  posY: Number(((item.height - item.top) / item.height).toFixed(3)),
-                  sealSignType: "0"
-                };
-              }), ...r]
-          }
-        ]
-      }
-    }).then((res) => {
-      http.post("/saas/sign/query", {
-        data:{
-          appno: res.data.appno,
-          fileTransNo: `111`
+    http
+      .post(`/app/sign/commit`, {
+        data: {
+          appno: sealInfo.appno,
+          pinCode: psw.value,
+          smsCode: "",
+          signDataList: [
+            {
+              fileTransNo: `111`,
+              signList: info.value.all
+                ? [...sealArr, ...r]
+                : [
+                    ...sealList.value.map((item: any) => {
+                      return {
+                        sealSn: item.sealUrl.sealSn,
+                        posPages: item.pageNum,
+                        posX: Number((item.left / item.width).toFixed(3)),
+                        posY: Number(
+                          ((item.height - item.top) / item.height).toFixed(3)
+                        ),
+                        sealSignType: "0"
+                      };
+                    }),
+                    ...r
+                  ]
+            }
+          ]
         }
-      }).then((r) => {
-        appno.value = res.data.appno;
-        ElMessage.success("签署成功");
-        getFile();
+      })
+      .then(res => {
+        http
+          .post("/app/sign/query", {
+            data: {
+              appno: res.data.appno,
+              fileTransNo: `111`
+            }
+          })
+          .then(r => {
+            appno.value = res.data.appno;
+            ElMessage.success("签署成功");
+            getFile();
+          });
       });
-    });
   } else {
     ElMessage.error("请输入密码!");
   }
-
 };
 
 const appno = ref("");
@@ -198,20 +204,21 @@ async function downloadPdf(url, filename = "document.pdf") {
 
 const getFile = () => {
   timer = setInterval(() => {
-    post("/saas/sign/query", {
+    post("/app/sign/query", {
       appno: appno.value,
       fileTransNo: `111`
-    }).then((res) => {
+    }).then(res => {
       console.log(res.data[0].stateMsg);
       if (res.data[0].stateMsg == "签署成功") {
         clearInterval(timer);
         timer = null;
-        downloadPdf(res.data[0].signFileUrl.replace("http://182.151.13.73:9099", ""));
+        downloadPdf(
+          res.data[0].signFileUrl.replace("http://182.151.13.73:9099", "")
+        );
         // res.data.signFileUrl
       }
     });
   }, 1500);
-
 };
 
 const info = ref({
@@ -220,37 +227,68 @@ const info = ref({
 });
 
 const qfAll = ref(false);
-
 </script>
 
 <template>
   <div>
     <el-row>
-      <el-button @click="signFn" type="warning" style="flex: 1">签署</el-button>
-      <el-button @click="info.position=true" :type="info.position?`success`:`info`" style="flex: 1">绝对定位印章
+      <el-button type="warning" style="flex: 1" @click="signFn">签署</el-button>
+      <el-button
+        :type="info.position ? `success` : `info`"
+        style="flex: 1"
+        @click="info.position = true"
+        >绝对定位印章
       </el-button>
-      <el-button @click="info.position=false;qfShow = true" :type="!info.position?`success`:`info`" style="flex: 1">
+      <el-button
+        :type="!info.position ? `success` : `info`"
+        style="flex: 1"
+        @click="
+          info.position = false;
+          qfShow = true;
+        "
+      >
         骑缝章
       </el-button>
-      <el-button @click="info.all=!info.all" :type="info.all?`success`:`info`" style="flex: 1">是否多页</el-button>
+      <el-button
+        :type="info.all ? `success` : `info`"
+        style="flex: 1"
+        @click="info.all = !info.all"
+        >是否多页</el-button
+      >
     </el-row>
     <el-dialog v-model="qfShow" title="骑缝章" width="500">
       <div>
         是否多页:
-        <el-switch v-model="qfAll"></el-switch>
-        <el-row style="display: flex;margin-bottom: 10px;" v-for="(item,index) in imgList" :key="index">
-          <img style="width: 50px;margin-right: 10px;align-items: center;" :src="item.img" />
+        <el-switch v-model="qfAll" />
+        <el-row
+          v-for="(item, index) in imgList"
+          :key="index"
+          style="display: flex; margin-bottom: 10px"
+        >
+          <img
+            style="width: 50px; margin-right: 10px; align-items: center"
+            :src="item.img"
+          />
           <div>位置：</div>
-          <el-input style="width: 200px;height: 40px;" type="text" v-model="imgList[index].y" maxlength="6" />
+          <el-input
+            v-model="imgList[index].y"
+            style="width: 200px; height: 40px"
+            type="text"
+            maxlength="6"
+          />
         </el-row>
-
       </div>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="qfShow = false">退出</el-button>
-          <el-button type="primary" @click="()=>{
-            qfShow = false
-          }">
+          <el-button
+            type="primary"
+            @click="
+              () => {
+                qfShow = false;
+              }
+            "
+          >
             确认
           </el-button>
         </div>
@@ -258,33 +296,29 @@ const qfAll = ref(false);
     </el-dialog>
 
     <el-dialog v-model="show" title="签署密码" width="500">
-      <el-input type="text" v-model="psw" maxlength="6" />
+      <el-input v-model="psw" type="text" maxlength="6" />
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="show = false">退出</el-button>
-          <el-button type="primary" @click="submit">
-            确认
-          </el-button>
+          <el-button type="primary" @click="submit"> 确认 </el-button>
         </div>
       </template>
     </el-dialog>
   </div>
 
   <Pdf
-    @change="(e)=>{
-    pdfInfo = e
-    console.log(e)
-  }"
+    v-if="imgList.length > 0"
     ref="sign"
     :img-list="imgList"
-    :pdf-flow="pdf.replace(`http://182.151.13.73:9099`,``)"
-    v-if="imgList.length>0"
+    :pdf-flow="pdf.replace(`http://182.151.13.73:9099`, ``)"
     :info="info"
+    @change="
+      e => {
+        pdfInfo = e;
+        console.log(e);
+      }
+    "
   />
-
-
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

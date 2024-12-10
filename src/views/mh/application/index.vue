@@ -13,7 +13,7 @@ const toSubject = () => {
   searchSubjectName();
 };
 const downloadBA = (r) => {
-  http.post("/saas/seal/viewRecordUni", {
+  http.post("/app/seal/viewRecordUni", {
     data:{
       sealSn: r.id
     }
@@ -41,7 +41,7 @@ let pageNo = ref(1);
 let totalNum = ref(0);
 const searchSubjectName = () => {
   loading.value = true;
-  http.post("/saas/app/page", {
+  http.post("/app/app/page", {
     data:{
       current: pageNo.value,
       size: pageSize.value
