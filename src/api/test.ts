@@ -9,7 +9,7 @@ export const login = (data: object) =>
     {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic JCZUsSJo9Z9Vqr6-8iiTfrSrCYkpQ6E9ZmWspwhuNb7jY2Ni1y1sf5MK4cp7kV6RfSu_pjQ27OZ8OK5jqGIz-g8DIIoBwBBwtg2En6e1GLG9aN8q4no23123oPau26up"
+        Authorization: "Basic dGVzdDp0ZXN0"
       }
     }
   );
