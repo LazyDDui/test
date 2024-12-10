@@ -27,14 +27,48 @@ const toGoPage = () => {
   router.push({name: "verify"});
 };
 const userAuthenlicationInfo = ref([
-  {
-
-  }
+  {}
 ])
 const getUserAuthenlication = async () => {
   const res = await userAuthentication()
   userAuthenlicationInfo.value = res.data.records
-
+  if (userAuthenlicationInfo.value && userAuthenlicationInfo.value.length > 0) {
+    if (userAuthenlicationInfo.value[0].type == '0') {
+      list.value = [
+        {
+          name: "申领印章",
+          src: "signSeal/u3009.png"
+        },
+        {
+          name: "印章使用",
+          src: "signSeal/u3009.png"
+        },
+        {
+          name: "签章验证",
+          src: "signSeal/u3009.png"
+        },
+        {
+          name: "api管理",
+          src: "signSeal/u3009.png"
+        }
+      ];
+    } else {
+      list.value = [
+        {
+          name: "申领印章",
+          src: "signSeal/u3009.png"
+        },
+        {
+          name: "印章使用",
+          src: "signSeal/u3009.png"
+        },
+        {
+          name: "签章验证",
+          src: "signSeal/u3009.png"
+        }
+      ];
+    }
+  }
   console.log('获取当前用户认证信息', userAuthenlicationInfo.value)
 }
 const authenlicationCol = [
@@ -121,7 +155,7 @@ const changeAuthentication = () => {
     contentRenderer() {
       return h(AuthticaltionTable, {
         tableData: userAuthenlicationInfo.value,
-        cols:authenlicationCol.value
+        cols: authenlicationCol.value
       })
     },
     hideFooter: true
@@ -148,11 +182,11 @@ const signManageSeeMore = () => {
 <template>
   <div class="shContainer">
     <div class="shBox">
-<!--      <el-radio-group v-model="radio" @change="radioChange">-->
-<!--        <el-radio :value="0">未认证过</el-radio>-->
-<!--        <el-radio :value="1">个人已认证</el-radio>-->
-<!--        <el-radio :value="2">企业已认证</el-radio>-->
-<!--      </el-radio-group>-->
+      <!--      <el-radio-group v-model="radio" @change="radioChange">-->
+      <!--        <el-radio :value="0">未认证过</el-radio>-->
+      <!--        <el-radio :value="1">个人已认证</el-radio>-->
+      <!--        <el-radio :value="2">企业已认证</el-radio>-->
+      <!--      </el-radio-group>-->
       <div class="header">
         <div class="w">
           <div
@@ -188,7 +222,10 @@ const signManageSeeMore = () => {
               </p>
             </div>
             <div class="content">
-              <h2 class="h_2">{{ userAuthenlicationInfo[0].authenticationName ? userAuthenlicationInfo[0].authenticationName : '--'}}</h2>
+              <h2 class="h_2">
+                {{
+                  userAuthenlicationInfo[0].authenticationName ? userAuthenlicationInfo[0].authenticationName : '--'
+                }}</h2>
               <p class="p-2">{{ userAuthenlicationInfo[0].subjectId }}</p>
               <p>
                 <span class="black tag">企业单位</span>

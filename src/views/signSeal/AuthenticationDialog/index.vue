@@ -4,7 +4,7 @@ import Btn from "@/views/signSeal/AuthenticationDialog/btn/index.vue";
 import {addDialog} from "@/components/ReDialog/index";
 import SignManagePageList from "@/views/signSeal/SignManage/PageList/index.vue";
 import PrincipalType from "@/views/signSeal/PrincipalType/index.vue"
-import {personSign, companySign, userAuthentication} from "@/api/test";
+import {personSign, companySign, userAuthentication, changeAuthentication} from "@/api/test";
 
 type ShTable = {
   cols: TableColumnList;
@@ -27,8 +27,9 @@ const columns: TableColumnList = [
     label: "操作",
     cellRenderer(data) {
       return h(Btn, {
-        cgClick: () => {
-          console.log(data);
+        cgClick: async () => {
+          const res = await changeAuthentication(data.row.id)
+          console.log('切换', res)
         },
       });
     },
