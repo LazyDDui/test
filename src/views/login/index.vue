@@ -32,6 +32,8 @@ import Lock from "@iconify-icons/ri/lock-fill";
 import Check from "@iconify-icons/ep/check";
 import User from "@iconify-icons/ri/user-3-fill";
 import Info from "@iconify-icons/ri/information-line";
+import { login } from "@/api/test";
+import { getToken, setToken } from "@/utils/auth";
 
 defineOptions({
   name: "Login"
@@ -57,8 +59,8 @@ const { title, getDropdownItemStyle, getDropdownItemClass } = useNav();
 const { locale, translationCh, translationEn } = useTranslationLang();
 
 const ruleForm = reactive({
-  username: "admin",
-  password: "admin123",
+  username: "1",
+  password: "123",
   verifyCode: ""
 });
 
@@ -67,23 +69,26 @@ const onLogin = async (formEl: FormInstance | undefined) => {
   await formEl.validate(valid => {
     if (valid) {
       loading.value = true;
-      useUserStoreHook()
-        .loginByUsername({ username: ruleForm.username, password: "admin123" })
+      login({
+        appId: ruleForm.username,
+        appSecret: ruleForm.password
+      })
         .then(res => {
-          if (res.success) {
-            // 获取后端路由
-            return initRouter().then(() => {
-              disabled.value = true;
-              router
-                .push(getTopMenu(true).path)
-                .then(() => {
-                  message(t("login.pureLoginSuccess"), { type: "success" });
-                })
-                .finally(() => (disabled.value = false));
-            });
-          } else {
-            message(t("login.pureLoginFail"), { type: "error" });
-          }
+          // 获取后端路由
+          setToken(res.data);
+          return initRouter().then(() => {
+            console.log(getToken());
+            disabled.value = true;
+            router
+              .push('/signSeal')
+              .then(() => {
+                message(t("login.pureLoginSuccess"), { type: "success" });
+              })
+              .finally(() => (disabled.value = false));
+          });
+        })
+        .catch(() => {
+          message(t("login.pureLoginFail"), { type: "error" });
         })
         .finally(() => (loading.value = false));
     }
