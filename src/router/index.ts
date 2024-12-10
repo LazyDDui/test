@@ -46,10 +46,17 @@ const modules: Record<string, any> = import.meta.glob(
 
 /** 原始静态路由（未做任何处理） */
 const routes = [];
+console.log(Object.keys(modules))
 
-Object.keys(modules).forEach(key => {
+const r = ["./modules/shData.ts"]
+
+
+r.forEach(key => {
   routes.push(modules[key].default);
 });
+// Object.keys(modules).forEach(key => {
+//   routes.push(modules[key].default);
+// });
 
 /** 导出处理后的静态路由（三级及以上的路由全部拍成二级） */
 export const constantRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(
@@ -113,7 +120,7 @@ const whiteList = [
   "/mh/service",
   "/mh/feedback",
   "/mh/about",
-  // "/SignManage"
+  "/SignManage"
 ];
 
 const {VITE_HIDE_HOME} = import.meta.env;
