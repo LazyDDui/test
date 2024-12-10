@@ -3,11 +3,13 @@ import {fp} from "@/utils";
 import {addDialog} from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
 import {h} from "vue";
-import SignManage from "@/views/signSeal/SignManage/index.vue"
+import signSeal from "@/views/signSeal/SignManage/index.vue"
 import {useRouter} from 'vue-router';
+import {userAuthentication} from "@/api/test"
+import AuthticaltionTable from "@/views/signSeal/AuthenticationDialog/index.vue"
 
 const router = useRouter()
-
+const authenticationDialog = ref<boolean>(false)
 const useSeal = () => {
   addDialog({
     title: "发起签章",
@@ -17,11 +19,17 @@ const useSeal = () => {
   });
 };
 import {defineComponent, h, ref, toRaw} from "vue";
+
 const toGoPage = () => {
   router.push({name: 'verify'})
 }
 import {defineComponent, h, ref, toRaw} from "vue";
 
+const getAuthentication = async () => {
+  const res = await userAuthentication()
+  console.log('res', res)
+}
+// getAuthentication()
 const list = ref<Array>([
   {
     name: "申领印章",
@@ -79,7 +87,26 @@ const radioChange = val => {
     ];
   }
 };
-
+const AuthenticationTable = ref(
+  {
+    currPage: 1,
+    pageSize: 10,
+    list: [],
+    totalCount: 0
+  }
+)
+const changeAuthentication = () => {
+  addDialog({
+    title: '切换认证',
+    contentRenderer() {
+      return h(AuthticaltionTable,
+        {
+          tableData: AuthenticationTable,
+        },
+        '对话框')
+    },
+  })
+}
 const sealManage = () => {
   addDialog({
     title: "印章管理",
@@ -125,7 +152,7 @@ const sealManage = () => {
                 <img width="14" height="16" :src="fp('signSeal/u3029.png')"/>
                 <span class="pdl-5">认证信息</span>
               </p>
-              <p class="more blue">
+              <p class="more blue" @click="changeAuthentication()">
                 <span class="pdr-5">切换认证</span
                 ><img
                 width="16"

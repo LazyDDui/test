@@ -48,3 +48,8 @@ export const getSealImg = (custNo: string) =>
 
 export const companyCertApi = (data: object) =>
   http.post(`/app/uni/approve`, data);
+
+//认证信息列表
+export const userAuthentication = (data) => {
+  http.post(`/app/userAuthentication/page`, data);
+}
