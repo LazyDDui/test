@@ -1,0 +1,172 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import { ElMessage, UploadInstance } from "element-plus";
+import { storeToRefs } from "pinia";
+import { preSign, sealUpload } from "@/api/test";
+import {http} from "@/utils/http";
+import { useRoute, useRouter } from "vue-router";
+import { fp } from "@/utils";
+import {deviceDetection} from "@pureadmin/utils";
+
+const isMobile = deviceDetection();
+
+const route = useRoute()
+const id = route.query.id
+
+const upload = ref<UploadInstance>();
+const router = useRouter();
+const fileNo = ref("111");
+const f = ref();
+const url = ref({
+  fileUrl: "",
+  preSignUrl: ""
+});
+
+
+// const handleExceed: UploadProps["onExceed"] = (files) => {
+//   upload.value!.clearFiles();
+//   const file = files[0] as UploadRawFile;
+//   sealUpload();
+//   file.uid = genFileId();
+//   upload.value!.handleStart(file);
+// };
+
+const submitUpload = () => {
+  upload.value!.submit();
+};
+
+const change = async (e: any) => {
+  f.value = e.raw;
+  const file = new FormData();
+  file.append("file", f.value);
+  const { data } = await sealUpload();
+  ElMessage.success("上传成功");
+  url.value = data;
+  localStorage.setItem("pdf", JSON.stringify(url.value.fileUrl));
+  console.log(data);
+
+};
+
+// const { screen } = storeToRefs(useMainStore());
+
+
+
+const sign = () => {
+  const formData = new FormData();
+  formData.append("file", f.value);
+  if (url.value.fileUrl && url.value.preSignUrl) {
+    preSign(url.value.preSignUrl, formData).then(() => {
+      http.post("/saas/sign/init", {
+        custNo: id,
+        callBackUrl: window.location.href,
+        signDataList: [
+          {
+            fileTransNo: "111",
+            signList: [],
+            fileTransferMode: "01",
+            fileUrl: url.value.fileUrl,
+            docName:"any"
+          }
+        ],
+
+      }).then((res) => {
+        localStorage.setItem("sealInfo", JSON.stringify(res.data));
+        ElMessage.success("已发起");
+        router.push("/pdf?cusNo="+id);
+      });
+    });
+  }else {
+    ElMessage.error("请先上传文件");
+  }
+};
+
+
+</script>
+
+<template>
+  <div class="body-content">
+    <div class="tc head">
+      <h2>发起签章</h2>
+    </div>
+    <div class="search-area" :style="{width:`${screen.width - 200}px`}">
+      <el-upload
+        type="file"
+        ref="upload"
+        action="#"
+        :limit="1"
+        :auto-upload="false"
+        @change="change"
+      >
+        <el-button style="width: 800px;background-color: white;height: 64px;margin-top: 10px;" @click="submitUpload">
+          <img alt="upload" style="width: 30px;height: 20px;" :src="fp('verify/下载.png')">
+          <div class="upload">上传PDF、OFD格式文档</div>
+        </el-button>
+      </el-upload>
+      <el-button class="check" @click="sign">
+        发起签章
+      </el-button>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.body-content {
+  padding: 100px 0 0 0;
+  background: #f8f9fa;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .tc {
+    text-align: center;
+  }
+
+  .head {
+    padding: 0 90px;
+    margin: -15px 0 0 0;
+    margin-bottom: 60px;
+
+    h2 {
+      font-weight: 600;
+      color: #333;
+      font-size: 36px;
+    }
+  }
+
+  .search-area {
+    margin: 0 auto;
+    padding: 0 30px;
+    height: 240px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url("../../../public/verify/vertifyBg.jpg");
+    background-size: 100% 100%;
+  }
+}
+
+:deep(.el-upload-list__item-info) {
+  display: none;
+}
+
+.upload {
+  cursor: pointer;
+  font-size: 16px;
+  color: #0a4fd3;
+  line-height: 16px;
+  margin-left: 10px;
+}
+
+.check {
+  background-color: #0a4fd3;
+  text-align: center;
+  color: #fff;
+  width: 240px;
+  height: 64px;
+  font-size: 16px;
+  line-height: 64px;
+  border-radius: 8px;
+  margin-left: 20px;
+}
+</style>
