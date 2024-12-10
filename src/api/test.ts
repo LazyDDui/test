@@ -9,7 +9,8 @@ export const login = (data: object) =>
     {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic dGVzdDp0ZXN0"
+        // Authorization: "Basic dGVzdDp0ZXN0"
+        Authorization:"Bearer etlrUznqPaTsHENkv9ENFIBpyjXeSPon-PfhImDPkTwmHV91w5nzfozTu9YPEnhgNAIsr1qOyCjFP1f5p6aQd-TFhUBX7sZ0ERxEx0QoAJzFg81YUOY33s1SE_SDPN1-"
       }
     }
   );

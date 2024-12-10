@@ -31,7 +31,7 @@ const getAuthentication = async () => {
   const res = await userAuthentication()
   console.log('res', res)
 }
-// getAuthentication()
+getAuthentication()
 const list = ref<any[]>([
   {
     name: "申领印章",
