@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import {h, reactive} from "vue";
+import {h, reactive, ref} from "vue";
 import {tableData} from "@/views/table/base/data";
 import Btn from "@/views/signSeal/AuthenticationDialog/btn/index.vue";
 import {addDialog} from "@/components/ReDialog/index";
 import SignManagePageList from "@/views/signSeal/SignManage/PageList/index.vue";
 import PrincipalType from "@/views/signSeal/PrincipalType/index.vue"
+import {personSign} from "@/api/test";
 
+
+const personData = ref<object>()
 const columns: TableColumnList = [
   {
     label: "名称",
@@ -33,7 +36,34 @@ const currentChange = e => {
 const addAuthentication = () => {
   addDialog({
     title: "主体类型",
-    contentRenderer: () => h(PrincipalType)
+    contentRenderer: () => h(PrincipalType, {
+      change: (form) => {
+        console.log(form)
+        personData.value = form
+      },
+      tabClick: (tab) => {
+        console.log(tab.props.name)
+      }
+    }),
+    async beforeSure(done) {
+      console.log('参数', personData)
+      const res = await personSign(personData.value)
+      if (res.code == '00') {
+        ElMessage({
+          message: '认证成功',
+          type: 'success',
+        })
+      } else {
+        ElMessage({
+          message: res.message,
+          type: 'error',
+        })
+      }
+      form.value.forEach(item => {
+        item.value = null; // 否则，将 value 设置为空字符串
+      });
+      done()
+    }
   })
 }
 </script>

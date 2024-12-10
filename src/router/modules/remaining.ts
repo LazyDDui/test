@@ -10,7 +10,7 @@ export default [
     meta: {
       title: "签署盖章",
       icon: "mdi-cube-scan",
-      showLink:false,
+      showLink: false,
     },
     component: () => import("@/views/mh/pdf/index.vue")
   },
@@ -21,7 +21,7 @@ export default [
     meta: {
       title: "Componets",
       icon: "mdi-cube-scan",
-      showLink:false,
+      showLink: false,
     },
     component: mhLayout,
     children: [
@@ -106,13 +106,33 @@ export default [
   },
   {
     path: "/SignManage",
-    name: "signSeal",
+    name: "SignManage",
     meta: {
       title: "签章首页",
       icon: "mdi-cube-scan",
-      showLink:false,
+      showLink: false,
     },
     component: () => import("@/views/signSeal/index.vue")
+  },
+  {
+    path: "/personPrincipal",
+    name: "personPrincipal",
+    meta: {
+      title: "个人认证",
+      icon: "mdi-cube-scan",
+      showLink: false,
+    },
+    component: () => import("@/views/signSeal/PersonPrincipal/index.vue")
+  },
+  {
+    path: "/companyPrincipal",
+    name: "companyPrincipal",
+    meta: {
+      title: "企业认证",
+      icon: "mdi-cube-scan",
+      showLink: false,
+    },
+    component: () => import("@/views/signSeal/CompanyPrincipal/index.vue")
   },
   {
     path: "/verify",
@@ -120,10 +140,11 @@ export default [
     meta: {
       title: "签章验证",
       icon: "mdi-cube-scan",
-      showLink:false,
+      showLink: false,
     },
     component: () => import("@/views/verify/index.vue")
   },
+
   {
     path: "/login",
     name: "Login",

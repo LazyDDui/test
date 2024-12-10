@@ -10,7 +10,7 @@ export const login = (data: object) =>
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         // Authorization: "Basic dGVzdDp0ZXN0"
-        Authorization:"Bearer etlrUznqPaTsHENkv9ENFIBpyjXeSPon-PfhImDPkTwmHV91w5nzfozTu9YPEnhgNAIsr1qOyCjFP1f5p6aQd-TFhUBX7sZ0ERxEx0QoAJzFg81YUOY33s1SE_SDPN1-"
+        Authorization:"Bearer JCZUsSJo9Z9Vqr6-8iiTfrSrCYkpQ6E9ZmWspwhuNb7jY2Ni1y1sf5MK4cp7kV6RfSu_pjQ27OZ8OK5jqGIz-g8DIIoBwBBwtg2En6e1GLG9aN8q4no23123oPau26up"
       }
     }
   );
@@ -80,3 +80,4 @@ export const getSignRequestFile = (current: number) =>
 export const userAuthentication = (data) => {
   http.post(`/app/userAuthentication/page`, data);
 }
+
