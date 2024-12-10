@@ -6,7 +6,7 @@ const Layout = () => import("@/layout/index.vue");
 export default {
   path: "/shApi",
   name: "shApi",
-  component: Layout,
+  // component: Layout,
   meta: {
     icon: "ep:home-filled",
     title: $t("menus.pureHome"),

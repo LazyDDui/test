@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { h, reactive } from "vue";
-import { tableData } from "@/views/table/base/data";
+import {h, reactive} from "vue";
+import {tableData} from "@/views/table/base/data";
 import Btn from "@/views/signSeal/SignManage/btn/index.vue";
 import SeeMore from "@/views/sys/shApi/SeeMore/index.vue";
+import SeePsw from "@/views/sys/shApi/SeePsw/index.vue"
+import {addDialog} from "@/components/ReDialog/index";
 
 const columns: TableColumnList = [
   {
@@ -11,7 +13,11 @@ const columns: TableColumnList = [
   },
   {
     label: "请求密钥",
-    prop: "name"
+    cellRenderer(data) {
+      return h(SeePsw, {
+        c: data.row.name
+      });
+    }
   },
   {
     label: "调用时间",
@@ -26,25 +32,10 @@ const columns: TableColumnList = [
     prop: "address",
     cellRenderer(data) {
       console.log(data.row);
-      return h(SeeMore, {c:data.row.address});
-    }
-  },
-  {
-    label: "操作",
-    cellRenderer(data) {
-      return h(Btn, {
-        dwClick: () => {
-          console.log(data);
-        },
-        detailClick: () => {
-          console.log(data);
-        },
-        delClick: () => {
-          console.log(data);
-        }
+      return h(SeeMore, {
+        c: data.row.address
       });
-    },
-    align: "center"
+    }
   }
 ];
 
@@ -72,7 +63,7 @@ const currentChange = e => {
       placeholder="请输入接口名称"
     />
 
-    <pure-table style="margin-top: 20px" :data="tableData" :columns="columns" />
+    <pure-table style="margin-top: 20px" :data="tableData" :columns="columns"/>
     <el-row style="margin-top: 20px; justify-content: flex-end; width: 100%">
       <el-pagination
         background
