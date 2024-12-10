@@ -28,6 +28,25 @@ import { http } from "@/utils/http";
 const toGoPage = () => {
   router.push({ name: "verify" });
 };
+const userAuthenlicationInfo = ref([])
+const getUserAuthenlication = async () => {
+  const res = await userAuthentication()
+  userAuthenlicationInfo.value = res.data.records
+  console.log('获取当前用户认证信息', userAuthenlicationInfo.value)
+}
+const authenlicationCol = [
+  {
+    label: "名称",
+    prop: "authenticationName",
+    align: 'center'
+  },
+  {
+    label: "类型",
+    prop: "type",
+    align: 'center'
+  },
+]
+getUserAuthenlication()
 
 const getAuthentication = async () => {
   const res = await userAuthentication();
@@ -101,7 +120,10 @@ const changeAuthentication = () => {
   addDialog({
     title: "切换认证",
     contentRenderer() {
-      return h(AuthticaltionTable);
+      return h(AuthticaltionTable, {
+        tableData: userAuthenlicationInfo.value,
+        cols:authenlicationCol.value
+      })
     },
     hideFooter: true
   });
