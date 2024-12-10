@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import Pdf from "@/components/Pdf/index.vue";
-import { onMounted, ref, toRaw } from "vue";
-import { getSealImg } from "@/api/test";
-import { ElMessage } from "element-plus";
-import { useRoute } from "vue-router";
-import { http } from "@/utils/http";
+import {onMounted, ref, toRaw} from "vue";
+import {getSealImg} from "@/api/test";
+import {ElMessage} from "element-plus";
+import {useRoute} from "vue-router";
+import {http} from "@/utils/http";
 import {request} from "axios";
 
 const sign = ref();
@@ -27,7 +27,7 @@ const imgs = ref<any[]>([]);
 const error = ref(false);
 
 const getSeal = async () => {
-  const { data } = await getSealImg(id);
+  const {data} = await getSealImg(id);
   imgList.value = data.map(item => ({
     ...item,
     id: item.sealSn,
@@ -134,19 +134,19 @@ const submit = async () => {
               signList: info.value.all
                 ? [...sealArr, ...r]
                 : [
-                    ...sealList.value.map((item: any) => {
-                      return {
-                        sealSn: item.sealUrl.sealSn,
-                        posPages: item.pageNum,
-                        posX: Number((item.left / item.width).toFixed(3)),
-                        posY: Number(
-                          ((item.height - item.top) / item.height).toFixed(3)
-                        ),
-                        sealSignType: "0"
-                      };
-                    }),
-                    ...r
-                  ]
+                  ...sealList.value.map((item: any) => {
+                    return {
+                      sealSn: item.sealUrl.sealSn,
+                      posPages: item.pageNum,
+                      posX: Number((item.left / item.width).toFixed(3)),
+                      posY: Number(
+                        ((item.height - item.top) / item.height).toFixed(3)
+                      ),
+                      sealSignType: "0"
+                    };
+                  }),
+                  ...r
+                ]
             }
           ]
         }
@@ -203,6 +203,7 @@ async function downloadPdf(url, filename = "document.pdf") {
   }
 }
 
+
 const getFile = () => {
   timer = setInterval(() => {
     http.post("/app/sign/query", {
@@ -214,7 +215,7 @@ const getFile = () => {
         clearInterval(timer);
         timer = null;
         downloadPdf(
-          res.data[0].signFileUrl.replace(import.meta.env.VITE_BASE_URL, "")
+          res.data[0].signFileUrl.replace("")
         );
         // res.data.signFileUrl
       }
@@ -238,7 +239,7 @@ const qfAll = ref(false);
         :type="info.position ? `success` : `info`"
         style="flex: 1"
         @click="info.position = true"
-        >绝对定位印章
+      >绝对定位印章
       </el-button>
       <el-button
         :type="!info.position ? `success` : `info`"
@@ -254,13 +255,14 @@ const qfAll = ref(false);
         :type="info.all ? `success` : `info`"
         style="flex: 1"
         @click="info.all = !info.all"
-        >是否多页</el-button
+      >是否多页
+      </el-button
       >
     </el-row>
     <el-dialog v-model="qfShow" title="骑缝章" width="500">
       <div>
         是否多页:
-        <el-switch v-model="qfAll" />
+        <el-switch v-model="qfAll"/>
         <el-row
           v-for="(item, index) in imgList"
           :key="index"
@@ -297,11 +299,11 @@ const qfAll = ref(false);
     </el-dialog>
 
     <el-dialog v-model="show" title="签署密码" width="500">
-      <el-input v-model="psw" type="text" maxlength="6" />
+      <el-input v-model="psw" type="text" maxlength="6"/>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="show = false">退出</el-button>
-          <el-button type="primary" @click="submit"> 确认 </el-button>
+          <el-button type="primary" @click="submit"> 确认</el-button>
         </div>
       </template>
     </el-dialog>
@@ -311,7 +313,7 @@ const qfAll = ref(false);
     v-if="imgList.length > 0"
     ref="sign"
     :img-list="imgList"
-    :pdf-flow="pdf.replace(import.meta.env.VITE_BASE_URL, ``)"
+    :pdf-flow="pdf"
     :info="info"
     @change="
       e => {

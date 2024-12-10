@@ -58,7 +58,7 @@ const { isMobile } = storeToRefs(useMainStore());
     width: 588px;
     height: 280px;
     box-shadow: 0px 0px 10px 0px rgba(25, 43, 68, 0.1);
-    background: #f9fbff url("/about/icobg1.png") right bottom no-repeat;
+    //background: #f9fbff url("/about/icobg1.png") right bottom no-repeat;
   }
 
   .flex {
@@ -110,7 +110,7 @@ const { isMobile } = storeToRefs(useMainStore());
       height: auto;
       margin-top: 20px;
       box-shadow: 0px 0px 10px 0px rgba(25, 43, 68, 0.1);
-      background: #f9fbff url("/about/icobg1.png") right bottom no-repeat;
+      //background: #f9fbff url("/about/icobg1.png") right bottom no-repeat;
 
       .item {
         padding: 30px 0 30px 30px;

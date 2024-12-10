@@ -113,7 +113,7 @@ const whiteList = [
   "/mh/service",
   "/mh/feedback",
   "/mh/about",
-  // "/signSeal"
+  // "/SignManage"
 ];
 
 const { VITE_HIDE_HOME } = import.meta.env;

@@ -9,8 +9,7 @@ export const login = (data: object) =>
     {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic dGVzdDp0ZXN0",
-        "Content-Length": 32
+        Authorization: "Basic dGVzdDp0ZXN0"
       }
     }
   );

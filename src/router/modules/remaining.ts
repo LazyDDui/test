@@ -103,7 +103,7 @@ export default [
     ]
   },
   {
-    path: "/signSeal",
+    path: "/SignManage",
     name: "signSeal",
     meta: {
       title: "签章首页",

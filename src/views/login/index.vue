@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import {useI18n} from "vue-i18n";
+import { useI18n } from "vue-i18n";
 import Motion from "./utils/motion";
-import {useRouter} from "vue-router";
-import {message} from "@/utils/message";
-import {loginRules} from "./utils/rule";
+import { useRouter } from "vue-router";
+import { message } from "@/utils/message";
+import { loginRules } from "./utils/rule";
 import TypeIt from "@/components/ReTypeit";
-import {debounce} from "@pureadmin/utils";
-import {useNav} from "@/layout/hooks/useNav";
-import {useEventListener} from "@vueuse/core";
-import type {FormInstance} from "element-plus";
-import {$t, transformI18n} from "@/plugins/i18n";
-import {operates, thirdParty} from "./utils/enums";
-import {useLayout} from "@/layout/hooks/useLayout";
+import { debounce } from "@pureadmin/utils";
+import { useNav } from "@/layout/hooks/useNav";
+import { useEventListener } from "@vueuse/core";
+import type { FormInstance } from "element-plus";
+import { $t, transformI18n } from "@/plugins/i18n";
+import { operates, thirdParty } from "./utils/enums";
+import { useLayout } from "@/layout/hooks/useLayout";
 import LoginPhone from "./components/LoginPhone.vue";
 import LoginRegist from "./components/LoginRegist.vue";
 import LoginUpdate from "./components/LoginUpdate.vue";
 import LoginQrCode from "./components/LoginQrCode.vue";
-import {useUserStoreHook} from "@/store/modules/user";
-import {initRouter, getTopMenu} from "@/router/utils";
-import {bg, avatar, illustration} from "./utils/static";
-import {ReImageVerify} from "@/components/ReImageVerify";
-import {ref, toRaw, reactive, watch, computed} from "vue";
-import {useRenderIcon} from "@/components/ReIcon/src/hooks";
-import {useTranslationLang} from "@/layout/hooks/useTranslationLang";
-import {useDataThemeChange} from "@/layout/hooks/useDataThemeChange";
+import { useUserStoreHook } from "@/store/modules/user";
+import { initRouter, getTopMenu } from "@/router/utils";
+import { bg, avatar, illustration } from "./utils/static";
+import { ReImageVerify } from "@/components/ReImageVerify";
+import { ref, toRaw, reactive, watch, computed } from "vue";
+import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import { useTranslationLang } from "@/layout/hooks/useTranslationLang";
+import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
 
 import dayIcon from "@/assets/svg/day.svg?component";
 import darkIcon from "@/assets/svg/dark.svg?component";
@@ -32,8 +32,8 @@ import Lock from "@iconify-icons/ri/lock-fill";
 import Check from "@iconify-icons/ep/check";
 import User from "@iconify-icons/ri/user-3-fill";
 import Info from "@iconify-icons/ri/information-line";
-import {login} from "@/api/test";
-import {getToken, removeToken, setToken} from "@/utils/auth";
+import { login } from "@/api/test";
+import { getToken, removeToken, setToken } from "@/utils/auth";
 
 defineOptions({
   name: "Login"
@@ -50,19 +50,19 @@ const currentPage = computed(() => {
   return useUserStoreHook().currentPage;
 });
 
-removeToken()
+removeToken();
 
-const {t} = useI18n();
-const {initStorage} = useLayout();
+const { t } = useI18n();
+const { initStorage } = useLayout();
 initStorage();
-const {dataTheme, overallStyle, dataThemeChange} = useDataThemeChange();
+const { dataTheme, overallStyle, dataThemeChange } = useDataThemeChange();
 dataThemeChange(overallStyle.value);
-const {title, getDropdownItemStyle, getDropdownItemClass} = useNav();
-const {locale, translationCh, translationEn} = useTranslationLang();
+const { title, getDropdownItemStyle, getDropdownItemClass } = useNav();
+const { locale, translationCh, translationEn } = useTranslationLang();
 
 const ruleForm = reactive({
   username: "18202823011",
-  password: "YehdBPev",
+  password: "123123",
   verifyCode: ""
 });
 
@@ -72,9 +72,9 @@ const onLogin = async (formEl: FormInstance | undefined) => {
     if (valid) {
       loading.value = true;
       login({
-        mobile: ruleForm.username,
+        username: ruleForm.username,
         password: ruleForm.password,
-        grant_type: "mobile",
+        grant_type: "password",
         scope: "server"
       })
         .then(res => {
@@ -88,15 +88,15 @@ const onLogin = async (formEl: FormInstance | undefined) => {
             console.log(getToken());
             disabled.value = true;
             router
-              .push("/signSeal")
+              .push("/SignManage")
               .then(() => {
-                message(t("login.pureLoginSuccess"), {type: "success"});
+                message(t("login.pureLoginSuccess"), { type: "success" });
               })
               .finally(() => (disabled.value = false));
           });
         })
         .catch(() => {
-          message(t("login.pureLoginFail"), {type: "error"});
+          message(t("login.pureLoginFail"), { type: "error" });
         })
         .finally(() => (loading.value = false));
     }
@@ -109,7 +109,7 @@ const immediateDebounce: any = debounce(
   true
 );
 
-useEventListener(document, "keypress", ({code}) => {
+useEventListener(document, "keypress", ({ code }) => {
   if (code === "Enter" && !disabled.value && !loading.value)
     immediateDebounce(ruleFormRef.value);
 });
@@ -127,7 +127,7 @@ watch(loginDay, value => {
 
 <template>
   <div class="select-none">
-    <img :src="bg" class="wave"/>
+    <img :src="bg" class="wave" />
     <div class="flex-c absolute right-5 top-3">
       <!-- 主题 -->
       <el-switch
@@ -162,7 +162,7 @@ watch(loginDay, value => {
               @click="translationEn"
             >
               <span v-show="locale === 'en'" class="check-en">
-                <IconifyIconOffline :icon="Check"/>
+                <IconifyIconOffline :icon="Check" />
               </span>
               English
             </el-dropdown-item>
@@ -172,7 +172,7 @@ watch(loginDay, value => {
     </div>
     <div class="login-container">
       <div class="img">
-        <component :is="toRaw(illustration)"/>
+        <component :is="toRaw(illustration)" />
       </div>
       <div class="login-box">
         <div class="login-form">
@@ -233,7 +233,7 @@ watch(loginDay, value => {
                   :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
                 >
                   <template v-slot:append>
-                    <ReImageVerify v-model:code="imgCode"/>
+                    <ReImageVerify v-model:code="imgCode" />
                   </template>
                 </el-input>
               </el-form-item>
@@ -329,11 +329,11 @@ watch(loginDay, value => {
           <!--            </el-form-item>-->
           <!--          </Motion>-->
           <!-- 手机号登录 -->
-          <LoginPhone v-if="currentPage === 1"/>
+          <LoginPhone v-if="currentPage === 1" />
           <!-- 二维码登录 -->
           <!--          <LoginQrCode v-if="currentPage === 2" />-->
           <!-- 注册 -->
-          <LoginRegist v-if="currentPage === 3"/>
+          <LoginRegist v-if="currentPage === 3" />
           <!-- 忘记密码 -->
           <!--          <LoginUpdate v-if="currentPage === 4"/>-->
         </div>

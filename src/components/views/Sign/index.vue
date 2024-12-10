@@ -52,7 +52,7 @@ const sign = () => {
   const formData = new FormData();
   formData.append("file", f.value);
   if (url.value.fileUrl && url.value.preSignUrl) {
-    preSign(url.value.preSignUrl.replace(import.meta.env.VITE_BASE_URL,''), formData).then(() => {
+    preSign(url.value.preSignUrl, formData).then(() => {
       http
         .post("/app/sign/init", {
           data: {
