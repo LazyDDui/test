@@ -10,7 +10,7 @@ import {defineStore} from "pinia";
 
 
 export const useSeal = defineStore("seal", () => {
-  const auth = ref('')
+  const auth = ref({})
 
   const setAuth = (au:string) => {
     auth.value = au

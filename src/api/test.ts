@@ -84,3 +84,6 @@ export const changeAuthentication = id => http.post("/app/session/changeUserAuth
   }
 });
 
+//获取当前认证信息
+export const getCurrentAuthentication = (data?:object) => http.post("/app/session/userAuthentication", {data}, {});
+

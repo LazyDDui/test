@@ -11,10 +11,14 @@ import SignManage from "@/views/signSeal/SignManage/index.vue";
 import SignRecent from "@/views/signSeal/SignRecent/index.vue";
 import SignManagePageList from "@/views/signSeal/SignManage/PageList/index.vue";
 import GetSeal from "@/views/signSeal/GetSeal/index.vue";
+import {useSeal} from "@/store/useSeal";
+import {storeToRefs} from "pinia";
 
-const router = useRouter();
-const authenticationDialog = ref<boolean>(false);
-const useSeal = () => {
+const {setAuth} = useSeal()
+const {auth} = storeToRefs(useSeal())
+
+
+const useSealFn = () => {
   addDialog({
     title: "发起签章",
     contentRenderer: () => h(Sign),
@@ -71,6 +75,7 @@ const getUserAuthenlication = async () => {
       ];
     }
   }
+  setAuth(userAuthenlicationInfo.value[0])
   console.log("获取当前用户认证信息", userAuthenlicationInfo.value);
 };
 const authenlicationCol = [
@@ -204,11 +209,6 @@ const getSeal = () => {
 <template>
   <div class="shContainer">
     <div class="shBox">
-      <!--      <el-radio-group v-model="radio" @change="radioChange">-->
-      <!--        <el-radio :value="0">未认证过</el-radio>-->
-      <!--        <el-radio :value="1">个人已认证</el-radio>-->
-      <!--        <el-radio :value="2">企业已认证</el-radio>-->
-      <!--      </el-radio-group>-->
       <div class="header">
         <div class="w">
           <div
@@ -218,7 +218,7 @@ const getSeal = () => {
             @click="
               () => {
                 if (item.name === '印章使用') {
-                  useSeal();
+                  useSealFn();
                 } else if (item.name === '签章验证') {
                   toGoPage();
                 } else if (item.name === '申领印章') {
@@ -247,10 +247,8 @@ const getSeal = () => {
             </div>
             <div class="content">
               <h2 class="h_2">
-                {{
-                  userAuthenlicationInfo[0].authenticationName ? userAuthenlicationInfo[0].authenticationName : '--'
-                }}</h2>
-              <p class="p-2">{{ userAuthenlicationInfo[0].subjectId }}</p>
+                {{auth.authenticationName}}</h2>
+              <p class="p-2">{{ auth.subjectId }}</p>
               <p>
                 <span class="black tag">企业单位</span>
                 <span class="green tag">已认证</span>

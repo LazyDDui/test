@@ -4,8 +4,12 @@ import Btn from "@/views/signSeal/AuthenticationDialog/btn/index.vue";
 import {addDialog} from "@/components/ReDialog/index";
 import SignManagePageList from "@/views/signSeal/SignManage/PageList/index.vue";
 import PrincipalType from "@/views/signSeal/PrincipalType/index.vue"
-import {personSign, companySign, userAuthentication, changeAuthentication} from "@/api/test";
+import {personSign, companySign, userAuthentication, changeAuthentication, getCurrentAuthentication} from "@/api/test";
+import {useSeal} from "@/store/useSeal";
+import {storeToRefs} from "pinia";
 
+const {setAuth} = useSeal()
+const {auth} = storeToRefs(useSeal())
 type ShTable = {
   cols: TableColumnList;
   tableData: any[];
@@ -30,6 +34,9 @@ const columns: TableColumnList = [
         cgClick: async () => {
           const res = await changeAuthentication(data.row.id)
           console.log('切换', res)
+          const res2 = await getCurrentAuthentication()
+          setAuth(res2.data)
+          console.log('res2', res2)
         },
       });
     },
