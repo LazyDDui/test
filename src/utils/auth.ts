@@ -32,10 +32,9 @@ export const multipleTabsKey = "multiple-tabs";
 /** 获取`token` */
 export function getToken(): DataInfo<number> {
   // 此处与`TokenKey`相同，此写法解决初始化时`Cookies`中不存在`TokenKey`报错
-  return `Bearer JCZUsSJo9Z9Vqr6-8iiTfrSrCYkpQ6E9ZmWspwhuNb7jY2Ni1y1sf5MK4cp7kV6RfSu_pjQ27OZ8OK5jqGIz-g8DIIoBwBBwtg2En6e1GLG9aN8q4no23123oPau26up`
-  // return Cookies.get(TokenKey)
-  //   ? JSON.parse(Cookies.get(TokenKey))
-  //   : storageLocal().getItem(userKey);
+  return Cookies.get(TokenKey)
+    ? JSON.parse(Cookies.get(TokenKey))
+    : storageLocal().getItem(userKey);
 }
 
 /**
@@ -117,7 +116,6 @@ export function removeToken() {
 
 /** 格式化token（jwt格式） */
 export const formatToken = (token: string): string => {
-  return "Bearer JCZUsSJo9Z9Vqr6-8iiTfrSrCYkpQ6E9ZmWspwhuNb7jY2Ni1y1sf5MK4cp7kV6RfSu_pjQ27OZ8OK5jqGIz-g8DIIoBwBBwtg2En6e1GLG9aN8q4no23123oPau26up"
   return token;
   // return "Bearer " + token;
 };
