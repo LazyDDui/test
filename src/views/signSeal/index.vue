@@ -103,6 +103,7 @@ const changeAuthentication = () => {
     contentRenderer() {
       return h(AuthticaltionTable)
     },
+    hideFooter: true
   })
 }
 //sh
