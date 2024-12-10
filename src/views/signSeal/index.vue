@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { fp } from "@/utils";
-import { addDialog } from "@/components/ReDialog/index";
+import {fp} from "@/utils";
+import {addDialog} from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
-import { h } from "vue";
+import {h} from "vue";
 import signSeal from "@/views/signSeal/SignManage/index.vue";
-import { useRouter } from "vue-router";
-import { userAuthentication } from "@/api/test";
+import {useRouter} from "vue-router";
+import {userAuthentication} from "@/api/test";
 import AuthticaltionTable from "@/views/signSeal/AuthenticationDialog/index.vue";
 import SignManage from "@/views/signSeal/SignManage/index.vue";
 import SignRecent from "@/views/signSeal/SignRecent/index.vue";
@@ -22,36 +22,34 @@ const useSeal = () => {
     hideFooter: true
   });
 };
-import { defineComponent, h, ref, toRaw } from "vue";
-import { http } from "@/utils/http";
+import {defineComponent, h, ref, toRaw} from "vue";
+import {http} from "@/utils/http";
 
 const toGoPage = () => {
-  router.push({ name: "verify" });
+  router.push({name: "verify"});
 };
 const userAuthenlicationInfo = ref([
-  {
-
-  }
-])
+  {}
+]);
 const getUserAuthenlication = async () => {
-  const res = await userAuthentication()
-  userAuthenlicationInfo.value = res.data.records
+  const res = await userAuthentication();
+  userAuthenlicationInfo.value = res.data.records;
 
-  console.log('获取当前用户认证信息', userAuthenlicationInfo.value)
-}
+  console.log("获取当前用户认证信息", userAuthenlicationInfo.value);
+};
 const authenlicationCol = [
   {
     label: "名称",
     prop: "authenticationName",
-    align: 'center'
+    align: "center"
   },
   {
     label: "类型",
     prop: "type",
-    align: 'center'
-  },
-]
-getUserAuthenlication()
+    align: "center"
+  }
+];
+getUserAuthenlication();
 
 const getAuthentication = async () => {
   const res = await userAuthentication();
@@ -127,8 +125,8 @@ const changeAuthentication = () => {
     contentRenderer() {
       return h(AuthticaltionTable, {
         tableData: userAuthenlicationInfo.value,
-        cols:authenlicationCol.value
-      })
+        cols: authenlicationCol.value
+      });
     },
     hideFooter: true
   });
@@ -162,7 +160,7 @@ const getSeal = () => {
         }
       }),
     beforeSure: async done => {
-      const { data } = await http.post(`/app/userAuthentication/seal/add`, {
+      const {data} = await http.post(`/app/userAuthentication/seal/add`, {
         data: {
           type: getSealData.value
         }
@@ -176,11 +174,11 @@ const getSeal = () => {
 <template>
   <div class="shContainer">
     <div class="shBox">
-<!--      <el-radio-group v-model="radio" @change="radioChange">-->
-<!--        <el-radio :value="0">未认证过</el-radio>-->
-<!--        <el-radio :value="1">个人已认证</el-radio>-->
-<!--        <el-radio :value="2">企业已认证</el-radio>-->
-<!--      </el-radio-group>-->
+      <!--      <el-radio-group v-model="radio" @change="radioChange">-->
+      <!--        <el-radio :value="0">未认证过</el-radio>-->
+      <!--        <el-radio :value="1">个人已认证</el-radio>-->
+      <!--        <el-radio :value="2">企业已认证</el-radio>-->
+      <!--      </el-radio-group>-->
       <div class="header">
         <div class="w">
           <div
@@ -200,7 +198,7 @@ const getSeal = () => {
             "
           >
             <h2>{{ item.name }}</h2>
-            <img :src="fp(item.src)" width="70" height="70" />
+            <img :src="fp(item.src)" width="70" height="70"/>
           </div>
         </div>
       </div>
@@ -209,16 +207,17 @@ const getSeal = () => {
           <div class="left1">
             <div class="title">
               <p class="more tip">
-                <img width="14" height="16" :src="fp('signSeal/u3029.png')" />
+                <img width="14" height="16" :src="fp('signSeal/u3029.png')"/>
                 <span class="pdl-5">认证信息</span>
               </p>
               <p class="more blue" @click="changeAuthentication()">
                 <span class="pdr-5">切换认证</span
-                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
               </p>
             </div>
             <div class="content">
-              <h2 class="h_2">{{ userAuthenlicationInfo[0].authenticationName ? userAuthenlicationInfo[0].authenticationName : '--'}}</h2>
+              <h2 class="h_2">
+                {{ userAuthenlicationInfo[0].authenticationName ? userAuthenlicationInfo[0].authenticationName : '--' }}</h2>
               <p class="p-2">{{ userAuthenlicationInfo[0].subjectId }}</p>
               <p>
                 <span class="black tag">企业单位</span>
@@ -229,12 +228,12 @@ const getSeal = () => {
           <div class="left2">
             <div class="title">
               <p class="more tip">
-                <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
+                <img width="14" height="16" :src="fp('signSeal/u3075.png')"/>
                 <span class="pdl-5">印章管理</span>
               </p>
               <p class="more blue">
                 <span class="pdr-5" @click="sealManage">管理</span
-                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
               </p>
             </div>
             <div class="content">
@@ -246,15 +245,15 @@ const getSeal = () => {
         <div class="right-side">
           <div class="title">
             <p class="more tip">
-              <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
+              <img width="14" height="16" :src="fp('signSeal/u3075.png')"/>
               <span class="pdl-5">最近签章文档</span>
             </p>
             <p class="more blue">
               <span class="pdr-5" @click="signManageSeeMore">查看更多</span
-              ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
+              ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
             </p>
           </div>
-          <SignRecent />
+          <SignRecent/>
         </div>
       </div>
     </div>
