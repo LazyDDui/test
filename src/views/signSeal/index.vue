@@ -3,16 +3,17 @@ import {fp} from "@/utils";
 import {addDialog} from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
 import {h} from "vue";
-import signSeal from "@/views/signSeal/SignManage/index.vue"
-import {useRouter} from 'vue-router';
-import {userAuthentication} from "@/api/test"
-import AuthticaltionTable from "@/views/signSeal/AuthenticationDialog/index.vue"
+import signSeal from "@/views/signSeal/SignManage/index.vue";
+import {useRouter} from "vue-router";
+import {userAuthentication} from "@/api/test";
+import AuthticaltionTable from "@/views/signSeal/AuthenticationDialog/index.vue";
 import SignManage from "@/views/signSeal/SignManage/index.vue";
-import SignRecent from "@/views/signSeal/SignRecent/index.vue"
-import SignManagePageList from "@/views/signSeal/SignManage/PageList/index.vue"
+import SignRecent from "@/views/signSeal/SignRecent/index.vue";
+import SignManagePageList from "@/views/signSeal/SignManage/PageList/index.vue";
+import GetSeal from "@/views/signSeal/GetSeal/index.vue";
 
 const router = useRouter();
-const authenticationDialog = ref<boolean>(false)
+const authenticationDialog = ref<boolean>(false);
 const useSeal = () => {
   addDialog({
     title: "发起签章",
@@ -22,16 +23,17 @@ const useSeal = () => {
   });
 };
 import {defineComponent, h, ref, toRaw} from "vue";
+import {http} from "@/utils/http";
 
 const toGoPage = () => {
   router.push({name: "verify"});
 };
 const userAuthenlicationInfo = ref([
   {}
-])
+]);
 const getUserAuthenlication = async () => {
-  const res = await userAuthentication()
-  userAuthenlicationInfo.value = res.data.records
+  const res = await userAuthentication();
+  userAuthenlicationInfo.value = res.data.records;
   if (userAuthenlicationInfo.value && userAuthenlicationInfo.value.length > 0) {
     if (userAuthenlicationInfo.value[0].type == '0') {
       list.value = [
@@ -69,13 +71,13 @@ const getUserAuthenlication = async () => {
       ];
     }
   }
-  console.log('获取当前用户认证信息', userAuthenlicationInfo.value)
-}
+  console.log("获取当前用户认证信息", userAuthenlicationInfo.value);
+};
 const authenlicationCol = [
   {
     label: "名称",
     prop: "authenticationName",
-    align: 'center'
+    align: "center"
   },
   {
     label: "类型",
@@ -141,26 +143,24 @@ const radioChange = val => {
     ];
   }
 };
-const AuthenticationTable = ref(
-  {
-    currPage: 1,
-    pageSize: 10,
-    list: [],
-    totalCount: 0
-  }
-)
+const AuthenticationTable = ref({
+  currPage: 1,
+  pageSize: 10,
+  list: [],
+  totalCount: 0
+});
 const changeAuthentication = () => {
   addDialog({
-    title: '切换认证',
+    title: "切换认证",
     contentRenderer() {
       return h(AuthticaltionTable, {
         tableData: userAuthenlicationInfo.value,
         cols: authenlicationCol.value
-      })
+      });
     },
     hideFooter: true
-  })
-}
+  });
+};
 //sh
 const sealManage = () => {
   addDialog({
@@ -175,8 +175,30 @@ const signManageSeeMore = () => {
     fullscreen: true,
     hideFooter: true,
     contentRenderer: () => h(SignManagePageList)
-  })
-}
+  });
+};
+
+const getSealData = ref("99");
+
+const getSeal = () => {
+  addDialog({
+    title: "申领印章",
+    contentRenderer: () =>
+      h(GetSeal, {
+        d: (data: string) => {
+          getSealData.value = data;
+        }
+      }),
+    beforeSure: async done => {
+      const {data} = await http.post(`/app/userAuthentication/seal/add`, {
+        data: {
+          type: getSealData.value
+        }
+      });
+      done();
+    }
+  });
+};
 </script>
 
 <template>
@@ -199,6 +221,8 @@ const signManageSeeMore = () => {
                   useSeal();
                 } else if (item.name === '签章验证') {
                   toGoPage();
+                } else if (item.name === '申领印章') {
+                  getSeal();
                 }
               }
             "
@@ -261,7 +285,7 @@ const signManageSeeMore = () => {
               ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
             </p>
           </div>
-          <SignRecent></SignRecent>
+          <SignRecent/>
         </div>
       </div>
     </div>

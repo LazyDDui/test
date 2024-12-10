@@ -76,7 +76,7 @@ export const getSignRequestFile = (current: number) =>
   )
 
 //认证信息列表
-export const userAuthentication = data => http.post("/app/userAuthentication/page", {data}, {});
+export const userAuthentication = (data?:object) => http.post("/app/userAuthentication/page", {data}, {});
 
 //切换认证信息
 export const changeAuthentication = id => http.post("/app/session/changeUserAuthentication", {params:{

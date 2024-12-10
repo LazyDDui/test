@@ -50,7 +50,7 @@ const currentPage = computed(() => {
   return useUserStoreHook().currentPage;
 });
 
-removeToken();
+// removeToken();
 
 const { t } = useI18n();
 const { initStorage } = useLayout();

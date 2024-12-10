@@ -48,7 +48,7 @@ const modules: Record<string, any> = import.meta.glob(
 const routes = [];
 console.log(Object.keys(modules));
 
-const r = ["./modules/shData.ts", "./modules/shApi.ts"];
+const r = ["./modules/shData.ts", "./modules/shApi.ts","./modules/shPdf.ts"];
 
 r.forEach(key => {
   routes.push(modules[key].default);
