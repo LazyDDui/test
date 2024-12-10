@@ -5,6 +5,7 @@ import { getSealImg } from "@/api/test";
 import { ElMessage } from "element-plus";
 import { useRoute } from "vue-router";
 import { http } from "@/utils/http";
+import {request} from "axios";
 
 const sign = ref();
 const psw = ref();
@@ -204,7 +205,7 @@ async function downloadPdf(url, filename = "document.pdf") {
 
 const getFile = () => {
   timer = setInterval(() => {
-    post("/app/sign/query", {
+    http.post("/app/sign/query", {
       appno: appno.value,
       fileTransNo: `111`
     }).then(res => {
@@ -213,7 +214,7 @@ const getFile = () => {
         clearInterval(timer);
         timer = null;
         downloadPdf(
-          res.data[0].signFileUrl.replace("http://182.151.13.73:9099", "")
+          res.data[0].signFileUrl.replace(import.meta.env.VITE_BASE_URL, "")
         );
         // res.data.signFileUrl
       }
@@ -310,7 +311,7 @@ const qfAll = ref(false);
     v-if="imgList.length > 0"
     ref="sign"
     :img-list="imgList"
-    :pdf-flow="pdf.replace(`http://182.151.13.73:9099`, ``)"
+    :pdf-flow="pdf.replace(import.meta.env.VITE_BASE_URL, ``)"
     :info="info"
     @change="
       e => {

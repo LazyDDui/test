@@ -1,9 +1,8 @@
 <script setup lang="ts">
-
-import {fp} from "@/utils";
-import {addDialog} from "@/components/ReDialog/index";
+import { fp } from "@/utils";
+import { addDialog } from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
-import {h} from "vue";
+import { h } from "vue";
 
 const useSeal = () => {
   addDialog({
@@ -13,65 +12,65 @@ const useSeal = () => {
     hideFooter: true
   });
 };
-import {defineComponent, h, ref, toRaw} from "vue";
+import { defineComponent, h, ref, toRaw } from "vue";
 
 const list = ref<Array>([
   {
-    name: '申领印章',
-    src: 'signSeal/u3009.png'
+    name: "申领印章",
+    src: "signSeal/u3009.png"
   },
   {
-    name: '印章使用',
-    src: 'signSeal/u3009.png'
+    name: "印章使用",
+    src: "signSeal/u3009.png"
   },
   {
-    name: '签章验证',
-    src: 'signSeal/u3009.png'
+    name: "签章验证",
+    src: "signSeal/u3009.png"
   },
   {
-    name: 'api管理',
-    src: 'signSeal/u3009.png'
-  },
-])
-const radio = ref(0)
-const radioChange = (val) => {
-  console.log(val)
+    name: "api管理",
+    src: "signSeal/u3009.png"
+  }
+]);
+const radio = ref(0);
+const radioChange = val => {
+  console.log(val);
   if (val == 2) {
     list.value = [
       {
-        name: '申领印章',
-        src: 'signSeal/u3009.png'
+        name: "申领印章",
+        src: "signSeal/u3009.png"
       },
       {
-        name: '印章使用',
-        src: 'signSeal/u3009.png'
+        name: "印章使用",
+        src: "signSeal/u3009.png"
       },
       {
-        name: '签章验证',
-        src: 'signSeal/u3009.png'
+        name: "签章验证",
+        src: "signSeal/u3009.png"
       },
       {
-        name: 'api管理',
-        src: 'signSeal/u3009.png'
-      },
-    ]
+        name: "api管理",
+        src: "signSeal/u3009.png"
+      }
+    ];
   } else {
     list.value = [
       {
-        name: '申领印章',
-        src: 'signSeal/u3009.png'
+        name: "申领印章",
+        src: "signSeal/u3009.png"
       },
       {
-        name: '印章使用',
-        src: 'signSeal/u3009.png'
+        name: "印章使用",
+        src: "signSeal/u3009.png"
       },
       {
-        name: '签章验证',
-        src: 'signSeal/u3009.png'
-      },
-    ]
+        name: "签章验证",
+        src: "signSeal/u3009.png"
+      }
+    ];
   }
-}
+};
 </script>
 
 <template>
@@ -84,9 +83,20 @@ const radioChange = (val) => {
       </el-radio-group>
       <div class="header">
         <div class="w">
-          <div class="box" v-for="(item,index) in list" :key="index">
+          <div
+            v-for="(item, index) in list"
+            :key="index"
+            class="box"
+            @click="
+              () => {
+                if (item.name === '印章使用') {
+                  useSeal();
+                }
+              }
+            "
+          >
             <h2>{{ item.name }}</h2>
-            <img :src="fp(item.src)" width="70" height="70">
+            <img :src="fp(item.src)" width="70" height="70" />
           </div>
         </div>
       </div>
@@ -95,11 +105,12 @@ const radioChange = (val) => {
           <div class="left1">
             <div class="title">
               <p class="more tip">
-                <img width="14" height="16" :src="fp('signSeal/u3029.png')">
+                <img width="14" height="16" :src="fp('signSeal/u3029.png')" />
                 <span class="pdl-5">认证信息</span>
               </p>
-              <p class="more blue"><span class="pdr-5">切换认证</span><img width="16" height="20"
-                                                                           :src="fp('signSeal/u3032.png')">
+              <p class="more blue">
+                <span class="pdr-5">切换认证</span
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
               </p>
             </div>
             <div class="content">
@@ -114,16 +125,12 @@ const radioChange = (val) => {
           <div class="left2">
             <div class="title">
               <p class="more tip">
-                <img width="14" height="16" :src="fp('signSeal/u3075.png')">
+                <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
                 <span class="pdl-5">印章管理</span>
               </p>
               <p class="more blue">
                 <span class="pdr-5">管理</span
-                ><img
-                width="16"
-                height="20"
-                :src="fp('signSeal/u3032.png')"
-              />
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
               </p>
             </div>
             <div class="content">
@@ -135,20 +142,12 @@ const radioChange = (val) => {
         <div class="right-side">
           <div class="title">
             <p class="more tip">
-              <img
-                width="14"
-                height="16"
-                :src="fp('signSeal/u3075.png')"
-              />
+              <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
               <span class="pdl-5">印章管理</span>
             </p>
             <p class="more blue">
               <span class="pdr-5">查看更多</span
-              ><img
-              width="16"
-              height="20"
-              :src="fp('signSeal/u3032.png')"
-            />
+              ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
             </p>
           </div>
         </div>
@@ -231,14 +230,14 @@ const radioChange = (val) => {
           .p-2 {
             font-weight: 400;
             font-style: normal;
-            color: #7F7F7F;
+            color: #7f7f7f;
           }
 
           .tag {
             font-weight: 400;
             font-style: normal;
             font-size: 12px;
-            color: #FFFFFF;
+            color: #ffffff;
           }
 
           .black {
@@ -305,7 +304,7 @@ const radioChange = (val) => {
           .p-2 {
             font-weight: 400;
             font-style: normal;
-            color: #7F7F7F;
+            color: #7f7f7f;
           }
         }
 

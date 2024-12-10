@@ -10,8 +10,13 @@ import {
 } from "./build/utils";
 
 export default ({ mode }: ConfigEnv): UserConfigExport => {
-  const { VITE_CDN, VITE_PORT, VITE_COMPRESSION, VITE_PUBLIC_PATH } =
-    wrapperEnv(loadEnv(mode, root));
+  const {
+    VITE_BASE_URL,
+    VITE_CDN,
+    VITE_PORT,
+    VITE_COMPRESSION,
+    VITE_PUBLIC_PATH
+  } = wrapperEnv(loadEnv(mode, root));
   return {
     base: VITE_PUBLIC_PATH,
     root,
@@ -28,7 +33,8 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
         "/app": {
           // 请求接口中要替换的标识
           // target: 'https://test.batonedata.com', // 代理地址
-          target: "http://192.168.101.115:9999",
+          // target: "http://192.168.101.115:9999",
+          target: VITE_BASE_URL,
           changeOrigin: true, // 是否允许跨域
           secure: false
         }
