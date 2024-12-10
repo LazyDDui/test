@@ -99,6 +99,15 @@ export default [
     ]
   },
   {
+    path: "/signSeal",
+    name: "signSeal",
+    meta: {
+      title: "签章首页",
+      icon: "mdi-cube-scan"
+    },
+    component: () => import("@/views/signSeal/index.vue")
+  },
+  {
     path: "/login",
     name: "Login",
     component: () => import("@/views/login/index.vue"),
