@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
-import { storageLocal } from "@pureadmin/utils";
-import { useUserStoreHook } from "@/store/modules/user";
+import {storageLocal} from "@pureadmin/utils";
+import {useUserStoreHook} from "@/store/modules/user";
 
 export interface DataInfo<T> {
   /** token */
@@ -45,15 +45,15 @@ export function getToken(): DataInfo<number> {
  */
 export function setToken(data: DataInfo<Date>) {
   let expires = 0;
-  const { accessToken, refreshToken } = data;
-  const { isRemembered, loginDay } = useUserStoreHook();
+  const {accessToken, refreshToken} = data;
+  const {isRemembered, loginDay} = useUserStoreHook();
   expires = new Date(data.expires).getTime(); // 如果后端直接设置时间戳，将此处代码改为expires = data.expires，然后把上面的DataInfo<Date>改成DataInfo<number>即可
-  const cookieString = JSON.stringify({ accessToken, expires, refreshToken });
+  const cookieString = JSON.stringify({accessToken, expires, refreshToken});
 
   expires > 0
     ? Cookies.set(TokenKey, cookieString, {
-        expires: (expires - Date.now()) / 86400000
-      })
+      expires: (expires - Date.now()) / 86400000
+    })
     : Cookies.set(TokenKey, cookieString);
 
   Cookies.set(
@@ -61,12 +61,12 @@ export function setToken(data: DataInfo<Date>) {
     "true",
     isRemembered
       ? {
-          expires: loginDay
-        }
+        expires: loginDay
+      }
       : {}
   );
 
-  function setUserKey({ avatar, username, nickname, roles }) {
+  function setUserKey({avatar, username, nickname, roles}) {
     useUserStoreHook().SET_AVATAR(avatar);
     useUserStoreHook().SET_USERNAME(username);
     useUserStoreHook().SET_NICKNAME(nickname);
@@ -82,7 +82,7 @@ export function setToken(data: DataInfo<Date>) {
   }
 
   if (data.username && data.roles) {
-    const { username, roles } = data;
+    const {username, roles} = data;
     setUserKey({
       avatar: data?.avatar ?? "",
       username,
@@ -116,5 +116,6 @@ export function removeToken() {
 
 /** 格式化token（jwt格式） */
 export const formatToken = (token: string): string => {
-  return "Bearer " + token;
+  return token;
+  // return "Bearer " + token;
 };

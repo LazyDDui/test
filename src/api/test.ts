@@ -1,7 +1,9 @@
 import {http} from "@/utils/http";
 
 export const login = (data: object) =>
-  http.post("/saas/auth/getToken", {...data});
+  http.post("/saas/auth/getToken", {
+    data
+  });
 
 export const sealUpload = () => http.post("/saas/getPreFileUrl");
 ///saas/sign/init
@@ -17,7 +19,7 @@ export const checkFile = file =>
 export const personSign = data => http.post("/saas/per/approve", data, {});
 export const companySign = data => http.post("/saas/uni/approve", data, {});
 export const preSign = (url: string, file: any) =>
-  http.request('put',url.replace("http://182.151.13.73:9190", ""), file, {
+  http.request("put", url.replace("http://182.151.13.73:9190", ""), file, {
     headers: {
       "Content-Type": "multipart/form-data"
     }
