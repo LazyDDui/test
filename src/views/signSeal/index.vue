@@ -26,10 +26,15 @@ import {defineComponent, h, ref, toRaw} from "vue";
 const toGoPage = () => {
   router.push({name: "verify"});
 };
-const userAuthenlicationInfo = ref([])
+const userAuthenlicationInfo = ref([
+  {
+
+  }
+])
 const getUserAuthenlication = async () => {
   const res = await userAuthentication()
   userAuthenlicationInfo.value = res.data.records
+
   console.log('获取当前用户认证信息', userAuthenlicationInfo.value)
 }
 const authenlicationCol = [
@@ -143,11 +148,11 @@ const signManageSeeMore = () => {
 <template>
   <div class="shContainer">
     <div class="shBox">
-      <el-radio-group v-model="radio" @change="radioChange">
-        <el-radio :value="0">未认证过</el-radio>
-        <el-radio :value="1">个人已认证</el-radio>
-        <el-radio :value="2">企业已认证</el-radio>
-      </el-radio-group>
+<!--      <el-radio-group v-model="radio" @change="radioChange">-->
+<!--        <el-radio :value="0">未认证过</el-radio>-->
+<!--        <el-radio :value="1">个人已认证</el-radio>-->
+<!--        <el-radio :value="2">企业已认证</el-radio>-->
+<!--      </el-radio-group>-->
       <div class="header">
         <div class="w">
           <div
@@ -183,8 +188,8 @@ const signManageSeeMore = () => {
               </p>
             </div>
             <div class="content">
-              <h2 class="h_2">成都xxx科技有限公司</h2>
-              <p class="p-2">91510***********UL39</p>
+              <h2 class="h_2">{{ userAuthenlicationInfo[0].authenticationName ? userAuthenlicationInfo[0].authenticationName : '--'}}</h2>
+              <p class="p-2">{{ userAuthenlicationInfo[0].subjectId }}</p>
               <p>
                 <span class="black tag">企业单位</span>
                 <span class="green tag">已认证</span>
