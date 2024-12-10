@@ -56,7 +56,7 @@ const sign = () => {
       http
         .post("/app/sign/init", {
           data: {
-            custNo: id,
+            // custNo: id,
             callBackUrl: window.location.href,
             signDataList: [
               {
