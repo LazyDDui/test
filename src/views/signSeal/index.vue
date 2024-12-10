@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import {fp} from "@/utils";
-import {addDialog} from "@/components/ReDialog/index";
+import { fp } from "@/utils";
+import { addDialog } from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
-import {h} from "vue";
-import SignManage from "@/views/signSeal/SignManage/index.vue"
-import {useRouter} from 'vue-router';
+import { h } from "vue";
+import SignManage from "@/views/signSeal/SignManage/index.vue";
+import { useRouter } from "vue-router";
+import SignRecent from "@/views/signSeal/SignRecent/index.vue"
+import SignManagePageList from "@/views/signSeal/SignManage/PageList/index.vue"
 
-const router = useRouter()
+const router = useRouter();
 
 const useSeal = () => {
   addDialog({
@@ -16,13 +18,12 @@ const useSeal = () => {
     hideFooter: true
   });
 };
-import {defineComponent, h, ref, toRaw} from "vue";
+import { defineComponent, h, ref, toRaw } from "vue";
 const toGoPage = () => {
-  router.push({name: 'verify'})
-}
-import {defineComponent, h, ref, toRaw} from "vue";
+  router.push({ name: "verify" });
+};
 
-const list = ref<Array>([
+const list = ref<any[]>([
   {
     name: "申领印章",
     src: "signSeal/u3009.png"
@@ -79,13 +80,22 @@ const radioChange = val => {
     ];
   }
 };
-
+//sh
 const sealManage = () => {
   addDialog({
     title: "印章管理",
-    contentRenderer: () => h(signSeal)
+    contentRenderer: () => h(SignManage)
   });
 };
+//sh
+const signManageSeeMore = () => {
+  addDialog({
+    title:"签章文档",
+    fullscreen:true,
+    hideFooter:true,
+    contentRenderer:() => h(SignManagePageList)
+  })
+}
 </script>
 
 <template>
@@ -106,14 +116,14 @@ const sealManage = () => {
               () => {
                 if (item.name === '印章使用') {
                   useSeal();
-                }else if(item.name === '签章验证'){
-                  toGoPage()
+                } else if (item.name === '签章验证') {
+                  toGoPage();
                 }
               }
             "
           >
             <h2>{{ item.name }}</h2>
-            <img :src="fp(item.src)" width="70" height="70"/>
+            <img :src="fp(item.src)" width="70" height="70" />
           </div>
         </div>
       </div>
@@ -122,15 +132,12 @@ const sealManage = () => {
           <div class="left1">
             <div class="title">
               <p class="more tip">
-                <img width="14" height="16" :src="fp('signSeal/u3029.png')"/>
+                <img width="14" height="16" :src="fp('signSeal/u3029.png')" />
                 <span class="pdl-5">认证信息</span>
               </p>
               <p class="more blue">
                 <span class="pdr-5">切换认证</span
-                ><img
-                width="16"
-                height="20"
-                :src="fp('signSeal/u3032.png')"/>
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
               </p>
             </div>
             <div class="content">
@@ -145,15 +152,12 @@ const sealManage = () => {
           <div class="left2">
             <div class="title">
               <p class="more tip">
-                <img width="14" height="16" :src="fp('signSeal/u3075.png')"/>
+                <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
                 <span class="pdl-5">印章管理</span>
               </p>
               <p class="more blue">
                 <span class="pdr-5" @click="sealManage">管理</span
-                ><img
-                width="16"
-                height="20"
-                :src="fp('signSeal/u3032.png')"/>
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
               </p>
             </div>
             <div class="content">
@@ -165,14 +169,15 @@ const sealManage = () => {
         <div class="right-side">
           <div class="title">
             <p class="more tip">
-              <img width="14" height="16" :src="fp('signSeal/u3075.png')"/>
-              <span class="pdl-5">印章管理</span>
+              <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
+              <span class="pdl-5">最近签章文档</span>
             </p>
             <p class="more blue">
-              <span class="pdr-5">查看更多</span
-              ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
+              <span class="pdr-5" @click="signManageSeeMore">查看更多</span
+              ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
             </p>
           </div>
+          <SignRecent></SignRecent>
         </div>
       </div>
     </div>
