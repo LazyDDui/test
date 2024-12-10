@@ -102,7 +102,7 @@ class PureHttp {
                       .then(res => {
                         const token = res.data.accessToken;
                         // config.headers["Authorization"] = formatToken(token);
-                        config.headers["Authorization"] = formatToken('Bearer etlrUznqPaTsHENkv9ENFIBpyjXeSPon-PfhImDPkTwmHV91w5nzfozTu9YPEnhgNAIsr1qOyCjFP1f5p6aQd-TFhUBX7sZ0ERxEx0QoAJzFg81YUOY33s1SE_SDPN1-')
+                        config.headers["Authorization"] = formatToken('Bearer JCZUsSJo9Z9Vqr6-8iiTfrSrCYkpQ6E9ZmWspwhuNb7jY2Ni1y1sf5MK4cp7kV6RfSu_pjQ27OZ8OK5jqGIz-g8DIIoBwBBwtg2En6e1GLG9aN8q4no23123oPau26up')
                         PureHttp.requests.forEach(cb => cb(token));
                         PureHttp.requests = [];
                       })
@@ -116,7 +116,7 @@ class PureHttp {
                   //   data.accessToken
                   // );
                   config.headers["Authorization"] = formatToken(
-                    "Bearer etlrUznqPaTsHENkv9ENFIBpyjXeSPon-PfhImDPkTwmHV91w5nzfozTu9YPEnhgNAIsr1qOyCjFP1f5p6aQd-TFhUBX7sZ0ERxEx0QoAJzFg81YUOY33s1SE_SDPN1-"
+                    "Bearer JCZUsSJo9Z9Vqr6-8iiTfrSrCYkpQ6E9ZmWspwhuNb7jY2Ni1y1sf5MK4cp7kV6RfSu_pjQ27OZ8OK5jqGIz-g8DIIoBwBBwtg2En6e1GLG9aN8q4no23123oPau26up"
                   );
                   resolve(config);
                 }
