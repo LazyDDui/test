@@ -26,12 +26,25 @@ import {defineComponent, h, ref, toRaw} from "vue";
 const toGoPage = () => {
   router.push({name: "verify"});
 };
-
-const getAuthentication = async () => {
+const userAuthenlicationInfo = ref([])
+const getUserAuthenlication = async () => {
   const res = await userAuthentication()
-  console.log('res', res)
+  userAuthenlicationInfo.value = res.data.records
+  console.log('获取当前用户认证信息', userAuthenlicationInfo.value)
 }
-getAuthentication()
+const authenlicationCol = [
+  {
+    label: "名称",
+    prop: "authenticationName",
+    align: 'center'
+  },
+  {
+    label: "类型",
+    prop: "type",
+    align: 'center'
+  },
+]
+getUserAuthenlication()
 const list = ref<any[]>([
   {
     name: "申领印章",
@@ -101,7 +114,10 @@ const changeAuthentication = () => {
   addDialog({
     title: '切换认证',
     contentRenderer() {
-      return h(AuthticaltionTable)
+      return h(AuthticaltionTable, {
+        tableData: userAuthenlicationInfo.value,
+        cols:authenlicationCol.value
+      })
     },
     hideFooter: true
   })

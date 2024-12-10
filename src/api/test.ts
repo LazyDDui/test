@@ -29,8 +29,8 @@ export const checkFile = file =>
     }
   );
 
-export const personSign = data => http.post("/app/per/approve", data, {});
-export const companySign = data => http.post("/app/uni/approve", data, {});
+export const personSign = data => http.post("/app/per/approve", {data}, {});
+export const companySign = data => http.post("/app/uni/approve", {data}, {});
 export const preSign = (url: string, file: FormData) =>
   http.request(
     "put",
@@ -76,7 +76,5 @@ export const getSignRequestFile = (current: number) =>
   )
 
 //认证信息列表
-export const userAuthentication = (data) => {
-  http.post(`/app/userAuthentication/page`, data);
-}
+export const userAuthentication = data => http.post("/app/userAuthentication/page", {data}, {});
 

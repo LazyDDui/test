@@ -1,13 +1,13 @@
 <script setup lang="ts">
 type BtnProps = {
-  cgClick:() => void;
+  cgClick: () => void;
 }
 
 const props = defineProps<BtnProps>()
 </script>
 
 <template>
-    <el-button size="small" type="text" @click="cgClick">切换</el-button>
+  <el-button size="small" type="text" @click="cgClick">切换</el-button>
 </template>
 
 <style scoped lang="scss">

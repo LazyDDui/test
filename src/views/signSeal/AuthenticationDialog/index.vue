@@ -1,22 +1,27 @@
 <script setup lang="ts">
-import {h, reactive, ref} from "vue";
-import {tableData} from "@/views/table/base/data";
+import {h, reactive, ref, toRaw} from "vue";
 import Btn from "@/views/signSeal/AuthenticationDialog/btn/index.vue";
 import {addDialog} from "@/components/ReDialog/index";
 import SignManagePageList from "@/views/signSeal/SignManage/PageList/index.vue";
 import PrincipalType from "@/views/signSeal/PrincipalType/index.vue"
-import {personSign} from "@/api/test";
+import {personSign, companySign, userAuthentication} from "@/api/test";
 
+type ShTable = {
+  cols: TableColumnList;
+  tableData: any[];
+  total: number;
+};
 
+const props = defineProps<ShTable>();
 const personData = ref<object>()
 const columns: TableColumnList = [
   {
     label: "名称",
-    prop: "date"
+    prop: "authenticationName"
   },
   {
     label: "类型",
-    prop: "name"
+    prop: "type"
   },
   {
     label: "操作",
@@ -46,7 +51,7 @@ const addAuthentication = () => {
       }
     }),
     async beforeSure(done) {
-      console.log('参数', personData)
+      console.log('参数', personData.value)
       const res = await personSign(personData.value)
       if (res.code == '00') {
         ElMessage({
@@ -70,6 +75,8 @@ const addAuthentication = () => {
 
 <template>
   <div>
+    <div>
+    </div>
     <el-button size="small" type="primary" @click="addAuthentication">新增认证</el-button>
     <pure-table style="margin-top: 20px" :data="tableData" :columns="columns"/>
     <el-row style="margin-top: 20px; justify-content: flex-end; width: 100%">
