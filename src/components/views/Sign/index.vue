@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { ElMessage, UploadInstance } from "element-plus";
-import { storeToRefs } from "pinia";
-import { preSign, sealUpload } from "@/api/test";
-import { http } from "@/utils/http";
-import { useRoute, useRouter } from "vue-router";
-import { fp } from "@/utils";
-import { deviceDetection } from "@pureadmin/utils";
-import { useMainStore } from "@/store/useMainStore";
+import {ref} from "vue";
+import {ElMessage, UploadInstance} from "element-plus";
+import {storeToRefs} from "pinia";
+import {preSign, sealUpload} from "@/api/test";
+import {http} from "@/utils/http";
+import {useRoute, useRouter} from "vue-router";
+import {fp} from "@/utils";
+import {deviceDetection} from "@pureadmin/utils";
+import {useMainStore} from "@/store/useMainStore";
+import {useSeal} from "@/store/useSeal";
 
-const { screen } = storeToRefs(useMainStore());
+const {screen} = storeToRefs(useMainStore());
 
 const route = useRoute();
 const id = route.query.id;
@@ -39,7 +40,7 @@ const change = async (e: any) => {
   f.value = e.raw;
   const file = new FormData();
   file.append("file", f.value);
-  const { data } = await sealUpload();
+  const {data} = await sealUpload();
   ElMessage.success("上传成功");
   url.value = data;
   localStorage.setItem("pdf", JSON.stringify(url.value.fileUrl));
@@ -47,6 +48,8 @@ const change = async (e: any) => {
 };
 
 // const { screen } = storeToRefs(useMainStore());
+
+const {auth} = storeToRefs(useSeal())
 
 const sign = () => {
   const formData = new FormData();
@@ -56,7 +59,7 @@ const sign = () => {
       http
         .post("/app/sign/init", {
           data: {
-            // custNo: id,
+            custNo: auth.value.subjectId,
             callBackUrl: window.location.href,
             signDataList: [
               {

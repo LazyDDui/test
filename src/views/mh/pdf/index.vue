@@ -6,12 +6,14 @@ import {ElMessage} from "element-plus";
 import {useRoute} from "vue-router";
 import {http} from "@/utils/http";
 import {request} from "axios";
+import {storeToRefs} from "pinia";
+import {useSeal} from "@/store/useSeal";
 
 const sign = ref();
 const psw = ref();
 const pdfInfo = ref();
 
-const id = useRoute().query.cusNo as string;
+// const id = useRoute().query.cusNo as string;
 
 let timer;
 
@@ -26,8 +28,10 @@ const imgs = ref<any[]>([]);
 
 const error = ref(false);
 
+const {auth} = storeToRefs(useSeal())
+
 const getSeal = async () => {
-  const {data} = await getSealImg(id);
+  const {data} = await getSealImg(auth.value.subjectId);
   imgList.value = data.map(item => ({
     ...item,
     id: item.sealSn,
