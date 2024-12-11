@@ -41,7 +41,7 @@ const activeName = ref('person')
   <div>
     <el-tabs v-model="activeName" class="demo-tabs" @tab-click="tabClick">
       <el-tab-pane label="个人认证" name="person">
-        <el-form :model="form" label-width="auto" style="max-width: 300px">
+        <el-form :model="form" label-width="auto" style="max-width: 400px">
           <el-form-item label="姓名">
             <el-input @change="change(form)" v-model="form.name" placeholder="请输入姓名"></el-input>
           </el-form-item>
@@ -54,21 +54,21 @@ const activeName = ref('person')
         </el-form>
       </el-tab-pane>
       <el-tab-pane label="企业认证" name="company">
-        <el-form :model="companyForm" label-width="auto" style="max-width: 300px">
+        <el-form :model="companyForm" label-width="auto" style="max-width: 400px">
           <el-form-item label="统一信用代码">
-            <el-input v-model="companyForm.custCreditNo" placeholder="请输入统一信用代码"></el-input>
+            <el-input @change="change(companyForm)" v-model="companyForm.custCreditNo" placeholder="请输入统一信用代码"></el-input>
           </el-form-item>
           <el-form-item label="主体名称">
-            <el-input v-model="companyForm.custName" placeholder="请输入主体名称"></el-input>
+            <el-input @change="change(companyForm)" v-model="companyForm.custName" placeholder="请输入主体名称"></el-input>
           </el-form-item>
           <el-form-item label="法定代表人姓名">
-            <el-input v-model="companyForm.juriName" placeholder="请输入法定代表人姓名"></el-input>
+            <el-input @change="change(companyForm)" v-model="companyForm.juriName" placeholder="请输入法定代表人姓名"></el-input>
           </el-form-item>
           <el-form-item label="法定代表人证件号码">
-            <el-input v-model="companyForm.juriIdNo" placeholder="请输入法定代表人证件号码"></el-input>
+            <el-input @change="change(companyForm)" v-model="companyForm.juriIdNo" placeholder="请输入法定代表人证件号码"></el-input>
           </el-form-item>
           <el-form-item label="法定代表人实名手机号码">
-            <el-input v-model="companyForm.juriTel" placeholder="法定代表人实名手机号码"></el-input>
+            <el-input @change="change(companyForm)" v-model="companyForm.juriTel" placeholder="法定代表人实名手机号码"></el-input>
           </el-form-item>
         </el-form>
       </el-tab-pane>

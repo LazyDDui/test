@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import {h, reactive, ref, toRaw} from "vue";
 import Btn from "@/views/signSeal/AuthenticationDialog/btn/index.vue";
-import {addDialog} from "@/components/ReDialog/index";
+import {addDialog, closeAllDialog, closeDialog} from "@/components/ReDialog/index";
 import SignManagePageList from "@/views/signSeal/SignManage/PageList/index.vue";
 import PrincipalType from "@/views/signSeal/PrincipalType/index.vue"
 import {personSign, companySign, userAuthentication, changeAuthentication, getCurrentAuthentication} from "@/api/test";
 import {useSeal} from "@/store/useSeal";
 import {storeToRefs} from "pinia";
+import {ElMessage} from 'element-plus'
+import {http} from "@/utils/http";
 
 const {setAuth} = useSeal()
 const {auth} = storeToRefs(useSeal())
@@ -34,10 +36,18 @@ const columns: TableColumnList = [
         data: data.row,
         cgClick: async () => {
           const res = await changeAuthentication(data.row.id)
-          console.log('切换', res)
           const res2 = await getCurrentAuthentication()
+          if (res.code == '0') {
+            ElMessage({
+              message: '切换成功！',
+              type: 'success',
+            })
+          }
+          console.log(res2)
           setAuth(res2.data)
+          closeAllDialog()
         },
+
       });
     },
     align: "center"
@@ -46,7 +56,9 @@ const columns: TableColumnList = [
 const currentChange = e => {
   console.log(e);
 };
+const isPerson = ref(false)
 const addAuthentication = () => {
+  closeAllDialog()
   addDialog({
     title: "主体类型",
     contentRenderer: () => h(PrincipalType, {
@@ -56,26 +68,50 @@ const addAuthentication = () => {
       },
       tabClick: (tab) => {
         console.log(tab.props.name)
+        if (tab.props.name == 'person') {
+          isPerson.value = true
+        } else {
+          isPerson.value = false
+        }
       }
     }),
     async beforeSure(done) {
       console.log('参数', personData.value)
-      const res = await personSign(personData.value)
-      if (res.code == '00') {
-        ElMessage({
-          message: '认证成功',
-          type: 'success',
-        })
+      if (isPerson.value) {
+        const res = await personSign(personData.value)
+        if (res.code == '00') {
+          ElMessage({
+            message: '认证成功',
+            type: 'success',
+          })
+        } else {
+          ElMessage({
+            message: res.msg,
+            type: 'error',
+          })
+        }
+        personData.value.forEach(item => {
+          item.value = null; // 否则，将 value 设置为空字符串
+        });
+        done()
       } else {
-        ElMessage({
-          message: res.message,
-          type: 'error',
-        })
+        const res = await companySign(personData.value)
+        if (res.code == '00') {
+          ElMessage({
+            message: '认证成功',
+            type: 'success',
+          })
+        } else {
+          ElMessage({
+            message: res.msg,
+            type: 'error',
+          })
+        }
+        personData.value.forEach(item => {
+          item.value = null; // 否则，将 value 设置为空字符串
+        });
+        done()
       }
-      form.value.forEach(item => {
-        item.value = null; // 否则，将 value 设置为空字符串
-      });
-      done()
     }
   })
 }
