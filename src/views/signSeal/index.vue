@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { fp } from "@/utils";
-import { addDialog } from "@/components/ReDialog/index";
+import {fp} from "@/utils";
+import {addDialog} from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
-import { h, watch } from "vue";
+import {h, watch} from "vue";
 import signSeal from "@/views/signSeal/SignManage/index.vue";
-import { useRouter } from "vue-router";
+import {useRouter} from "vue-router";
 import {
   changeAuthenticationApi,
   getCurrentAuthentication,
@@ -15,11 +15,11 @@ import SignManage from "@/views/signSeal/SignManage/index.vue";
 import SignRecent from "@/views/signSeal/SignRecent/index.vue";
 import SignManagePageList from "@/views/signSeal/SignManage/PageList/index.vue";
 import GetSeal from "@/views/signSeal/GetSeal/index.vue";
-import { useSeal } from "@/store/useSeal";
-import { storeToRefs } from "pinia";
+import {useSeal} from "@/store/useSeal";
+import {storeToRefs} from "pinia";
 
-const { setAuth } = useSeal();
-const { auth, list } = storeToRefs(useSeal());
+const {setAuth} = useSeal();
+const {auth, list} = storeToRefs(useSeal());
 
 const useSealFn = () => {
   addDialog({
@@ -29,8 +29,8 @@ const useSealFn = () => {
     hideFooter: true
   });
 };
-import { defineComponent, h, ref, toRaw } from "vue";
-import { http } from "@/utils/http";
+import {defineComponent, h, ref, toRaw} from "vue";
+import {http} from "@/utils/http";
 
 const router = useRouter();
 
@@ -43,14 +43,17 @@ const getMyInfo = async () => {
   sealCount.value = sealInfo.data.total;
 };
 
+const total = ref(0)
+
 getMyInfo();
 const toGoPage = () => {
-  router.push({ name: "verify" });
+  router.push({name: "verify"});
 };
 const userAuthenlicationInfo = ref<any[]>([{}]);
 const getUserAuthenlication = async () => {
   const res = await userAuthentication();
   userAuthenlicationInfo.value = res.data.records;
+  total.value = res.data.total
   setAuth(userAuthenlicationInfo.value[0]);
 };
 const authenlicationCol = [
@@ -72,7 +75,8 @@ const changeAuthentication = () => {
     contentRenderer() {
       return h(AuthticaltionTable, {
         tableData: userAuthenlicationInfo.value,
-        cols: authenlicationCol.value
+        cols: authenlicationCol.value,
+        total:total.value
       });
     },
     hideFooter: true
@@ -108,7 +112,7 @@ const getSeal = () => {
         }
       }),
     beforeSure: async done => {
-      const { data } = await http.post(`/app/userAuthentication/seal/add`, {
+      const {data} = await http.post(`/app/userAuthentication/seal/add`, {
         data: {
           type: getSealData.value
         }
@@ -143,7 +147,7 @@ const getSeal = () => {
             "
           >
             <h2>{{ item.name }}</h2>
-            <img :src="fp(item.src)" width="70" height="70" />
+            <img :src="fp(item.src)" width="70" height="70"/>
           </div>
         </div>
       </div>
@@ -152,12 +156,12 @@ const getSeal = () => {
           <div class="left1">
             <div class="title">
               <p class="more tip">
-                <img width="14" height="16" :src="fp('signSeal/u3029.png')" />
+                <img width="14" height="16" :src="fp('signSeal/u3029.png')"/>
                 <span class="pdl-5">认证信息</span>
               </p>
               <p class="more blue" @click="changeAuthentication()">
                 <span class="pdr-5">切换认证</span
-                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
               </p>
             </div>
             <div class="content">
@@ -174,12 +178,12 @@ const getSeal = () => {
           <div class="left2">
             <div class="title">
               <p class="more tip">
-                <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
+                <img width="14" height="16" :src="fp('signSeal/u3075.png')"/>
                 <span class="pdl-5">印章管理</span>
               </p>
               <p class="more blue">
                 <span class="pdr-5" @click="sealManage">管理</span
-                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
               </p>
             </div>
             <div class="content">
@@ -191,15 +195,15 @@ const getSeal = () => {
         <div class="right-side">
           <div class="title">
             <p class="more tip">
-              <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
+              <img width="14" height="16" :src="fp('signSeal/u3075.png')"/>
               <span class="pdl-5">最近签章文档</span>
             </p>
             <p class="more blue">
               <span class="pdr-5" @click="signManageSeeMore">查看更多</span
-              ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
+              ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
             </p>
           </div>
-          <SignRecent />
+          <SignRecent/>
         </div>
       </div>
     </div>
