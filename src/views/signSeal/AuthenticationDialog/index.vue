@@ -36,7 +36,6 @@ const columns: TableColumnList = [
           console.log('切换', res)
           const res2 = await getCurrentAuthentication()
           setAuth(res2.data)
-          console.log('res2', res2)
         },
       });
     },

@@ -2,7 +2,7 @@
 import { fp } from "@/utils";
 import { addDialog } from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
-import { h } from "vue";
+import { h, watch } from "vue";
 import signSeal from "@/views/signSeal/SignManage/index.vue";
 import { useRouter } from "vue-router";
 import {
@@ -19,41 +19,7 @@ import { useSeal } from "@/store/useSeal";
 import { storeToRefs } from "pinia";
 
 const { setAuth } = useSeal();
-const { auth } = storeToRefs(useSeal());
-
-const list0 = [
-  {
-    name: "申领印章",
-    src: "signSeal/u3009.png"
-  },
-  {
-    name: "印章使用",
-    src: "signSeal/u3009.png"
-  },
-  {
-    name: "签章验证",
-    src: "signSeal/u3009.png"
-  },
-  {
-    name: "api管理",
-    src: "signSeal/u3009.png"
-  }
-];
-
-const list1 = [
-  {
-    name: "申领印章",
-    src: "signSeal/u3009.png"
-  },
-  {
-    name: "印章使用",
-    src: "signSeal/u3009.png"
-  },
-  {
-    name: "签章验证",
-    src: "signSeal/u3009.png"
-  }
-];
+const { auth, list } = storeToRefs(useSeal());
 
 const useSealFn = () => {
   addDialog({
@@ -73,11 +39,6 @@ const sealCount = ref(0);
 const getMyInfo = async () => {
   const res: any = await getCurrentAuthentication();
   changeAuthenticationApi(res.data.id);
-  if (res.data.type == "0") {
-    list.value = list0;
-  } else {
-    list.value = list1;
-  }
   const sealInfo: any = await http.post(`/app/userAuthentication/seal/page`);
   sealCount.value = sealInfo.data.total;
 };
@@ -90,13 +51,6 @@ const userAuthenlicationInfo = ref<any[]>([{}]);
 const getUserAuthenlication = async () => {
   const res = await userAuthentication();
   userAuthenlicationInfo.value = res.data.records;
-  if (userAuthenlicationInfo.value && userAuthenlicationInfo.value.length > 0) {
-    if (userAuthenlicationInfo.value[0].type == "0") {
-      list.value = list0;
-    } else {
-      list.value = list1;
-    }
-  }
   setAuth(userAuthenlicationInfo.value[0]);
 };
 const authenlicationCol = [
@@ -112,8 +66,6 @@ const authenlicationCol = [
   }
 ];
 getUserAuthenlication();
-const list = ref<any[]>([]);
-
 const changeAuthentication = () => {
   addDialog({
     title: "切换认证",
@@ -184,6 +136,8 @@ const getSeal = () => {
                   toGoPage();
                 } else if (item.name === '申领印章') {
                   getSeal();
+                } else if (item.name === 'api管理') {
+                  router.push('/welcome');
                 }
               }
             "
