@@ -221,7 +221,7 @@ const getFile = () => {
         if (res.data[0].stateMsg == "签署成功") {
           clearInterval(timer);
           timer = null;
-          downloadPdf(res.data[0].signFileUrl.replace(""));
+          downloadPdf(res.data[0].signFileUrl);
           // res.data.signFileUrl
         }
       });
