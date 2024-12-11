@@ -18,7 +18,7 @@ export default {
       name: "shApi",
       component: () => import("@/views/sys/shApi/index.vue"),
       meta: {
-        title: "数据看板",
+        title: "接口调用记录",
         showLink: VITE_HIDE_HOME === "true" ? false : true
       }
     }

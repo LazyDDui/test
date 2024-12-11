@@ -75,7 +75,7 @@ const sign = () => {
         .then(res => {
           localStorage.setItem("sealInfo", JSON.stringify(res.data));
           ElMessage.success("已发起");
-          router.push("/pdf?cusNo=" + id);
+          router.push("/pdf");
         });
     });
   } else {

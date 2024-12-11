@@ -5,11 +5,19 @@
  * @LastEditors: zheng xinyi
  * @LastEditTime: 2024-05-11 17:05:49
  */
-import {ref} from "vue";
-import {defineStore} from "pinia";
+import { ref } from "vue";
+import { defineStore } from "pinia";
+import { getSignRequestFile } from "@/api/test";
 
 export const useSeal = defineStore("seal", () => {
   const auth = ref({});
+
+  const fileList = ref<any[]>([]);
+
+  const getList = async page => {
+    const { data } = await getSignRequestFile(page);
+    fileList.value = data;
+  };
 
   const list0 = [
     {
@@ -45,18 +53,19 @@ export const useSeal = defineStore("seal", () => {
     }
   ];
 
-  const list = ref([])
+  const list = ref([]);
 
-  const setAuth = (au: any) => {
+  const setAuth = async (au: any) => {
     auth.value = au;
     if (auth.value.subjectId) {
       localStorage.setItem("subjectId", auth.value.subjectId);
-      if (auth.value.type == '0') {
-        list.value = list0
+      if (auth.value.type == "0") {
+        list.value = list0;
       } else {
-        list.value = list1
+        list.value = list1;
       }
     }
+    await getList(1);
   };
 
   const getSubjectId = () => {
@@ -67,6 +76,8 @@ export const useSeal = defineStore("seal", () => {
     auth,
     setAuth,
     getSubjectId,
-    list
+    list,
+    fileList,
+    getList
   };
 });
