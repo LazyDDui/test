@@ -11,12 +11,20 @@ import { defineStore } from "pinia";
 export const useSeal = defineStore("seal", () => {
   const auth = ref({});
 
-  const setAuth = (au: string) => {
+  const setAuth = (au: any) => {
     auth.value = au;
+    if(auth.value.subjectId){
+      localStorage.setItem("subjectId",auth.value.subjectId)
+    }
   };
+
+  const getSubjectId = () => {
+    return localStorage.getItem("getSubjectId")
+  }
 
   return {
     auth,
-    setAuth
+    setAuth,
+    getSubjectId
   };
 });

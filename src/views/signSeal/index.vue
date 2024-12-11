@@ -75,8 +75,8 @@ const getUserAuthenlication = async () => {
       ];
     }
   }
+  console.log(userAuthenlicationInfo.value[0])
   setAuth(userAuthenlicationInfo.value[0])
-  console.log("获取当前用户认证信息", userAuthenlicationInfo.value);
 };
 const authenlicationCol = [
   {
@@ -247,8 +247,8 @@ const getSeal = () => {
             </div>
             <div class="content">
               <h2 class="h_2">
-                {{auth.authenticationName}}</h2>
-              <p class="p-2">{{ auth.subjectId }}</p>
+                {{auth?.authenticationName}}</h2>
+              <p class="p-2">{{ auth?.subjectId }}</p>
               <p>
                 <span class="black tag">企业单位</span>
                 <span class="green tag">已认证</span>

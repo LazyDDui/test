@@ -28,10 +28,10 @@ const imgs = ref<any[]>([]);
 
 const error = ref(false);
 
-const {auth} = storeToRefs(useSeal())
+const {getSubjectId} = useSeal()
 
 const getSeal = async () => {
-  const {data} = await getSealImg(auth.value.subjectId);
+  const {data} = await getSealImg(getSubjectId());
   imgList.value = data.map(item => ({
     ...item,
     id: item.sealSn,

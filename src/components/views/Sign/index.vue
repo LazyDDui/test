@@ -49,7 +49,7 @@ const change = async (e: any) => {
 
 // const { screen } = storeToRefs(useMainStore());
 
-const {auth} = storeToRefs(useSeal())
+const {getSubjectId} = useSeal()
 
 const sign = () => {
   const formData = new FormData();
@@ -59,7 +59,7 @@ const sign = () => {
       http
         .post("/app/sign/init", {
           data: {
-            custNo: auth.value.subjectId,
+            custNo: getSubjectId(),
             callBackUrl: window.location.href,
             signDataList: [
               {

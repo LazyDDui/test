@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { http } from "@/utils/http";
-import { h, reactive, ref } from "vue";
+import {http} from "@/utils/http";
+import {h, reactive, ref} from "vue";
 import Btn from "@/views/signSeal/SignManage/btn/index.vue";
+import {getUserAuthentication} from "@/api/test";
+import Image from '@/views/signSeal/SignManage/Image/index.vue'
+import SealBtn from "@/views/signSeal/SignManage/SealBtn/index.vue"
+import {addDialog} from "@/components/ReDialog/index";
+import {message} from "@/utils/message";
+import {downloadByData} from "@pureadmin/utils";
 
 const columns: TableColumnList = [
   {
@@ -26,25 +32,27 @@ const columns: TableColumnList = [
   // },
   {
     label: "印章图片",
-    props: "pic",
+    // props: "pic",
     cellRenderer(data) {
-      return h("img", {
-        src: data.row.pic
+      return h(Image, {
+        pic: data.row.pic
       });
     }
   },
   {
     label: "操作",
     cellRenderer(data) {
-      return h(Btn, {
-        dwClick: () => {
-          console.log(data);
-        },
+      return h(SealBtn, {
+        data: data.row,
         detailClick: () => {
-          console.log(data);
-        },
-        delClick: () => {
-          console.log(data);
+          http.get(`/app/userAuthentication/seal/recordDownload`, {
+            params: {
+              id: data.row.id
+            }
+          }).then((res: any) => {
+            downloadByData(res, (data.row.id + '.pdf'));
+            console.log(res)
+          })
         }
       });
     },
@@ -67,13 +75,14 @@ const tableData = ref({
 const getList = async () => {
   // const {data} = await http.post(`/app/signRequestFile/page`)
   // console.log('......', data)
-  const { data } = await http.post(`/app/userAuthentication/seal/page`);
+  const {data} = await getUserAuthentication(tableData.value.current)
   console.log(data);
   tableData.value = data;
 };
 
-const currentChange = e => {
-  console.log(e);
+const currentChange = async (e) => {
+  tableData.value.current = e
+  await getList()
 };
 getList();
 </script>
@@ -95,7 +104,7 @@ getList();
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="1000"
+        :total="tableData.total"
         @current-change="currentChange"
       />
     </el-row>

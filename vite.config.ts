@@ -1,6 +1,6 @@
-import { getPluginsList } from "./build/plugins";
-import { include, exclude } from "./build/optimize";
-import { type UserConfigExport, type ConfigEnv, loadEnv } from "vite";
+import {getPluginsList} from "./build/plugins";
+import {include, exclude} from "./build/optimize";
+import {type UserConfigExport, type ConfigEnv, loadEnv} from "vite";
 import {
   root,
   alias,
@@ -9,7 +9,7 @@ import {
   __APP_INFO__
 } from "./build/utils";
 
-export default ({ mode }: ConfigEnv): UserConfigExport => {
+export default ({mode}: ConfigEnv): UserConfigExport => {
   const {
     VITE_BASE_URL,
     VITE_CDN,
@@ -37,7 +37,10 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
           target: VITE_BASE_URL,
           changeOrigin: true, // 是否允许跨域
           secure: false
-        }
+        },
+        // "/get-async-routes": {
+        //   target: "http://127.0.0.1:8848"
+        // }
         // "/biz": {
         //   // 请求接口中要替换的标识
         //   // target: 'https://test.batonedata.com', // 代理地址
