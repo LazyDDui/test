@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import {fp} from "@/utils";
-import {addDialog} from "@/components/ReDialog/index";
+import { fp } from "@/utils";
+import { addDialog } from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
-import {h} from "vue";
+import { h, watch } from "vue";
 import signSeal from "@/views/signSeal/SignManage/index.vue";
-import {useRouter} from "vue-router";
-import {userAuthentication} from "@/api/test";
+import { useRouter } from "vue-router";
+import {
+  changeAuthenticationApi,
+  getCurrentAuthentication,
+  userAuthentication
+} from "@/api/test";
 import AuthticaltionTable from "@/views/signSeal/AuthenticationDialog/index.vue";
 import SignManage from "@/views/signSeal/SignManage/index.vue";
 import SignRecent from "@/views/signSeal/SignRecent/index.vue";
 import SignManagePageList from "@/views/signSeal/SignManage/PageList/index.vue";
 import GetSeal from "@/views/signSeal/GetSeal/index.vue";
-import {useSeal} from "@/store/useSeal";
-import {storeToRefs} from "pinia";
+import { useSeal } from "@/store/useSeal";
+import { storeToRefs } from "pinia";
 
-const {setAuth} = useSeal()
-const {auth} = storeToRefs(useSeal())
-
+const { setAuth } = useSeal();
+const { auth, list } = storeToRefs(useSeal());
 
 const useSealFn = () => {
   addDialog({
@@ -26,58 +29,29 @@ const useSealFn = () => {
     hideFooter: true
   });
 };
-import {defineComponent, h, ref, toRaw} from "vue";
-import {http} from "@/utils/http";
+import { defineComponent, h, ref, toRaw } from "vue";
+import { http } from "@/utils/http";
 
 const router = useRouter();
-const toGoPage = () => {
-  router.push({name: "verify"});
+
+const sealCount = ref(0);
+
+const getMyInfo = async () => {
+  const res: any = await getCurrentAuthentication();
+  changeAuthenticationApi(res.data.id);
+  const sealInfo: any = await http.post(`/app/userAuthentication/seal/page`);
+  sealCount.value = sealInfo.data.total;
 };
-const userAuthenlicationInfo = ref([
-  {}
-]);
+
+getMyInfo();
+const toGoPage = () => {
+  router.push({ name: "verify" });
+};
+const userAuthenlicationInfo = ref<any[]>([{}]);
 const getUserAuthenlication = async () => {
   const res = await userAuthentication();
   userAuthenlicationInfo.value = res.data.records;
-  if (userAuthenlicationInfo.value && userAuthenlicationInfo.value.length > 0) {
-    if (userAuthenlicationInfo.value[0].type == '0') {
-      list.value = [
-        {
-          name: "申领印章",
-          src: "signSeal/u3009.png"
-        },
-        {
-          name: "印章使用",
-          src: "signSeal/u3009.png"
-        },
-        {
-          name: "签章验证",
-          src: "signSeal/u3009.png"
-        },
-        {
-          name: "api管理",
-          src: "signSeal/u3009.png"
-        }
-      ];
-    } else {
-      list.value = [
-        {
-          name: "申领印章",
-          src: "signSeal/u3009.png"
-        },
-        {
-          name: "印章使用",
-          src: "signSeal/u3009.png"
-        },
-        {
-          name: "签章验证",
-          src: "signSeal/u3009.png"
-        }
-      ];
-    }
-  }
-  setAuth(userAuthenlicationInfo.value[0])
-  console.log("获取当前用户认证信息", userAuthenlicationInfo.value);
+  setAuth(userAuthenlicationInfo.value[0]);
 };
 const authenlicationCol = [
   {
@@ -88,27 +62,11 @@ const authenlicationCol = [
   {
     label: "类型",
     prop: "type",
-    align: 'center'
-  },
-]
-// getUserAuthenlication()
-const list = ref<any[]>([
-  {
-    name: "申领印章",
-    src: "signSeal/u3009.png"
-  },
-  {
-    name: "印章使用",
-    src: "signSeal/u3009.png"
-  },
-  {
-    name: "签章验证",
-    src: "signSeal/u3009.png"
-  },
-]);
-const radio = ref(0);
+    align: "center"
+  }
+];
+getUserAuthenlication();
 const changeAuthentication = () => {
-  getUserAuthenlication()
   addDialog({
     title: "切换认证",
     contentRenderer() {
@@ -124,7 +82,8 @@ const changeAuthentication = () => {
 const sealManage = () => {
   addDialog({
     title: "印章管理",
-    contentRenderer: () => h(SignManage)
+    contentRenderer: () => h(SignManage),
+    hideFooter: true
   });
 };
 //sh
@@ -149,7 +108,7 @@ const getSeal = () => {
         }
       }),
     beforeSure: async done => {
-      const {data} = await http.post(`/app/userAuthentication/seal/add`, {
+      const { data } = await http.post(`/app/userAuthentication/seal/add`, {
         data: {
           type: getSealData.value
         }
@@ -177,12 +136,14 @@ const getSeal = () => {
                   toGoPage();
                 } else if (item.name === '申领印章') {
                   getSeal();
+                } else if (item.name === 'api管理') {
+                  router.push('/welcome');
                 }
               }
             "
           >
             <h2>{{ item.name }}</h2>
-            <img :src="fp(item.src)" width="70" height="70"/>
+            <img :src="fp(item.src)" width="70" height="70" />
           </div>
         </div>
       </div>
@@ -191,18 +152,19 @@ const getSeal = () => {
           <div class="left1">
             <div class="title">
               <p class="more tip">
-                <img width="14" height="16" :src="fp('signSeal/u3029.png')"/>
+                <img width="14" height="16" :src="fp('signSeal/u3029.png')" />
                 <span class="pdl-5">认证信息</span>
               </p>
               <p class="more blue" @click="changeAuthentication()">
                 <span class="pdr-5">切换认证</span
-                ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
               </p>
             </div>
             <div class="content">
               <h2 class="h_2">
-                {{ auth.authenticationName }}</h2>
-              <p class="p-2">{{ auth.subjectId }}</p>
+                {{ auth?.authenticationName }}
+              </h2>
+              <p class="p-2">{{ auth?.subjectId }}</p>
               <p>
                 <span class="black tag">企业单位</span>
                 <span class="green tag">已认证</span>
@@ -212,16 +174,16 @@ const getSeal = () => {
           <div class="left2">
             <div class="title">
               <p class="more tip">
-                <img width="14" height="16" :src="fp('signSeal/u3075.png')"/>
+                <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
                 <span class="pdl-5">印章管理</span>
               </p>
               <p class="more blue">
                 <span class="pdr-5" @click="sealManage">管理</span
-                ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
               </p>
             </div>
             <div class="content">
-              <h2 class="h_2">5</h2>
+              <h2 class="h_2">{{ sealCount }}</h2>
               <p class="p-2">总数量</p>
             </div>
           </div>
@@ -229,15 +191,15 @@ const getSeal = () => {
         <div class="right-side">
           <div class="title">
             <p class="more tip">
-              <img width="14" height="16" :src="fp('signSeal/u3075.png')"/>
+              <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
               <span class="pdl-5">最近签章文档</span>
             </p>
             <p class="more blue">
               <span class="pdr-5" @click="signManageSeeMore">查看更多</span
-              ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
+              ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
             </p>
           </div>
-          <SignRecent/>
+          <SignRecent />
         </div>
       </div>
     </div>

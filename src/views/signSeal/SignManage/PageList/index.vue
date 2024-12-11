@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import {h, reactive} from "vue";
-import {tableData} from "@/views/table/base/data";
+import { h, reactive, ref } from "vue";
+import { tableData } from "@/views/table/base/data";
 import Btn from "@/views/signSeal/SignManage/btn/index.vue";
+import { getSignRequestFile } from "@/api/test";
 
 const columns: TableColumnList = [
   {
@@ -41,6 +42,18 @@ const form = reactive({
   status: ""
 });
 
+const state = ref({
+  current: 1,
+  size: 10,
+  total: 0,
+  records: []
+});
+
+const getList = async () => {
+  const { data } = await getSignRequestFile(1);
+  state.value = data;
+};
+
 const options = [
   {
     value: "Option1",
@@ -64,8 +77,8 @@ const options = [
   }
 ];
 
-const currentChange = e => {
-  console.log(e);
+const currentChange = async e => {
+  await getList();
 };
 </script>
 
@@ -103,12 +116,17 @@ const currentChange = e => {
         :value="item.value"
       />
     </el-select>
-    <pure-table style="margin-top: 20px" :data="tableData" :columns="columns"/>
+    <pure-table
+      style="margin-top: 20px"
+      :data="state.records"
+      :columns="columns"
+    />
     <el-row style="margin-top: 20px; justify-content: flex-end; width: 100%">
       <el-pagination
+        v-model="state.current"
         background
         layout="prev, pager, next"
-        :total="1000"
+        :total="state.total"
         @current-change="currentChange"
       />
     </el-row>
