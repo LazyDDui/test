@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {h, reactive, ref} from "vue";
-import {tableData} from "@/views/table/base/data";
+// import {tableData} from "@/views/table/base/data";
 import Btn from "@/views/signSeal/SignManage/btn/index.vue";
 import SeeMore from "@/views/sys/shApi/SeeMore/index.vue";
 import SeePsw from "@/views/sys/shApi/SeePsw/index.vue"
@@ -39,12 +39,12 @@ const columns: TableColumnList = [
     }
   }
 ];
-// const tableData = ref({
-//   currPage: 1,
-//   pageSize: 10,
-//   list: [],
-//   totalCount: 0
-// });
+const tableData = ref({
+  current: 1,
+  size: 10,
+  records: [],
+  total: 0
+});
 const form = reactive({
   name: "",
   keys: ""
@@ -55,11 +55,16 @@ const getList = async () => {
     current: 1,
     size: 10
   })
-  console.log(res)
+  tableData.value.records = res.data.records
+  tableData.value.total = res.data.total
+  tableData.value.current = res.data.current
+  tableData.value.size = res.data.size
 }
 getList()
 const currentChange = e => {
   console.log(e);
+  tableData.value.current = e
+  getList()
 };
 </script>
 
@@ -78,12 +83,12 @@ const currentChange = e => {
       placeholder="请输入接口名称"
     />
 
-    <pure-table style="margin-top: 20px" :data="tableData" :columns="columns"/>
+    <pure-table style="margin-top: 20px" :data="tableData.list" :columns="columns"/>
     <el-row style="margin-top: 20px; justify-content: flex-end; width: 100%">
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="1000"
+        :total="tableData.total"
         @current-change="currentChange"
       />
     </el-row>
