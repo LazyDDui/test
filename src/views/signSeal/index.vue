@@ -29,6 +29,7 @@ const useSealFn = () => {
 import {defineComponent, h, ref, toRaw} from "vue";
 import {http} from "@/utils/http";
 
+const router = useRouter();
 const toGoPage = () => {
   router.push({name: "verify"});
 };
@@ -90,7 +91,7 @@ const authenlicationCol = [
     align: 'center'
   },
 ]
-getUserAuthenlication()
+// getUserAuthenlication()
 const list = ref<any[]>([
   {
     name: "申领印章",
@@ -104,57 +105,10 @@ const list = ref<any[]>([
     name: "签章验证",
     src: "signSeal/u3009.png"
   },
-  {
-    name: "api管理",
-    src: "signSeal/u3009.png"
-  }
 ]);
 const radio = ref(0);
-const radioChange = val => {
-  console.log(val);
-  if (val == 2) {
-    list.value = [
-      {
-        name: "申领印章",
-        src: "signSeal/u3009.png"
-      },
-      {
-        name: "印章使用",
-        src: "signSeal/u3009.png"
-      },
-      {
-        name: "签章验证",
-        src: "signSeal/u3009.png"
-      },
-      {
-        name: "api管理",
-        src: "signSeal/u3009.png"
-      }
-    ];
-  } else {
-    list.value = [
-      {
-        name: "申领印章",
-        src: "signSeal/u3009.png"
-      },
-      {
-        name: "印章使用",
-        src: "signSeal/u3009.png"
-      },
-      {
-        name: "签章验证",
-        src: "signSeal/u3009.png"
-      }
-    ];
-  }
-};
-const AuthenticationTable = ref({
-  currPage: 1,
-  pageSize: 10,
-  list: [],
-  totalCount: 0
-});
 const changeAuthentication = () => {
+  getUserAuthenlication()
   addDialog({
     title: "切换认证",
     contentRenderer() {

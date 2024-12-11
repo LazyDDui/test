@@ -42,9 +42,11 @@ const columns: TableColumnList = [
               type: 'success',
             })
           }
+          console.log(res2)
           setAuth(res2.data)
           closeAllDialog()
         },
+
       });
     },
     align: "center"
@@ -83,7 +85,7 @@ const addAuthentication = () => {
           })
         } else {
           ElMessage({
-            message: res.message,
+            message: res.msg,
             type: 'error',
           })
         }
@@ -100,7 +102,7 @@ const addAuthentication = () => {
           })
         } else {
           ElMessage({
-            message: res.message,
+            message: res.msg,
             type: 'error',
           })
         }
@@ -120,14 +122,6 @@ const addAuthentication = () => {
     </div>
     <el-button size="small" type="primary" @click="addAuthentication">新增认证</el-button>
     <pure-table style="margin-top: 20px" :data="tableData" :columns="columns"/>
-    <el-row style="margin-top: 20px; justify-content: flex-end; width: 100%">
-      <el-pagination
-        background
-        layout="prev, pager, next"
-        :total="1000"
-        @current-change="currentChange"
-      />
-    </el-row>
   </div>
 </template>
 
