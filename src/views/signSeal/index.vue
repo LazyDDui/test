@@ -277,7 +277,7 @@ const getSeal = () => {
           padding-top: 40px;
 
           .h_2 {
-            font-size: 22px;
+            font-size: 16px;
             font-weight: bold;
           }
 
