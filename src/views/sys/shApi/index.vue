@@ -10,32 +10,33 @@ import {getRequestPage} from "@/api/test"
 const columns: TableColumnList = [
   {
     label: "接口名称",
-    prop: "date"
+    prop: "functionName"
   },
   {
     label: "请求密钥",
     cellRenderer(data) {
       return h(SeePsw, {
-        c: data.row.name
+        c: data.row.appId
       });
     }
   },
   {
     label: "调用时间",
-    prop: "address"
+    prop: "createTime"
   },
   {
     label: "请求参数",
-    prop: "address"
+    prop: "request"
   },
   {
     label: "响应结果",
-    prop: "address",
+    // prop:"response"
     cellRenderer(data) {
       console.log(data.row);
-      return h(SeeMore, {
-        c: data.row.address
-      });
+      // return h(SeeMore, {
+      //   c: data.row.address
+      // });
+      return ''
     }
   }
 ];
@@ -83,7 +84,7 @@ const currentChange = e => {
       placeholder="请输入接口名称"
     />
 
-    <pure-table style="margin-top: 20px" :data="tableData.list" :columns="columns"/>
+    <pure-table style="margin-top: 20px" :data="tableData.records" :columns="columns"/>
     <el-row style="margin-top: 20px; justify-content: flex-end; width: 100%">
       <el-pagination
         background
