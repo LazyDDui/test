@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { h, reactive, ref } from "vue";
-import { tableData } from "@/views/table/base/data";
+import {h, reactive, ref} from "vue";
+import {tableData} from "@/views/table/base/data";
 import Btn from "@/views/signSeal/SignManage/btn/index.vue";
-import { getSignRequestFile } from "@/api/test";
-import { http } from "@/utils/http";
-import { message } from "@/utils/message";
-import { useSeal } from "@/store/useSeal";
-import { storeToRefs } from "pinia";
+import {getSignRequestFile} from "@/api/test";
+import {http} from "@/utils/http";
+import {message} from "@/utils/message";
+import {useSeal} from "@/store/useSeal";
+import {storeToRefs} from "pinia";
 
 async function downloadPdf(url, filename = "document.pdf") {
   try {
@@ -39,8 +39,8 @@ async function downloadPdf(url, filename = "document.pdf") {
   }
 }
 
-const { getList } = useSeal();
-const { fileList } = storeToRefs(useSeal());
+const {getList} = useSeal();
+const {fileList} = storeToRefs(useSeal());
 
 const columns: TableColumnList = [
   {

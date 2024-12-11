@@ -31,6 +31,7 @@ const columns: TableColumnList = [
     label: "操作",
     cellRenderer(data) {
       return h(Btn, {
+        data: data.row,
         cgClick: async () => {
           const res = await changeAuthentication(data.row.id)
           console.log('切换', res)
