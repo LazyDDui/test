@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import {h, reactive} from "vue";
+import {h, reactive, ref} from "vue";
 import {tableData} from "@/views/table/base/data";
 import Btn from "@/views/signSeal/SignManage/btn/index.vue";
 import SeeMore from "@/views/sys/shApi/SeeMore/index.vue";
 import SeePsw from "@/views/sys/shApi/SeePsw/index.vue"
 import {addDialog} from "@/components/ReDialog/index";
+import {getRequestPage} from "@/api/test"
 
 const columns: TableColumnList = [
   {
@@ -38,11 +39,25 @@ const columns: TableColumnList = [
     }
   }
 ];
-
+// const tableData = ref({
+//   currPage: 1,
+//   pageSize: 10,
+//   list: [],
+//   totalCount: 0
+// });
 const form = reactive({
   name: "",
   keys: ""
 });
+const getList = async () => {
+  const res = await getRequestPage({
+    ...form.value,
+    current: 1,
+    size: 10
+  })
+  console.log(res)
+}
+getList()
 const currentChange = e => {
   console.log(e);
 };
