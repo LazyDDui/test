@@ -28,7 +28,7 @@ const imgs = ref<any[]>([]);
 
 const error = ref(false);
 
-const {getSubjectId} = useSeal()
+const {getSubjectId} = useSeal();
 
 const getSeal = async () => {
   const {data} = await getSealImg(getSubjectId());
@@ -207,23 +207,24 @@ async function downloadPdf(url, filename = "document.pdf") {
   }
 }
 
-
 const getFile = () => {
   timer = setInterval(() => {
-    http.post("/app/sign/query", {
-      appno: appno.value,
-      fileTransNo: `111`
-    }).then(res => {
-      console.log(res.data[0].stateMsg);
-      if (res.data[0].stateMsg == "签署成功") {
-        clearInterval(timer);
-        timer = null;
-        downloadPdf(
-          res.data[0].signFileUrl.replace("")
-        );
-        // res.data.signFileUrl
-      }
-    });
+    http
+      .post("/app/sign/query", {
+        data: {
+          appno: appno.value,
+          fileTransNo: `111`
+        }
+      })
+      .then(res => {
+        console.log(res.data[0].stateMsg);
+        if (res.data[0].stateMsg == "签署成功") {
+          clearInterval(timer);
+          timer = null;
+          downloadPdf(res.data[0].signFileUrl.replace(""));
+          // res.data.signFileUrl
+        }
+      });
   }, 1500);
 };
 
@@ -260,8 +261,7 @@ const qfAll = ref(false);
         style="flex: 1"
         @click="info.all = !info.all"
       >是否多页
-      </el-button
-      >
+      </el-button>
     </el-row>
     <el-dialog v-model="qfShow" title="骑缝章" width="500">
       <div>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {addDialog} from "@/components/ReDialog/index";
-import {h, reactive} from "vue";
+import { addDialog } from "@/components/ReDialog/index";
+import { h, reactive } from "vue";
 import ChangePsd from "@/views/signSeal/SignManage/SealBtn/ChangePsd.vue";
-import {http} from "@/utils/http";
-import {message} from "@/utils/message";
+import { http } from "@/utils/http";
+import { message } from "@/utils/message";
 
 type BtnProps = {
   detailClick: () => void;
@@ -28,31 +28,29 @@ const showCpwDialog = () => {
 const remove = () => {
   addDialog({
     title: "确认删除" + props.data.id + "?",
-    beforeSure(done, {options, index}) {
-      http.post(`/userAuthentication/seal/revoke`, {
-        params: {
-          id: props.data.id,
-          reason:""
-        }
-      }).then(() => {
-        message('注销成功', {
-          type: "success"
+    beforeSure(done, { options, index }) {
+      http
+        .post(`/userAuthentication/seal/revoke`, {
+          params: {
+            id: props.data.id,
+            reason: ""
+          }
         })
-        done()
-      })
-
-    },
-  })
-
-
-}
-
+        .then(() => {
+          message("注销成功", {
+            type: "success"
+          });
+          done();
+        });
+    }
+  });
+};
 </script>
 
 <template>
   <el-row>
     <el-button size="small" type="text" @click="showCpwDialog"
-    >修改密码
+      >修改密码
     </el-button>
     <el-button size="small" type="text" @click="detailClick"
     >查看备案

@@ -1,4 +1,4 @@
-import {http} from "@/utils/http";
+import { http } from "@/utils/http";
 
 export const login = (data: object) =>
   http.post(
@@ -21,7 +21,7 @@ export const signInit = () => http.post("/app/sign/init");
 export const checkFile = file =>
   http.post(
     "/app/sign/verify",
-    {data: file},
+    { data: file },
     {
       headers: {
         "Content-Type": "multipart/form-data"
@@ -29,13 +29,13 @@ export const checkFile = file =>
     }
   );
 
-export const personSign = data => http.post("/app/per/approve", {data}, {});
-export const companySign = data => http.post("/app/uni/approve", {data}, {});
+export const personSign = data => http.post("/app/per/approve", { data }, {});
+export const companySign = data => http.post("/app/uni/approve", { data }, {});
 export const preSign = (url: string, file: FormData) =>
   http.request(
     "put",
     url,
-    {data: file},
+    { data: file },
     {
       headers: {
         "Content-Type": "multipart/form-data"
@@ -62,7 +62,9 @@ export const getUserAuthentication = (current: number) =>
   });
 //签署请求文件/signRequestFile/page
 export const getSignRequestFile = (current: number) =>
-  http.post(`/app/signRequestFile/page`, {
+  http.post(
+    `/app/signRequestFile/page`,
+    {
       data: {
         current,
         size: 10
@@ -73,17 +75,27 @@ export const getSignRequestFile = (current: number) =>
         "Content-Type": "application/x-www-form-urlencoded"
       }
     }
-  )
+  );
 
 //认证信息列表
-export const userAuthentication = (data?:object) => http.post("/app/userAuthentication/page", {data}, {});
+export const userAuthentication = (data?: object) =>
+  http.post("/app/userAuthentication/page", { data }, {});
 
 //切换认证信息
-export const changeAuthentication = id => http.post("/app/session/changeUserAuthentication", {params:{
-  id
-  }
-});
+export const changeAuthentication = (id: string) =>
+  http.post("/app/session/changeUserAuthentication", {
+    params: {
+      id
+    }
+  });
+
+export const changeAuthenticationApi = (id: string) =>
+  http.post("/app/session/changeUserAuthentication", {
+    params: {
+      id
+    }
+  });
 
 //获取当前认证信息
-export const getCurrentAuthentication = (data?:object) => http.post("/app/session/userAuthentication", {data}, {});
-
+export const getCurrentAuthentication = (data?: object) =>
+  http.post("/app/session/userAuthentication", { data }, {});

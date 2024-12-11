@@ -13,14 +13,14 @@ export const useSeal = defineStore("seal", () => {
 
   const setAuth = (au: any) => {
     auth.value = au;
-    if(auth.value.subjectId){
-      localStorage.setItem("subjectId",auth.value.subjectId)
+    if (auth.value.subjectId) {
+      localStorage.setItem("subjectId", auth.value.subjectId);
     }
   };
 
   const getSubjectId = () => {
-    return localStorage.getItem("getSubjectId")
-  }
+    return localStorage.getItem("subjectId");
+  };
 
   return {
     auth,

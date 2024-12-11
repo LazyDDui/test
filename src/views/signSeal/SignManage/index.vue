@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import {http} from "@/utils/http";
-import {h, reactive, ref} from "vue";
+import { http } from "@/utils/http";
+import { h, reactive, ref } from "vue";
 import Btn from "@/views/signSeal/SignManage/btn/index.vue";
-import {getUserAuthentication} from "@/api/test";
-import Image from '@/views/signSeal/SignManage/Image/index.vue'
-import SealBtn from "@/views/signSeal/SignManage/SealBtn/index.vue"
-import {addDialog} from "@/components/ReDialog/index";
-import {message} from "@/utils/message";
-import {downloadByData} from "@pureadmin/utils";
+import { getUserAuthentication } from "@/api/test";
+import Image from "@/views/signSeal/SignManage/Image/index.vue";
+import SealBtn from "@/views/signSeal/SignManage/SealBtn/index.vue";
+import { addDialog } from "@/components/ReDialog/index";
+import { message } from "@/utils/message";
+import { downloadByData } from "@pureadmin/utils";
+import {SealTypeMap} from "@/utils/map";
 
 const columns: TableColumnList = [
   {
@@ -20,7 +21,10 @@ const columns: TableColumnList = [
   },
   {
     label: "印章类型",
-    prop: "status"
+    prop: "status",
+    cellRenderer(data) {
+        return SealTypeMap.get(data.row.status)
+    },
   },
   {
     label: "制发时间",
@@ -45,20 +49,80 @@ const columns: TableColumnList = [
       return h(SealBtn, {
         data: data.row,
         detailClick: () => {
-          http.get(`/app/userAuthentication/seal/recordDownload`, {
-            params: {
-              id: data.row.id
-            }
-          }).then((res: any) => {
-            downloadByData(res, (data.row.id + '.pdf'));
-            console.log(res)
-          })
+          http
+            .get(
+              `/app/userAuthentication/seal/recordDownload`,
+              {
+                params: {
+                  id: data.row.id
+                }
+              },
+              {
+                responseType: "blob"
+              }
+            )
+            .then(blob => {
+              // 创建一个带有Blob URL的对象URL
+              const blobUrl = URL.createObjectURL(blob);
+              // 创建一个隐藏的<a>元素用于触发下载
+              const a = document.createElement("a");
+              a.style.display = "none";
+              a.href = blobUrl;
+              a.download = data.row.id + `.pdf`; // 设置下载文件名
+
+              // 将<a>元素添加到DOM中
+              document.body.appendChild(a);
+
+              // 模拟点击以触发下载
+              a.click();
+
+              // 下载完成后移除<a>元素并释放对象URL
+              document.body.removeChild(a);
+              URL.revokeObjectURL(blobUrl);
+            })
+            .catch(error =>
+              console.error(
+                "There was a problem with the fetch operation:",
+                error
+              )
+            );
         }
       });
     },
     align: "center"
   }
 ];
+
+async function downloadPdf(url, filename = "document.pdf") {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    // 获取响应体作为 Blob
+    const blob = await response.blob();
+
+    // 创建一个临时的 <a> 元素用于触发下载
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename; // 设置下载文件名
+
+    // 将 <a> 元素添加到 DOM 中（虽然它是隐藏的）
+    document.body.appendChild(link);
+
+    // 触发点击事件以开始下载
+    link.click();
+
+    // 下载完成后移除 <a> 元素
+    document.body.removeChild(link);
+
+    // 释放对象 URL
+    URL.revokeObjectURL(link.href);
+  } catch (error) {
+    console.error("There was a problem with the fetch operation:", error);
+  }
+}
 
 const form = reactive({
   name: "",
@@ -75,14 +139,14 @@ const tableData = ref({
 const getList = async () => {
   // const {data} = await http.post(`/app/signRequestFile/page`)
   // console.log('......', data)
-  const {data} = await getUserAuthentication(tableData.value.current)
+  const { data } = await getUserAuthentication(tableData.value.current);
   console.log(data);
   tableData.value = data;
 };
 
-const currentChange = async (e) => {
-  tableData.value.current = e
-  await getList()
+const currentChange = async e => {
+  tableData.value.current = e;
+  await getList();
 };
 getList();
 </script>

@@ -1,18 +1,25 @@
 <script setup lang="ts">
 import { getSignRequestFile } from "@/api/test";
 import { tableData } from "@/views/table/base/data";
-import { h } from "vue";
+import { h, ref } from "vue";
 import Btn from "@/views/signSeal/SignManage/btn/index.vue";
+
+const state = ref({
+  current: 1,
+  size: 10,
+  records: [],
+  total: 0
+});
 
 const getList = async () => {
   const { data } = await getSignRequestFile(1);
-  console.log(data)
+  state.value = data;
 };
 
 const columns: TableColumnList = [
   {
     label: "文档名称",
-    prop: "date",
+    prop: "id",
     align: "center"
   },
   {
@@ -49,7 +56,7 @@ getList();
 
 <template>
   <div class="recent">
-    <pure-table :data="tableData" :columns="columns" />
+    <pure-table :data="state.records" :columns="columns" />
   </div>
 </template>
 
