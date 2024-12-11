@@ -247,7 +247,7 @@ const getSeal = () => {
             </div>
             <div class="content">
               <h2 class="h_2">
-                {{auth.authenticationName}}</h2>
+                {{ auth.authenticationName }}</h2>
               <p class="p-2">{{ auth.subjectId }}</p>
               <p>
                 <span class="black tag">企业单位</span>
