@@ -9,6 +9,7 @@ import {fp} from "@/utils";
 import {deviceDetection} from "@pureadmin/utils";
 import {useMainStore} from "@/store/useMainStore";
 import {useSeal} from "@/store/useSeal";
+import {closeAllDialog} from "@/components/ReDialog/index";
 
 const {screen} = storeToRefs(useMainStore());
 
@@ -73,6 +74,7 @@ const sign = () => {
           }
         })
         .then(res => {
+          closeAllDialog()
           localStorage.setItem("sealInfo", JSON.stringify(res.data));
           ElMessage.success("已发起");
           router.push("/pdf");
