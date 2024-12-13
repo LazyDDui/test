@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { fabric } from "fabric";
+import {fabric} from "fabric";
 import draggable from "vuedraggable";
 import * as PDFJS from "pdfjs-dist";
-import { uniq, uniqBy } from "lodash";
-import { computed, nextTick, onMounted, ref, toRaw, watch } from "vue";
+import {uniq, uniqBy} from "lodash";
+import {computed, nextTick, onMounted, ref, toRaw, watch} from "vue";
 
 // @ts-ignore
 const workerSrc = import("pdfjs-dist/build/pdf.worker.entry");
@@ -35,7 +35,7 @@ const props = defineProps<{
   info: {
     position: boolean;
     all: boolean;
-  }
+  };
 }>();
 
 const emit = defineEmits(["change"]);
@@ -62,7 +62,7 @@ onMounted(() => {
 // 渲染单页到 Canvas
 const renderPageToCanvas = async (pageNum: number) => {
   const page = await pdfDoc.value.getPage(pageNum);
-  const viewport = page.getViewport({ scale: scale.value });
+  const viewport = page.getViewport({scale: scale.value});
 
   const canvasElement = document.createElement("canvas");
   const context = canvasElement.getContext("2d");
@@ -93,7 +93,7 @@ watch(
       // eleCanvas.style = 'border:1px solid #5ea6ef'
     }
   },
-  { deep: true }
+  {deep: true}
 );
 
 watch(
@@ -102,7 +102,7 @@ watch(
     commonSign(pageNum.value);
     queueRenderPage(pageNum.value);
   },
-  { deep: true }
+  {deep: true}
 );
 
 watch(
@@ -111,7 +111,7 @@ watch(
     pdfUrl.value = props.pdfFlow;
     showpdf(pdfUrl.value);
   },
-  { deep: true }
+  {deep: true}
 );
 
 const renderPage = (num: any) => {
@@ -120,10 +120,11 @@ const renderPage = (num: any) => {
   return toRaw(pdfDoc.value)
     .getPage(num)
     .then((page: any) => {
-      let viewport = page.getViewport({ scale: scale.value }); //设置视口大小
+      let viewport = page.getViewport({scale: scale.value}); //设置视口大小
 
       width.value = viewport.width > width.value ? viewport.width : width.value;
-      height.value = viewport.height > height.value ? viewport.height : height.value;
+      height.value =
+        viewport.height > height.value ? viewport.height : height.value;
 
       // pdf 区域 (取最大的页面的尺寸 pdf页面大小不同会导致拖拽区域偏差)
       canvas.value.width = width.value;
@@ -172,6 +173,7 @@ const queueRenderPage = (num: any) => {
 };
 
 const prevPage = () => {
+  console.log('....')
   confirmSignature();
   if (pageNum.value <= 1) {
     return;
@@ -201,7 +203,7 @@ const showpdf = (pdfUrl: any) => {
     rangeChunkSize: 65536,
     disableAutoFetch: false
     // cMapUrl: "/static/cmaps/"
-  }).promise.then((pdfDoc_) => {
+  }).promise.then(pdfDoc_ => {
     pdfDoc.value = pdfDoc_;
     numPages.value = pdfDoc.value.numPages;
     emit("change", {
@@ -219,7 +221,12 @@ const showpdf = (pdfUrl: any) => {
         let datas = caches[pageNum.value];
         if (datas != null && datas != undefined) {
           for (let index in datas) {
-            addSeal(datas[index].sealUrl.img, datas[index].left, datas[index].top, datas[index].index);
+            addSeal(
+              datas[index].sealUrl.img,
+              datas[index].left,
+              datas[index].top,
+              datas[index].index
+            );
           }
         }
       }
@@ -238,10 +245,13 @@ const renderPdf = (data: any) => {
 // 相关事件操作
 const canvasEvents = () => {
   // 拖拽边界 不能将图片拖拽到绘图区域外
-  canvasEle.value.on("object:moving", function(e: any) {
+  canvasEle.value.on("object:moving", function (e: any) {
     var obj = e.target;
     // if object is too big ignore
-    if (obj.currentHeight > obj.canvas.height || obj.currentWidth > obj.canvas.width) {
+    if (
+      obj.currentHeight > obj.canvas.height ||
+      obj.currentWidth > obj.canvas.width
+    ) {
       return;
     }
     obj.setCoords();
@@ -252,11 +262,25 @@ const canvasEvents = () => {
     }
     // bot-right corner
     if (
-      obj.getBoundingRect().top + obj.getBoundingRect().height > obj.canvas.height ||
-      obj.getBoundingRect().left + obj.getBoundingRect().width > obj.canvas.width
+      obj.getBoundingRect().top + obj.getBoundingRect().height >
+      obj.canvas.height ||
+      obj.getBoundingRect().left + obj.getBoundingRect().width >
+      obj.canvas.width
     ) {
-      obj.top = Math.min(obj.top, obj.canvas.height - obj.getBoundingRect().height + obj.top - obj.getBoundingRect().top);
-      obj.left = Math.min(obj.left, obj.canvas.width - obj.getBoundingRect().width + obj.left - obj.getBoundingRect().left);
+      obj.top = Math.min(
+        obj.top,
+        obj.canvas.height -
+        obj.getBoundingRect().height +
+        obj.top -
+        obj.getBoundingRect().top
+      );
+      obj.left = Math.min(
+        obj.left,
+        obj.canvas.width -
+        obj.getBoundingRect().width +
+        obj.left -
+        obj.getBoundingRect().left
+      );
     }
   });
 };
@@ -275,7 +299,6 @@ const addSeal = async (sealUrl: any, left: any, top: any, index: any) => {
     oImg.scale(0.2); //图片缩小一
     canvasEle.value.add(oImg);
   });
-
 };
 
 // 删除签章
@@ -291,7 +314,12 @@ const commonSign = (pageNum: any, isFirst = false) => {
     let datas = caches[pageNum];
     if (datas != null && datas != undefined) {
       for (let index in datas) {
-        addSeal(datas[index].sealUrl.img, datas[index].left, datas[index].top, datas[index].index);
+        addSeal(
+          datas[index].sealUrl.img,
+          datas[index].left,
+          datas[index].top,
+          datas[index].index
+        );
       }
     }
   }
@@ -312,7 +340,6 @@ const confirmSignature = () => {
   // let sealUrl = '';
 
   for (let val of data) {
-
     // 超出pdf区域的坐标信息不缓存
     if (val.left > width.value || val.top > height.value) {
       break;
@@ -361,65 +388,100 @@ const clearSignature = () => {
 };
 
 const end = (e: any) => {
-  addSeal(mainImagelist.value[e.newDraggableIndex].img, e.originalEvent.layerX, e.originalEvent.layerY, e.newDraggableIndex);
+  addSeal(
+    mainImagelist.value[e.newDraggableIndex].img,
+    e.originalEvent.layerX,
+    e.originalEvent.layerY,
+    e.newDraggableIndex
+  );
 };
 
-defineExpose({ confirmSignature, clearSignature });
+defineExpose({confirmSignature, clearSignature});
 </script>
 
 <template>
-  <div id="elesign" class="elesign">
-    <el-row>
-      <el-col span="20" class="pCenter">
-        <div class="page">
-          <el-button class="btn-outline-dark" @click="prevPage">上一页</el-button>
-          <el-button class="btn-outline-dark" @click="nextPage">下一页</el-button>
-          <el-button class="btn-outline-dark">{{ pageNum }}/{{ numPages }}页</el-button>
-          <el-input-number
-            style="margin: 0 5px; border-radius: 5px"
-            class="btn-outline-dark"
-            v-model="pageNum"
-            :min="1"
-            :max="numPages"
-            label="输入页码"
-          ></el-input-number>
-          <el-button class="btn-outline-dark" @click="cutover">跳转</el-button>
-        </div>
-        <canvas id="the-canvas" />
-        <!-- 盖章部分 -->
-        <canvas id="ele-canvas"></canvas>
-        <div class="ele-control" style="margin-bottom: 2%">
-          <el-button class="btn-outline-dark" @click="removeSignature"> 删除签章</el-button>
-          <el-button class="btn-outline-dark" @click="clearSignature"> 清除所有签章</el-button>
-        </div>
-      </el-col>
-      <el-col span="4" style="padding: 60px">
-        <div class="left-title">我的印章</div>
-        <div style="max-height: 700px; overflow: auto" class="img_list">
-          <!--					 <img class="imgstyle" width="100%;" v-for="item in mainImagelist" :src="item.img" />-->
-          <draggable :list="mainImagelist" animation="300" :sort="false" @end="end">
-            <template #item="{ element }">
-              <div class="item" :style="{border:selectImg.find((i)=>i.id == element.id)?`solid 1px red`:``}">
-                <img @click="()=>{
-                  if(selectImg.find((i)=>i.id == element.id)){
-                    const index = selectImg.findIndex((i)=>i.id == element.id)
-                    selectImg.splice(index,1)
-
-                  }else {
-                    selectImg.push(element)
+  <el-row style="display: flex; background-color: #e7e2e2">
+    <div class="pCenter" style="padding-top: 100px">
+      <div class="page">
+        <el-button type="primary" @click="prevPage">上一页</el-button>
+        <el-button type="primary" @click="nextPage">下一页</el-button>
+        <el-button class="btn-outline-dark"
+        >{{ pageNum }}/{{ numPages }}页
+        </el-button>
+        <el-input-number
+          v-model="pageNum"
+          style="margin: 0 5px; border-radius: 5px"
+          class="btn-outline-dark"
+          :min="1"
+          :max="numPages"
+          label="输入页码"
+        />
+        <el-button class="btn-outline-dark" @click="cutover">跳转</el-button>
+      </div>
+      <canvas id="the-canvas"/>
+      <!-- 盖章部分 -->
+      <canvas id="ele-canvas"/>
+      <div class="ele-control" style="margin-bottom: 2%">
+        <el-button class="btn-outline-dark" @click="removeSignature">
+          删除签章
+        </el-button>
+        <el-button class="btn-outline-dark" @click="clearSignature">
+          清除所有签章
+        </el-button>
+      </div>
+    </div>
+    <div style="padding: 60px">
+      <div class="left-title" style="color: red">我的印章</div>
+      <div
+        style="max-height: 700px; overflow: auto; background-color: red"
+        class="img_list"
+      >
+        <!--					 <img class="imgstyle" width="100%;" v-for="item in mainImagelist" :src="item.img" />-->
+        <draggable
+          :list="mainImagelist"
+          animation="300"
+          :sort="false"
+          @end="end"
+        >
+          <template #item="{ element }">
+            <div
+              class="item"
+              :style="{
+                border: selectImg.find(i => i.id == element.id)
+                  ? `solid 1px red`
+                  : ``
+              }"
+            >
+              <img
+                :src="element.img"
+                width="100%;"
+                height="100%"
+                class="imgstyle"
+                @click="
+                  () => {
+                    if (selectImg.find(i => i.id == element.id)) {
+                      const index = selectImg.findIndex(
+                        i => i.id == element.id
+                      );
+                      selectImg.splice(index, 1);
+                    } else {
+                      selectImg.push(element);
+                    }
                   }
-                }" :src="element.img" width="100%;" height="100%" class="imgstyle" />
-              </div>
-            </template>
-          </draggable>
-        </div>
-      </el-col>
-    </el-row>
-  </div>
+                "
+              />
+            </div>
+          </template>
+        </draggable>
+      </div>
+    </div>
+  </el-row>
 </template>
 <style lang="scss" scoped>
 .pCenter {
   //overflow-x: hidden;
+  background-color: red;
+  padding: 60px;
 }
 
 #the-canvas {
@@ -572,7 +634,16 @@ li {
   //border-radius: 8px;
   background: #3e4b5b;
   background-color: skyblue;
-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+  background-image: -webkit-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.2) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.2) 75%,
+      transparent 75%,
+      transparent
+  );
 }
 
 .img_list::-webkit-scrollbar-track {
@@ -586,4 +657,3 @@ li {
   //opacity: 0.5;
 }
 </style>
-

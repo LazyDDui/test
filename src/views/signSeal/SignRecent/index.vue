@@ -96,5 +96,7 @@ const columns: TableColumnList = [
 <style scoped lang="scss">
 .recent {
   padding: 20px;
+  height: 440px;
+  overflow-y: scroll;
 }
 </style>

@@ -35,7 +35,7 @@ const props = defineProps<{
   info: {
     position: boolean;
     all: boolean;
-  }
+  };
 }>();
 
 const emit = defineEmits(["change"]);
@@ -123,7 +123,8 @@ const renderPage = (num: any) => {
       let viewport = page.getViewport({ scale: scale.value }); //设置视口大小
 
       width.value = viewport.width > width.value ? viewport.width : width.value;
-      height.value = viewport.height > height.value ? viewport.height : height.value;
+      height.value =
+        viewport.height > height.value ? viewport.height : height.value;
 
       // pdf 区域 (取最大的页面的尺寸 pdf页面大小不同会导致拖拽区域偏差)
       canvas.value.width = width.value;
@@ -201,7 +202,7 @@ const showpdf = (pdfUrl: any) => {
     rangeChunkSize: 65536,
     disableAutoFetch: false
     // cMapUrl: "/static/cmaps/"
-  }).promise.then((pdfDoc_) => {
+  }).promise.then(pdfDoc_ => {
     pdfDoc.value = pdfDoc_;
     numPages.value = pdfDoc.value.numPages;
     emit("change", {
@@ -219,7 +220,12 @@ const showpdf = (pdfUrl: any) => {
         let datas = caches[pageNum.value];
         if (datas != null && datas != undefined) {
           for (let index in datas) {
-            addSeal(datas[index].sealUrl.img, datas[index].left, datas[index].top, datas[index].index);
+            addSeal(
+              datas[index].sealUrl.img,
+              datas[index].left,
+              datas[index].top,
+              datas[index].index
+            );
           }
         }
       }
@@ -238,10 +244,13 @@ const renderPdf = (data: any) => {
 // 相关事件操作
 const canvasEvents = () => {
   // 拖拽边界 不能将图片拖拽到绘图区域外
-  canvasEle.value.on("object:moving", function(e: any) {
+  canvasEle.value.on("object:moving", function (e: any) {
     var obj = e.target;
     // if object is too big ignore
-    if (obj.currentHeight > obj.canvas.height || obj.currentWidth > obj.canvas.width) {
+    if (
+      obj.currentHeight > obj.canvas.height ||
+      obj.currentWidth > obj.canvas.width
+    ) {
       return;
     }
     obj.setCoords();
@@ -252,11 +261,25 @@ const canvasEvents = () => {
     }
     // bot-right corner
     if (
-      obj.getBoundingRect().top + obj.getBoundingRect().height > obj.canvas.height ||
-      obj.getBoundingRect().left + obj.getBoundingRect().width > obj.canvas.width
+      obj.getBoundingRect().top + obj.getBoundingRect().height >
+        obj.canvas.height ||
+      obj.getBoundingRect().left + obj.getBoundingRect().width >
+        obj.canvas.width
     ) {
-      obj.top = Math.min(obj.top, obj.canvas.height - obj.getBoundingRect().height + obj.top - obj.getBoundingRect().top);
-      obj.left = Math.min(obj.left, obj.canvas.width - obj.getBoundingRect().width + obj.left - obj.getBoundingRect().left);
+      obj.top = Math.min(
+        obj.top,
+        obj.canvas.height -
+          obj.getBoundingRect().height +
+          obj.top -
+          obj.getBoundingRect().top
+      );
+      obj.left = Math.min(
+        obj.left,
+        obj.canvas.width -
+          obj.getBoundingRect().width +
+          obj.left -
+          obj.getBoundingRect().left
+      );
     }
   });
 };
@@ -275,7 +298,6 @@ const addSeal = async (sealUrl: any, left: any, top: any, index: any) => {
     oImg.scale(0.2); //图片缩小一
     canvasEle.value.add(oImg);
   });
-
 };
 
 // 删除签章
@@ -291,7 +313,12 @@ const commonSign = (pageNum: any, isFirst = false) => {
     let datas = caches[pageNum];
     if (datas != null && datas != undefined) {
       for (let index in datas) {
-        addSeal(datas[index].sealUrl.img, datas[index].left, datas[index].top, datas[index].index);
+        addSeal(
+          datas[index].sealUrl.img,
+          datas[index].left,
+          datas[index].top,
+          datas[index].index
+        );
       }
     }
   }
@@ -312,7 +339,6 @@ const confirmSignature = () => {
   // let sealUrl = '';
 
   for (let val of data) {
-
     // 超出pdf区域的坐标信息不缓存
     if (val.left > width.value || val.top > height.value) {
       break;
@@ -361,7 +387,12 @@ const clearSignature = () => {
 };
 
 const end = (e: any) => {
-  addSeal(mainImagelist.value[e.newDraggableIndex].img, e.originalEvent.layerX, e.originalEvent.layerY, e.newDraggableIndex);
+  addSeal(
+    mainImagelist.value[e.newDraggableIndex].img,
+    e.originalEvent.layerX,
+    e.originalEvent.layerY,
+    e.newDraggableIndex
+  );
 };
 
 defineExpose({ confirmSignature, clearSignature });
@@ -369,61 +400,114 @@ defineExpose({ confirmSignature, clearSignature });
 
 <template>
   <div id="elesign" class="elesign">
-    <el-row>
-      <el-col span="20" class="pCenter">
+    <div style="display: flex">
+      <div class="pCenter">
         <div class="page">
-          <el-button class="btn-outline-dark" @click="prevPage">上一页</el-button>
-          <el-button class="btn-outline-dark" @click="nextPage">下一页</el-button>
-          <el-button class="btn-outline-dark">{{ pageNum }}/{{ numPages }}页</el-button>
+          <el-button class="btn-outline-dark" @click="prevPage"
+            >上一页</el-button
+          >
+          <el-button class="btn-outline-dark" @click="nextPage"
+            >下一页</el-button
+          >
+          <el-button class="btn-outline-dark"
+            >{{ pageNum }}/{{ numPages }}页
+          </el-button>
           <el-input-number
+            v-model="pageNum"
             style="margin: 0 5px; border-radius: 5px"
             class="btn-outline-dark"
-            v-model="pageNum"
             :min="1"
             :max="numPages"
             label="输入页码"
-          ></el-input-number>
+          />
           <el-button class="btn-outline-dark" @click="cutover">跳转</el-button>
         </div>
         <canvas id="the-canvas" />
         <!-- 盖章部分 -->
-        <canvas id="ele-canvas"></canvas>
-        <div class="ele-control" style="margin-bottom: 2%">
-          <el-button class="btn-outline-dark" @click="removeSignature"> 删除签章</el-button>
-          <el-button class="btn-outline-dark" @click="clearSignature"> 清除所有签章</el-button>
-        </div>
-      </el-col>
-      <el-col span="4" style="padding: 60px">
+        <canvas id="ele-canvas" />
+      </div>
+      <div
+        style="
+          margin-left: 20px;
+          flex: 1;
+          padding: 60px;
+          background-color: #fff;
+          position: relative;
+          transform: translateY(-10px);
+        "
+      >
         <div class="left-title">我的印章</div>
         <div style="max-height: 700px; overflow: auto" class="img_list">
           <!--					 <img class="imgstyle" width="100%;" v-for="item in mainImagelist" :src="item.img" />-->
-          <draggable :list="mainImagelist" animation="300" :sort="false" @end="end">
+          <draggable
+            :list="mainImagelist"
+            animation="300"
+            :sort="false"
+            style="
+              display: flex;
+              flex-wrap: wrap;
+              border-top: 1px dashed #42090c;
+              border-bottom: 1px dashed #42090c;
+              padding-top: 20px;
+              padding-bottom: 20px;
+            "
+            @end="end"
+          >
             <template #item="{ element }">
-              <div class="item" :style="{border:selectImg.find((i)=>i.id == element.id)?`solid 1px red`:``}">
-                <img @click="()=>{
-                  if(selectImg.find((i)=>i.id == element.id)){
-                    const index = selectImg.findIndex((i)=>i.id == element.id)
-                    selectImg.splice(index,1)
-
-                  }else {
-                    selectImg.push(element)
-                  }
-                }" :src="element.img" width="100%;" height="100%" class="imgstyle" />
+              <div
+                class="item"
+                :style="{
+                  marginBottom: '10px',
+                  marginLeft: '10px'
+                }"
+              >
+                <img
+                  :src="element.img"
+                  width="100%;"
+                  height="100%"
+                  class="imgstyle"
+                  :style="{
+                    border: selectImg.find(i => i.id == element.id)
+                      ? `dashed 1px red`
+                      : `dashed 1px #e8eef2`
+                  }"
+                  @click="
+                    () => {
+                      if (selectImg.find(i => i.id == element.id)) {
+                        const index = selectImg.findIndex(
+                          i => i.id == element.id
+                        );
+                        selectImg.splice(index, 1);
+                      } else {
+                        selectImg.push(element);
+                      }
+                    }
+                  "
+                />
               </div>
             </template>
           </draggable>
         </div>
-      </el-col>
-    </el-row>
+        <div class="ele-control" style="margin-bottom: 2%">
+          <el-button type="danger" @click="removeSignature">
+            删除签章
+          </el-button>
+          <el-button type="danger" @click="clearSignature">
+            清除所有签章
+          </el-button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <style lang="scss" scoped>
 .pCenter {
   //overflow-x: hidden;
+  padding-left: 40px;
 }
 
 #the-canvas {
-  margin-top: 10px;
+  margin-top: 14px;
 }
 
 html:fullscreen {
@@ -447,7 +531,7 @@ html:fullscreen {
 }
 
 #ele-canvas {
-  border: 1px solid #5ea6ef;
+  border: 1px dashed #42090c;
   overflow: hidden;
   mix-blend-mode: multiply !important;
 }
@@ -491,9 +575,10 @@ html:fullscreen {
 
 .left-title {
   text-align: center;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
   height: 36px;
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 
 li {
@@ -504,7 +589,6 @@ li {
 .imgstyle {
   vertical-align: middle;
   width: 130px;
-  border: solid 1px #e8eef2;
   background-repeat: no-repeat;
   margin-bottom: 10px;
   mix-blend-mode: multiply;
@@ -572,7 +656,16 @@ li {
   //border-radius: 8px;
   background: #3e4b5b;
   background-color: skyblue;
-  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+  background-image: -webkit-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.2) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.2) 75%,
+    transparent 75%,
+    transparent
+  );
 }
 
 .img_list::-webkit-scrollbar-track {
@@ -586,4 +679,3 @@ li {
   //opacity: 0.5;
 }
 </style>
-

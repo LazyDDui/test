@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import Pdf from "@/components/Pdf/index.vue";
-import {onMounted, ref, toRaw} from "vue";
-import {getSealImg} from "@/api/test";
-import {ElMessage} from "element-plus";
-import {useRoute} from "vue-router";
-import {http} from "@/utils/http";
-import {request} from "axios";
-import {storeToRefs} from "pinia";
-import {useSeal} from "@/store/useSeal";
+import { onMounted, ref, toRaw } from "vue";
+import { getSealImg } from "@/api/test";
+import { ElMessage } from "element-plus";
+import { useRoute } from "vue-router";
+import { http } from "@/utils/http";
+import { request } from "axios";
+import { storeToRefs } from "pinia";
+import { useSeal } from "@/store/useSeal";
 
 const sign = ref();
 const psw = ref();
@@ -28,10 +28,10 @@ const imgs = ref<any[]>([]);
 
 const error = ref(false);
 
-const {getSubjectId} = useSeal();
+const { getSubjectId } = useSeal();
 
 const getSeal = async () => {
-  const {data} = await getSealImg(getSubjectId());
+  const { data } = await getSealImg(getSubjectId());
   imgList.value = data.map(item => ({
     ...item,
     id: item.sealSn,
@@ -138,19 +138,19 @@ const submit = async () => {
               signList: info.value.all
                 ? [...sealArr, ...r]
                 : [
-                  ...sealList.value.map((item: any) => {
-                    return {
-                      sealSn: item.sealUrl.sealSn,
-                      posPages: item.pageNum,
-                      posX: Number((item.left / item.width).toFixed(3)),
-                      posY: Number(
-                        ((item.height - item.top) / item.height).toFixed(3)
-                      ),
-                      sealSignType: "0"
-                    };
-                  }),
-                  ...r
-                ]
+                    ...sealList.value.map((item: any) => {
+                      return {
+                        sealSn: item.sealUrl.sealSn,
+                        posPages: item.pageNum,
+                        posX: Number((item.left / item.width).toFixed(3)),
+                        posY: Number(
+                          ((item.height - item.top) / item.height).toFixed(3)
+                        ),
+                        sealSignType: "0"
+                      };
+                    }),
+                    ...r
+                  ]
             }
           ]
         }
@@ -237,95 +237,106 @@ const qfAll = ref(false);
 </script>
 
 <template>
-  <div>
-    <el-row>
-      <el-button type="warning" style="flex: 1" @click="signFn">签署</el-button>
-      <el-button
-        :type="info.position ? `success` : `info`"
-        style="flex: 1"
-        @click="info.position = true"
-      >绝对定位印章
-      </el-button>
-      <el-button
-        :type="!info.position ? `success` : `info`"
-        style="flex: 1"
-        @click="
-          info.position = false;
-          qfShow = true;
-        "
-      >
-        骑缝章
-      </el-button>
-      <el-button
-        :type="info.all ? `success` : `info`"
-        style="flex: 1"
-        @click="info.all = !info.all"
-      >是否多页
-      </el-button>
-    </el-row>
-    <el-dialog v-model="qfShow" title="骑缝章" width="500">
-      <div>
-        是否多页:
-        <el-switch v-model="qfAll"/>
-        <el-row
-          v-for="(item, index) in imgList"
-          :key="index"
-          style="display: flex; margin-bottom: 10px"
+  <div style="background-color: #f3f1f1">
+    <el-row class="header">
+      <el-row>
+        <el-button type="text" style="flex: 1" @click="signFn">签署 </el-button>
+        <el-button
+          :type="info.position ? `primary` : `info`"
+          style="flex: 1"
+          @click="info.position = true"
+          >绝对定位印章
+        </el-button>
+        <el-button
+          :type="!info.position ? `primary` : `info`"
+          style="flex: 1"
+          @click="
+            info.position = false;
+            qfShow = true;
+          "
         >
-          <img
-            style="width: 50px; margin-right: 10px; align-items: center"
-            :src="item.img"
-          />
-          <div>位置：</div>
-          <el-input
-            v-model="imgList[index].y"
-            style="width: 200px; height: 40px"
-            type="text"
-            maxlength="6"
-          />
-        </el-row>
-      </div>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="qfShow = false">退出</el-button>
-          <el-button
-            type="primary"
-            @click="
-              () => {
-                qfShow = false;
-              }
-            "
+          骑缝章
+        </el-button>
+        <el-button
+          :type="info.all ? `primary` : `info`"
+          style="flex: 1"
+          @click="info.all = !info.all"
+          >是否多页
+        </el-button>
+      </el-row>
+      <el-dialog v-model="qfShow" title="骑缝章" width="500">
+        <div>
+          是否多页:
+          <el-switch v-model="qfAll" />
+          <el-row
+            v-for="(item, index) in imgList"
+            :key="index"
+            style="display: flex; margin-bottom: 10px"
           >
-            确认
-          </el-button>
+            <img
+              style="width: 50px; margin-right: 10px; align-items: center"
+              :src="item.img"
+            />
+            <div>位置：</div>
+            <el-input
+              v-model="imgList[index].y"
+              style="width: 200px; height: 40px"
+              type="text"
+              maxlength="6"
+            />
+          </el-row>
         </div>
-      </template>
-    </el-dialog>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="qfShow = false">退出</el-button>
+            <el-button
+              type="primary"
+              @click="
+                () => {
+                  qfShow = false;
+                }
+              "
+            >
+              确认
+            </el-button>
+          </div>
+        </template>
+      </el-dialog>
 
-    <el-dialog v-model="show" title="签署密码" width="500">
-      <el-input v-model="psw" type="text" maxlength="6"/>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button @click="show = false">退出</el-button>
-          <el-button type="primary" @click="submit"> 确认</el-button>
-        </div>
-      </template>
-    </el-dialog>
+      <el-dialog v-model="show" title="签署密码" width="500">
+        <el-input v-model="psw" type="text" maxlength="6" />
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="show = false">退出</el-button>
+            <el-button type="primary" @click="submit"> 确认</el-button>
+          </div>
+        </template>
+      </el-dialog>
+    </el-row>
+    <div>
+      <Pdf
+        v-if="imgList.length > 0"
+        ref="sign"
+        :img-list="imgList"
+        :pdf-flow="pdf"
+        :info="info"
+        @change="
+          e => {
+            pdfInfo = e;
+            console.log(e);
+          }
+        "
+      />
+    </div>
   </div>
-
-  <Pdf
-    v-if="imgList.length > 0"
-    ref="sign"
-    :img-list="imgList"
-    :pdf-flow="pdf"
-    :info="info"
-    @change="
-      e => {
-        pdfInfo = e;
-        console.log(e);
-      }
-    "
-  />
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.header {
+  background-color: rgba(66, 9, 12, 0.95);
+  width: 100%;
+  justify-content: center;
+  padding: 20px;
+  margin-bottom: 10px;
+}
+</style>
