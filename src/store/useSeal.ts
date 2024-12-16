@@ -10,7 +10,13 @@ import { defineStore } from "pinia";
 import { getSignRequestFile } from "@/api/test";
 
 export const useSeal = defineStore("seal", () => {
-  const auth = ref({});
+  const auth = ref<any>({});
+
+  const userStatus = ref(false);
+
+  const setUserStatus = (status: boolean) => {
+    userStatus.value = status;
+  };
 
   const fileList = ref<any[]>([]);
 
@@ -78,6 +84,8 @@ export const useSeal = defineStore("seal", () => {
     getSubjectId,
     list,
     fileList,
-    getList
+    getList,
+    setUserStatus,
+    userStatus
   };
 });

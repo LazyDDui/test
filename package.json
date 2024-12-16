@@ -68,6 +68,7 @@
     "cropperjs": "^1.6.2",
     "dayjs": "^1.11.11",
     "dplayer": "^1.27.1",
+    "drawstamputils": "^0.2.1",
     "echarts": "^5.5.0",
     "el-table-infinite-scroll": "^3.0.5",
     "element-plus": "^2.7.5",

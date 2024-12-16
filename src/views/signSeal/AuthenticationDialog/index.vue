@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h, reactive, ref, toRaw } from "vue";
+import {h, reactive, ref, toRaw} from "vue";
 import Btn from "@/views/signSeal/AuthenticationDialog/btn/index.vue";
 import {
   addDialog,
@@ -15,13 +15,14 @@ import {
   changeAuthentication,
   getCurrentAuthentication
 } from "@/api/test";
-import { useSeal } from "@/store/useSeal";
-import { storeToRefs } from "pinia";
-import { ElMessage } from "element-plus";
-import { http } from "@/utils/http";
+import {useSeal} from "@/store/useSeal";
+import {storeToRefs} from "pinia";
+import {ElMessage} from "element-plus";
+import {http} from "@/utils/http";
+import {CertStatusMap} from "@/utils/map";
 
-const { setAuth } = useSeal();
-const { auth } = storeToRefs(useSeal());
+const {setAuth} = useSeal();
+const {auth} = storeToRefs(useSeal());
 type ShTable = {
   cols: TableColumnList;
   tableData: any[];
@@ -33,14 +34,19 @@ const personData = ref<object>();
 const columns: TableColumnList = [
   {
     label: "名称",
-    prop: "authenticationName"
+    prop: "authenticationName",
+    align: "center"
   },
   {
     label: "类型",
-    prop: "type"
+    align: "center",
+    cellRenderer(data) {
+      return h("div", null, CertStatusMap.get(data.row.status));
+    }
   },
   {
     label: "操作",
+    align: "center",
     cellRenderer(data) {
       return h(Btn, {
         data: data.row,
@@ -58,8 +64,7 @@ const columns: TableColumnList = [
           closeAllDialog();
         }
       });
-    },
-    align: "center"
+    }
   }
 ];
 const currentChange = e => {
@@ -130,9 +135,9 @@ const addAuthentication = () => {
 <template>
   <div>
     <el-button size="small" type="primary" @click="addAuthentication"
-      >新增认证</el-button
-    >
-    <pure-table style="margin-top: 20px" :data="tableData" :columns="columns" />
+    >新增认证
+    </el-button>
+    <pure-table style="margin-top: 20px" :data="tableData" :columns="columns"/>
     <el-row style="margin-top: 20px; justify-content: flex-end; width: 100%">
       <el-pagination
         background

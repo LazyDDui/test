@@ -2,8 +2,7 @@
 import { fp } from "@/utils";
 import { addDialog } from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
-import { h, watch } from "vue";
-import signSeal from "@/views/signSeal/SignManage/index.vue";
+import { h } from "vue";
 import { useRouter } from "vue-router";
 import {
   changeAuthenticationApi,
@@ -18,8 +17,8 @@ import GetSeal from "@/views/signSeal/GetSeal/index.vue";
 import { useSeal } from "@/store/useSeal";
 import { storeToRefs } from "pinia";
 
-const { setAuth } = useSeal();
-const { auth, list } = storeToRefs(useSeal());
+const { setAuth, setUserStatus } = useSeal();
+const { auth, list, userStatus } = storeToRefs(useSeal());
 
 const useSealFn = () => {
   addDialog({
@@ -29,7 +28,7 @@ const useSealFn = () => {
     hideFooter: true
   });
 };
-import { defineComponent, h, ref, toRaw } from "vue";
+import { h, ref } from "vue";
 import { http } from "@/utils/http";
 
 const router = useRouter();
@@ -51,19 +50,24 @@ const toGoPage = () => {
 };
 const userAuthenlicationInfo = ref<any[]>([{}]);
 const getUserAuthenlication = async () => {
-  const res = await userAuthentication();
+  const res: any = await userAuthentication();
   userAuthenlicationInfo.value = res.data.records;
   total.value = res.data.total;
-  setAuth(userAuthenlicationInfo.value[0]);
+  if (res.data.records.length > 0) {
+    setAuth(userAuthenlicationInfo.value[0]);
+    setUserStatus(true);
+  } else {
+    setUserStatus(false);
+  }
 };
 
 const getUserAuthenlicationList = async () => {
   const res = await userAuthentication();
   userAuthenlicationInfo.value = res.data.records;
   total.value = res.data.total;
-}
+};
 
-const authenlicationCol = [
+const authenlicationCol: TableColumnList = [
   {
     label: "名称",
     prop: "authenticationName",
@@ -82,14 +86,14 @@ const changeAuthentication = () => {
     contentRenderer() {
       return h(AuthticaltionTable, {
         tableData: userAuthenlicationInfo.value,
-        cols: authenlicationCol.value,
+        cols: authenlicationCol,
         total: total.value
       });
     },
     hideFooter: true,
     open() {
-      getUserAuthenlicationList()
-    },
+      getUserAuthenlicationList();
+    }
   });
 };
 //sh
@@ -169,12 +173,16 @@ const getSeal = () => {
                 <img width="14" height="16" :src="fp('signSeal/u3029.png')" />
                 <span class="pdl-5">认证信息</span>
               </p>
-              <p class="more blue" @click="changeAuthentication()">
+              <p
+                v-if="userStatus"
+                class="more blue"
+                @click="changeAuthentication()"
+              >
                 <span class="pdr-5">切换认证</span
                 ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
               </p>
             </div>
-            <div class="content">
+            <div v-if="userStatus" class="content">
               <h2 class="h_2">
                 {{ auth?.authenticationName }}
               </h2>
@@ -183,6 +191,12 @@ const getSeal = () => {
                 <span class="black tag">企业单位</span>
                 <span class="green tag">已认证</span>
               </p>
+            </div>
+            <div v-else class="content">
+              <el-button type="danger" style="margin-bottom: 10px">
+                未认证
+              </el-button>
+              <el-button type="text" size="small">前往认证</el-button>
             </div>
           </div>
           <div class="left2">

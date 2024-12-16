@@ -7,3 +7,9 @@ export const SealTypeMap = new Map([
   ["05", "法定代表人名章"],
   ["00", "test"]
 ]);
+
+export const CertStatusMap = new Map([
+  ["00", "正常"],
+  ["01", "待审核"],
+  ["02", "认证失败"]
+]);
