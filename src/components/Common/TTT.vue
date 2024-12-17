@@ -4,6 +4,7 @@ import draggable from "vuedraggable";
 import * as PDFJS from "pdfjs-dist";
 import { uniq, uniqBy } from "lodash";
 import { computed, nextTick, onMounted, ref, toRaw, watch } from "vue";
+
 // @ts-ignore
 const workerSrc = import("pdfjs-dist/build/pdf.worker.entry");
 // @ts-ignore
@@ -26,6 +27,7 @@ let width = ref<number>(0);
 let height = ref<number>(0);
 
 const signData = ref();
+// let mainImagelist = ref<any>([])
 
 const props = defineProps<{
   pdfFlow: any;
@@ -39,6 +41,7 @@ const props = defineProps<{
 const emit = defineEmits(["change"]);
 
 const mainImagelist = computed(() => {
+  console.log(props.imgList);
   return props.imgList;
 });
 
@@ -55,49 +58,30 @@ onMounted(() => {
   // loadAllPages(pdfUrl.value); // 加载所有页面
   // setPdfArea()
 });
-const stamps = ref<string[]>([]);
-// 使用 fabric.js 生成骑缝章
-// 使用 fabric.js 生成竖向骑缝章
-const createPagingStamps = (imageUrl: string, pageCount: number) => {
-  fabric.Image.fromURL(imageUrl, img => {
-    const imgWidth = img.width!;
-    const imgHeight = img.height!;
-    const stampWidth = imgWidth / pageCount; // 每页宽度相等
-    const overlap = stampWidth * 0.1; // 每页的章部分重叠（10%）
 
-    stamps.value = []; // 清空旧结果
-
-    for (let i = 0; i < pageCount; i++) {
-      // 创建裁剪的 Canvas
-      const canvas = new fabric.Canvas(null, {
-        width: stampWidth,
-        height: imgHeight
-      });
-
-      // 克隆图片对象
-      const clippedImage = fabric.util.object.clone(img);
-
-      // 设置裁剪区域
-      clippedImage.set({
-        left: -i * (stampWidth - overlap) // 左移图片，实现裁剪和重叠
-      });
-
-      // 添加图片到 Canvas
-      canvas.add(clippedImage);
-      canvas.setDimensions({ width: imgHeight / 8, height: imgHeight });
-
-      // 渲染裁剪结果
-      canvas.renderAll();
-
-      // 导出为 Base64 图片
-      const dataUrl = canvas.toDataURL({ format: "png" });
-      stamps.value.push(dataUrl);
-
-      // 销毁 canvas 释放内存
-      canvas.dispose();
-    }
-  });
-};
+// 渲染单页到 Canvas
+// const renderPageToCanvas = async (pageNum: number) => {
+//   const page = await pdfDoc.value.getPage(pageNum);
+//   const viewport = page.getViewport({ scale: scale.value });
+//
+//   const canvasElement = document.createElement("canvas");
+//   const context = canvasElement.getContext("2d");
+//   canvasElement.width = viewport.width;
+//   canvasElement.height = viewport.height;
+//
+//   const renderContext = {
+//     canvasContext: context,
+//     viewport
+//   };
+//
+//   const renderTask = page.render(renderContext);
+//   await renderTask.promise;
+//
+//   const container = document.querySelector(".pdf-container");
+//   if (container) {
+//     container.appendChild(canvasElement); // 将 Canvas 添加到页面中
+//   }
+// };
 
 watch(
   () => whDatas.value,
@@ -166,17 +150,21 @@ const renderPage = (num: any) => {
 
 // 生成绘图区域
 const renderFabric = () => {
-  let canvaEle: any = document.querySelector("#ele-canvas");
-  // let pCenter: any = document.querySelector('.pCenter')
-  let pCenter: any = document.querySelector("#the-canvas");
+  console.log(numPages.value);
+  for (let i = 1; i <= numPages.value; i++) {
+    let canvaEle: any = document.querySelector("#ele-canvas");
+    // let pCenter: any = document.querySelector('.pCenter')
+    let pCenter: any = document.querySelector("#the-canvas");
 
-  canvaEle.width = pCenter.clientWidth;
-  canvaEle.height = whDatas.value.height;
+    canvaEle.width = pCenter.clientWidth;
+    canvaEle.height = whDatas.value.height;
 
-  canvasEle.value = new fabric.Canvas(canvaEle);
-  let container: any = document.querySelector(".canvas-container");
-  container.style.position = "absolute";
-  container.style.top = "50px";
+    canvasEle.value = new fabric.Canvas(canvaEle);
+    // let container: any = document.querySelector(".canvas-container");
+    // container.style.position = "absolute";
+    // container.style.top = "50px";
+  }
+
   // container.style.left = "30%";
 };
 
@@ -214,17 +202,12 @@ const showpdf = (pdfUrl: any) => {
   let caches = JSON.parse(localStorage.getItem("signs") as any); //获取缓存字符串后转换为对象
   ctx.value = canvas.value.getContext("2d");
   PDFJS.getDocument({
-    // url: pdfUrl,
-    url: "../../../public/pdf/test.pdf",
+    url: pdfUrl,
     rangeChunkSize: 65536,
     disableAutoFetch: false
-    // cMapUrl: "/static/cmaps/"
   }).promise.then(pdfDoc_ => {
     pdfDoc.value = pdfDoc_;
     numPages.value = pdfDoc.value.numPages;
-    console.log(mainImagelist.value);
-
-    createPagingStamps(mainImagelist.value[0].img, pdfDoc.value.numPages);
     emit("change", {
       numPages: numPages.value
     });
@@ -282,23 +265,23 @@ const canvasEvents = () => {
     // bot-right corner
     if (
       obj.getBoundingRect().top + obj.getBoundingRect().height >
-        obj.canvas.height ||
+      obj.canvas.height ||
       obj.getBoundingRect().left + obj.getBoundingRect().width >
-        obj.canvas.width
+      obj.canvas.width
     ) {
       obj.top = Math.min(
         obj.top,
         obj.canvas.height -
-          obj.getBoundingRect().height +
-          obj.top -
-          obj.getBoundingRect().top
+        obj.getBoundingRect().height +
+        obj.top -
+        obj.getBoundingRect().top
       );
       obj.left = Math.min(
         obj.left,
         obj.canvas.width -
-          obj.getBoundingRect().width +
-          obj.left -
-          obj.getBoundingRect().left
+        obj.getBoundingRect().width +
+        obj.left -
+        obj.getBoundingRect().left
       );
     }
   });
@@ -316,7 +299,6 @@ const addSeal = async (sealUrl: any, left: any, top: any, index: any) => {
       index: index
     });
     oImg.scale(0.2); //图片缩小一
-    console.log(oImg)
     canvasEle.value.add(oImg);
   });
 };
@@ -352,7 +334,6 @@ const iteratee = (item: any) => {
 
 //确认签章位置并保存到缓存
 const confirmSignature = () => {
-
   let data = canvasEle.value.getObjects(); //获取当前页面内的所有签章信息
   let caches: any = JSON.parse(localStorage.getItem("signs") as any); //获取缓存字符串后转换为对象
   data = uniqBy(data, iteratee);
@@ -377,8 +358,6 @@ const confirmSignature = () => {
       scaleY: val.scaleY,
       pageNum: pageNum.value,
       sealUrl: mainImagelist.value[val.index],
-      all: props.info.all,
-      position: props.info.position,
       index: val.index
     };
     i++;
@@ -390,19 +369,6 @@ const confirmSignature = () => {
     caches[pageNum.value] = signDatas;
   }
   localStorage.setItem("signs", JSON.stringify(caches)); //对象转字符串后存储到缓存
-  console.log(caches);
-  if (props.info.all) {
-    addSeal(
-      stamps.value[0],
-      200,
-      300,
-      i
-    );
-    // for (let i = 0; i < numPages.value; i++) {
-    //   console.log(stamps.value);
-    //
-    // }
-  }
 
   let objList = [];
   let arr: any[] = [];
@@ -441,13 +407,13 @@ defineExpose({ confirmSignature, clearSignature });
       <div class="pCenter">
         <div class="page">
           <el-button class="btn-outline-dark" @click="prevPage"
-            >上一页
-          </el-button>
+          >上一页</el-button
+          >
           <el-button class="btn-outline-dark" @click="nextPage"
-            >下一页
-          </el-button>
+          >下一页</el-button
+          >
           <el-button class="btn-outline-dark"
-            >{{ pageNum }}/{{ numPages }}页
+          >{{ pageNum }}/{{ numPages }}页
           </el-button>
           <el-input-number
             v-model="pageNum"
@@ -459,9 +425,14 @@ defineExpose({ confirmSignature, clearSignature });
           />
           <el-button class="btn-outline-dark" @click="cutover">跳转</el-button>
         </div>
-        <canvas id="the-canvas" />
+        <canvas :id="`the-canvas`" />
         <!-- 盖章部分 -->
-        <canvas id="ele-canvas" />
+        <canvas :id="`ele-canvas`" />
+        <!--        <div v-for="(item, index) in numPages" :key="item">-->
+        <!--          <canvas :id="`the-canvas${index}`" />-->
+        <!--          &lt;!&ndash; 盖章部分 &ndash;&gt;-->
+        <!--          <canvas :id="`ele-canvas${index}`" />-->
+        <!--        </div>-->
       </div>
       <div
         style="
@@ -483,8 +454,8 @@ defineExpose({ confirmSignature, clearSignature });
             style="
               display: flex;
               flex-wrap: wrap;
-              border-top: 1px dotted #42090c;
-              border-bottom: 1px dotted #42090c;
+              border-top: 1px dashed #42090c;
+              border-bottom: 1px dashed #42090c;
               padding-top: 20px;
               padding-bottom: 20px;
             "
@@ -535,13 +506,6 @@ defineExpose({ confirmSignature, clearSignature });
         </div>
       </div>
     </div>
-  </div>
-  <div v-for="(stamp, index) in stamps" :key="index" style="margin: 10px">
-    <img
-      :src="stamp"
-      :alt="'骑缝章第' + (index + 1) + '页'"
-      style="border: 1px solid #ddd"
-    />
   </div>
 </template>
 <style lang="scss" scoped>
@@ -701,14 +665,14 @@ li {
   background: #3e4b5b;
   background-color: skyblue;
   background-image: -webkit-linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.2) 25%,
-    transparent 25%,
-    transparent 50%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.2) 75%,
-    transparent 75%,
-    transparent
+      45deg,
+      rgba(255, 255, 255, 0.2) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.2) 75%,
+      transparent 75%,
+      transparent
   );
 }
 
@@ -723,3 +687,4 @@ li {
   //opacity: 0.5;
 }
 </style>
+

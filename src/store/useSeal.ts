@@ -5,14 +5,25 @@
  * @LastEditors: zheng xinyi
  * @LastEditTime: 2024-05-11 17:05:49
  */
-import { ref } from "vue";
-import { defineStore } from "pinia";
-import { getSignRequestFile } from "@/api/test";
+import {ref} from "vue";
+import {defineStore} from "pinia";
+import {getSignRequestFile} from "@/api/test";
+import {http} from "@/utils/http";
 
 export const useSeal = defineStore("seal", () => {
   const auth = ref<any>({});
 
   const userStatus = ref(false);
+
+  const sealManage = ref({
+    total: 0,
+    records: []
+  });
+
+  const getSealManageInfo = async () => {
+    const sealInfo: any = await http.post(`/app/userAuthentication/seal/page`);
+    sealManage.value = sealInfo.data;
+  };
 
   const setUserStatus = (status: boolean) => {
     userStatus.value = status;
@@ -21,7 +32,7 @@ export const useSeal = defineStore("seal", () => {
   const fileList = ref<any[]>([]);
 
   const getList = async page => {
-    const { data } = await getSignRequestFile(page);
+    const {data} = await getSignRequestFile(page);
     fileList.value = data;
   };
 
@@ -86,6 +97,8 @@ export const useSeal = defineStore("seal", () => {
     fileList,
     getList,
     setUserStatus,
-    userStatus
+    userStatus,
+    sealManage,
+    getSealManageInfo
   };
 });

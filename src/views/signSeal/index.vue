@@ -17,8 +17,8 @@ import GetSeal from "@/views/signSeal/GetSeal/index.vue";
 import { useSeal } from "@/store/useSeal";
 import { storeToRefs } from "pinia";
 
-const { setAuth, setUserStatus } = useSeal();
-const { auth, list, userStatus } = storeToRefs(useSeal());
+const { setAuth, setUserStatus, getSealManageInfo } = useSeal();
+const { auth, list, userStatus,sealManage } = storeToRefs(useSeal());
 
 const useSealFn = () => {
   addDialog({
@@ -37,7 +37,8 @@ const sealCount = ref(0);
 
 const getMyInfo = async () => {
   const res: any = await getCurrentAuthentication();
-  changeAuthenticationApi(res.data.id);
+  await changeAuthenticationApi(res.data.id);
+  await getSealManageInfo();
   const sealInfo: any = await http.post(`/app/userAuthentication/seal/page`);
   sealCount.value = sealInfo.data.total;
 };
@@ -97,7 +98,7 @@ const changeAuthentication = () => {
   });
 };
 //sh
-const sealManage = () => {
+const sealManageFn = () => {
   addDialog({
     title: "印章管理",
     contentRenderer: () => h(SignManage),
@@ -206,12 +207,12 @@ const getSeal = () => {
                 <span class="pdl-5">印章管理</span>
               </p>
               <p class="more blue">
-                <span class="pdr-5" @click="sealManage">管理</span
+                <span class="pdr-5" @click="sealManageFn">管理</span
                 ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
               </p>
             </div>
             <div class="content">
-              <h2 class="h_2">{{ sealCount }}</h2>
+              <h2 class="h_2">{{ sealManage.total }}</h2>
               <p class="p-2">总数量</p>
             </div>
           </div>

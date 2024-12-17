@@ -21,7 +21,7 @@ import {ElMessage} from "element-plus";
 import {http} from "@/utils/http";
 import {CertStatusMap} from "@/utils/map";
 
-const {setAuth} = useSeal();
+const {setAuth, getSealManageInfo} = useSeal();
 const {auth} = storeToRefs(useSeal());
 type ShTable = {
   cols: TableColumnList;
@@ -59,9 +59,9 @@ const columns: TableColumnList = [
               type: "success"
             });
           }
-          console.log(res2);
           setAuth(res2.data);
           closeAllDialog();
+          await getSealManageInfo()
         }
       });
     }

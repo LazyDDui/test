@@ -15,6 +15,16 @@ export default [
     component: () => import("@/views/mh/pdf/index.vue")
   },
   {
+    path: "/testPdf",
+    name: "testPdf",
+    meta: {
+      title: "签署盖章",
+      icon: "mdi-cube-scan",
+      showLink: false,
+    },
+    component: () => import("@/views/mh/testPdf/index.vue")
+  },
+  {
     path: "/mh",
     redirect: "/home",
     name: "home",
