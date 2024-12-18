@@ -62,7 +62,7 @@ const submit = async () => {
     posX: Number((item.left / item.canvasWidth).toFixed(3)),
     posY: Number(
       (
-        (item.canvasHeight - item.top - item.height / 2) /
+        (item.canvasHeight - item.top - item.height) /
         item.canvasHeight
       ).toFixed(3)
     ),
