@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import {ref, onMounted, toRaw, reactive, onBeforeUnmount} from "vue";
+import { ref, onMounted, toRaw, reactive, onBeforeUnmount } from "vue";
 import * as pdfjsLib from "pdfjs-dist";
 import draggable from "vuedraggable";
-import {fabric} from "fabric";
+import { fabric } from "fabric";
 import File1 from "@iconify-icons/ri/file-chart-2-fill";
 import File2 from "@iconify-icons/ri/file-code-fill";
 import File3 from "@iconify-icons/ri/file-copy-2-fill";
-import {message} from "@/utils/message";
-import {Check, Delete, Back} from "@element-plus/icons-vue";
-import {useRouter} from "vue-router";
+import { message } from "@/utils/message";
+import { Check, Delete, Back } from "@element-plus/icons-vue";
+import { useRouter } from "vue-router";
 
 // @ts-ignore
 const workerSrc = import("pdfjs-dist/build/pdf.worker.entry");
@@ -33,13 +33,13 @@ const loadPdfToCanvas = async () => {
   try {
     //@ts-ignore
     pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
-    const loadingTask = pdfjsLib.getDocument({url: pdfFilePath});
+    const loadingTask = pdfjsLib.getDocument({ url: pdfFilePath });
     pdfInstance.value = await loadingTask.promise;
 
     const totalPages = pdfInstance.value.numPages;
-    previewPage.value = Array.from({length: totalPages}, (_, i) => i + 1);
+    previewPage.value = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-    pages.value = Array.from({length: totalPages}, (_, i) => i + 1);
+    pages.value = Array.from({ length: totalPages }, (_, i) => i + 1);
     for (const pageIndex of previewPage.value) {
       await renderPageToCanvas(pageIndex);
     }
@@ -61,7 +61,7 @@ const renderPageToCanvas = async (pageIndex: number, isSign?: boolean) => {
   if (!pdfInstance.value) return;
   const page = await toRaw(pdfInstance.value).getPage(pageIndex);
   if (isSign) {
-    const viewport = page.getViewport({scale: 1});
+    const viewport = page.getViewport({ scale: 1 });
     const canvas = document.querySelector(
       `canvas[data-index="sign_${pageIndex - 1}"]`
     ) as HTMLCanvasElement;
@@ -72,17 +72,20 @@ const renderPageToCanvas = async (pageIndex: number, isSign?: boolean) => {
     const gaiCanvas: HTMLCanvasElement = document.querySelector(
       `canvas[data-index="gai_${pageIndex - 1}"]`
     );
-    gaiCanvas.width = viewport.width;
-    gaiCanvas.height = viewport.height;
 
-    gai.width = viewport.width;
-    gai.height = viewport.height;
+    const w = parseInt(viewport.width);
+    const y = parseInt(viewport.height);
+    gaiCanvas.width = w;
+    gaiCanvas.height = y;
+
+    gai.width = w;
+    gai.height = y;
 
     gaiFabric.value.push(new fabric.Canvas(gaiCanvas));
 
     const context = canvas.getContext("2d");
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+    canvas.width = w;
+    canvas.height = y;
 
     const renderContext = {
       canvasContext: context!,
@@ -90,7 +93,7 @@ const renderPageToCanvas = async (pageIndex: number, isSign?: boolean) => {
     };
     await page.render(renderContext).promise;
   } else {
-    const viewport = page.getViewport({scale: 0.3});
+    const viewport = page.getViewport({ scale: 0.3 });
     const canvas = document.querySelector(
       `canvas[data-index="${pageIndex - 1}"]`
     ) as HTMLCanvasElement;
@@ -125,8 +128,8 @@ const pages = ref<number[]>([]);
 const canvasRefs = ref<HTMLCanvasElement[]>([]);
 
 const toPos = (index: number) => {
-  signBoxEle.value.scrollTo(0, gai.height * index + index * 20 + 20);
-  currentPage.value = index;
+  signBoxEle.value.scrollTo(0, gai.height * index + index * 20);
+  currentPage.value = Number(index);
 };
 
 const sealPicList = ref([
@@ -176,7 +179,7 @@ const sealChange = (index: number) => {
 };
 
 const end = (e: any) => {
-  const {newIndex} = e;
+  const { newIndex } = e;
   const targetId = e.originalEvent.target.parentElement.parentElement.id;
   const targetIndex = Number(targetId.split("_")[1]);
   if (!targetIndex && targetIndex != 0) {
@@ -391,23 +394,23 @@ const limitSpace = (gCanvas: any) => {
     }
     if (
       obj.getBoundingRect().top + obj.getBoundingRect().height >
-      obj.canvas.height ||
+        obj.canvas.height ||
       obj.getBoundingRect().left + obj.getBoundingRect().width >
-      obj.canvas.width
+        obj.canvas.width
     ) {
       obj.top = Math.min(
         obj.top,
         obj.canvas.height -
-        obj.getBoundingRect().height +
-        obj.top -
-        obj.getBoundingRect().top
+          obj.getBoundingRect().height +
+          obj.top -
+          obj.getBoundingRect().top
       );
       obj.left = Math.min(
         obj.left,
         obj.canvas.width -
-        obj.getBoundingRect().width +
-        obj.left -
-        obj.getBoundingRect().left
+          obj.getBoundingRect().width +
+          obj.left -
+          obj.getBoundingRect().left
       );
     }
   });
@@ -450,13 +453,13 @@ const createPagingStamps = (imageUrl: string, pageCount: number) => {
 
           canvas.add(clippedImage);
           canvas.renderAll();
-          const dataUrl = canvas.toDataURL({format: "png"});
+          const dataUrl = canvas.toDataURL({ format: "png" });
           stamps.value.push(dataUrl);
           canvas.dispose();
         }
         resolve();
       },
-      {crossOrigin: "anonymous"}
+      { crossOrigin: "anonymous" }
     );
   });
 };
@@ -507,7 +510,7 @@ const gpBack = () => {
         type="info"
         class="back"
         @click="gpBack"
-      >返回
+        >返回
       </el-button>
       <el-row>
         <el-button
@@ -517,7 +520,7 @@ const gpBack = () => {
           plain
           type="danger"
           @click="clearSignature"
-        >删除所有章
+          >删除所有章
         </el-button>
         <el-button
           round
@@ -526,7 +529,7 @@ const gpBack = () => {
           plain
           type="warning"
           @click="signSeal"
-        >签章
+          >签章
         </el-button>
       </el-row>
     </div>
@@ -545,7 +548,7 @@ const gpBack = () => {
         >
           <div>
             <h3>第{{ index + 1 }}页</h3>
-            <canvas ref="preCanvasRefs" :data-index="index"/>
+            <canvas ref="preCanvasRefs" :data-index="index" />
           </div>
         </div>
       </div>
@@ -691,9 +694,9 @@ const gpBack = () => {
         display: flex;
         flex-direction: column;
 
-        &:hover {
-          background: #a9aeb9;
-        }
+        //&:hover {
+        //  background: #a9aeb9;
+        //}
 
         h3 {
           text-align: center;
