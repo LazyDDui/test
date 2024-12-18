@@ -85,6 +85,10 @@ const sign = () => {
           }
         })
         .then(res => {
+          localStorage.setItem(
+            "docName",
+            JSON.stringify(form.docName ? form.docName : defaultName.value)
+          );
           closeAllDialog();
           localStorage.setItem("sealInfo", JSON.stringify(res.data));
           ElMessage.success("已发起");
@@ -150,7 +154,7 @@ const sign = () => {
           </div>
         </el-button>
       </el-upload>
-      <el-button class="check" @click="sign"> 发起签章</el-button>
+      <el-button class="check" @click="sign">发起签章</el-button>
     </div>
   </div>
 </template>

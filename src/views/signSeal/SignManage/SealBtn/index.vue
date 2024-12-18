@@ -60,4 +60,8 @@ const remove = () => {
   </el-row>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.el-button {
+  margin-left: 0 !important;
+}
+</style>

@@ -49,24 +49,26 @@ const submit = async () => {
   show.value = false;
   const normal = toRaw(signData.value).filter(item => !item.info.uId);
   const qf = toRaw(signData.value).filter(item => item.info.uId);
-  const qfList = []
-  for(const i in qf){
-    if(qf[i].pageNum == 1){
-      qfList.push(qf[i])
+  const qfList = [];
+  for (const i in qf) {
+    if (qf[i].pageNum == 1) {
+      qfList.push(qf[i]);
     }
   }
-  const list = [...normal,...qfList]
+  const list = [...normal, ...qfList];
   const commitData = list.map(item => ({
     sealSn: item.info.sealSn,
     posPages: item.pageNum,
     posX: Number((item.left / item.canvasWidth).toFixed(3)),
     posY: Number(
-      ((item.canvasHeight - item.top) / item.canvasHeight).toFixed(3)
+      (
+        (item.canvasHeight - item.top - item.height / 2) /
+        item.canvasHeight
+      ).toFixed(3)
     ),
     sealSignType: item.info.type
   }));
-  console.log(commitData);
-  return;
+
   const res = await http.post(`/app/sign/commit`, {
     data: {
       appno: sealInfo.appno,
@@ -91,6 +93,8 @@ const submit = async () => {
   getFile();
 };
 
+const docName = ref(JSON.parse(window.localStorage.getItem("docName")));
+
 const getFile = () => {
   timer = setInterval(() => {
     http
@@ -104,7 +108,12 @@ const getFile = () => {
         if (res.data[0].stateMsg == "签署成功") {
           clearInterval(timer);
           timer = null;
-          downloadPdf(res.data[0].signFileUrl);
+          downloadPdf(
+            res.data[0].signFileUrl,
+            docName.value.endsWith(".pdf")
+              ? docName.value
+              : docName.value + ".pdf"
+          );
         }
       });
   }, 1500);
@@ -122,6 +131,8 @@ onBeforeUnmount(() => {
     clearInterval(timer);
   }
 });
+
+const title = ref(JSON.parse(localStorage.getItem("docName")));
 </script>
 
 <template>
@@ -140,7 +151,13 @@ onBeforeUnmount(() => {
       </div>
     </template>
   </el-dialog>
-  <ShPdf ref="pdfRef" :pdf-url="pdf" :stamp-list="stampList" @sign="shSign" />
+  <ShPdf
+    ref="pdfRef"
+    :title="title"
+    :pdf-url="pdf"
+    :stamp-list="stampList"
+    @sign="shSign"
+  />
 </template>
 
 <style scoped lang="scss">

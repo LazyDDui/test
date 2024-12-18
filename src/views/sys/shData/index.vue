@@ -21,7 +21,7 @@ getData();
 </script>
 
 <template>
-  <el-row>
+  <el-row style="display: flex">
     <div class="shbox">
       <div class="title">我的api</div>
       <div class="innerBox" style="display: flex">

@@ -8,27 +8,33 @@ import SealBtn from "@/views/signSeal/SignManage/SealBtn/index.vue";
 import { addDialog } from "@/components/ReDialog/index";
 import { message } from "@/utils/message";
 import { downloadByData } from "@pureadmin/utils";
-import {SealTypeMap} from "@/utils/map";
+import { SealTypeMap } from "@/utils/map";
 
 const columns: TableColumnList = [
   {
     label: "印章编码",
-    prop: "id"
+    prop: "id",
+    width: 200,
+    align: "center"
   },
   {
     label: "印章名称",
-    prop: "name"
+    prop: "name",
+    width: 200,
+    align: "center"
   },
   {
     label: "印章类型",
     prop: "status",
+    align: "center",
     cellRenderer(data) {
-        return SealTypeMap.get(data.row.status)
-    },
+      return SealTypeMap.get(data.row.status);
+    }
   },
   {
     label: "制发时间",
-    prop: "makeTime"
+    prop: "makeTime",
+    align: "center"
   },
   // {
   //   label: "权益有效期",
@@ -36,6 +42,7 @@ const columns: TableColumnList = [
   // },
   {
     label: "印章图片",
+    align: "center",
     // props: "pic",
     cellRenderer(data) {
       return h(Image, {
@@ -45,6 +52,7 @@ const columns: TableColumnList = [
   },
   {
     label: "操作",
+    width: 240,
     cellRenderer(data) {
       return h(SealBtn, {
         data: data.row,

@@ -18,7 +18,7 @@ import { useSeal } from "@/store/useSeal";
 import { storeToRefs } from "pinia";
 
 const { setAuth, setUserStatus, getSealManageInfo } = useSeal();
-const { auth, list, userStatus,sealManage } = storeToRefs(useSeal());
+const { auth, list, userStatus, sealManage } = storeToRefs(useSeal());
 
 const useSealFn = () => {
   addDialog({
@@ -102,7 +102,8 @@ const sealManageFn = () => {
   addDialog({
     title: "印章管理",
     contentRenderer: () => h(SignManage),
-    hideFooter: true
+    hideFooter: true,
+    width: "70vw"
   });
 };
 //sh
