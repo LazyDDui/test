@@ -146,6 +146,9 @@ importers:
       typeit:
         specifier: ^8.8.3
         version: 8.8.3
+      uuid:
+        specifier: ^11.0.3
+        version: 11.0.3
       v-contextmenu:
         specifier: ^3.2.0
         version: 3.2.0(vue@3.4.27(typescript@5.4.5))
@@ -5320,6 +5323,10 @@ packages:
 
   util@0.10.4:
     resolution: {integrity: sha512-0Pm9hTQ3se5ll1XihRic3FDIku70C+iHUdT/W926rSgHV5QgXsYbKZN8MSC3tJtSkhuROzvsQjAaFENRXr+19A==}
+
+  uuid@11.0.3:
+    resolution: {integrity: sha512-d0z310fCWv5dJwnX1Y/MncBAqGMKEzlBb1AOf7z9K8ALnd0utBX/msg/fA0+sbyN1ihbMsLhrBlnl1ak7Wa0rg==}
+    hasBin: true
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
@@ -11433,6 +11440,8 @@ snapshots:
   util@0.10.4:
     dependencies:
       inherits: 2.0.3
+
+  uuid@11.0.3: {}
 
   uuid@8.3.2: {}
 

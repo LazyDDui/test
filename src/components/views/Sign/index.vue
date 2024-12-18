@@ -1,17 +1,21 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import {ElMessage, UploadInstance} from "element-plus";
-import {storeToRefs} from "pinia";
-import {preSign, sealUpload} from "@/api/test";
-import {http} from "@/utils/http";
-import {useRoute, useRouter} from "vue-router";
-import {fp} from "@/utils";
-import {deviceDetection} from "@pureadmin/utils";
-import {useMainStore} from "@/store/useMainStore";
-import {useSeal} from "@/store/useSeal";
-import {closeAllDialog} from "@/components/ReDialog/index";
+import { onMounted, reactive, ref } from "vue";
+import { ElMessage, UploadFile, UploadInstance } from "element-plus";
+import { storeToRefs } from "pinia";
+import { preSign, sealUpload } from "@/api/test";
+import { http } from "@/utils/http";
+import { useRoute, useRouter } from "vue-router";
+import { fp } from "@/utils";
+import { useMainStore } from "@/store/useMainStore";
+import { useSeal } from "@/store/useSeal";
+import { closeAllDialog } from "@/components/ReDialog/index";
+import { v4 as uuidv4 } from "uuid";
 
-const {screen} = storeToRefs(useMainStore());
+onMounted(() => {
+  console.log(uuidv4());
+});
+
+const { screen } = storeToRefs(useMainStore());
 
 const route = useRoute();
 const id = route.query.id;
@@ -25,6 +29,12 @@ const url = ref({
   preSignUrl: ""
 });
 
+const form = reactive({
+  docName: ""
+});
+
+const defaultName = ref("");
+
 // const handleExceed: UploadProps["onExceed"] = (files) => {
 //   upload.value!.clearFiles();
 //   const file = files[0] as UploadRawFile;
@@ -37,11 +47,12 @@ const submitUpload = () => {
   upload.value!.submit();
 };
 
-const change = async (e: any) => {
+const change = async (e: UploadFile) => {
+  defaultName.value = e.name;
   f.value = e.raw;
   const file = new FormData();
   file.append("file", f.value);
-  const {data} = await sealUpload();
+  const { data } = await sealUpload();
   ElMessage.success("上传成功");
   url.value = data;
   localStorage.setItem("pdf", JSON.stringify(url.value.fileUrl));
@@ -50,7 +61,7 @@ const change = async (e: any) => {
 
 // const { screen } = storeToRefs(useMainStore());
 
-const {getSubjectId} = useSeal()
+const { getSubjectId } = useSeal();
 
 const sign = () => {
   const formData = new FormData();
@@ -68,13 +79,13 @@ const sign = () => {
                 signList: [],
                 fileTransferMode: "01",
                 fileUrl: url.value.fileUrl,
-                docName: "any"
+                docName: form.docName ? form.docName : defaultName.value
               }
             ]
           }
         })
         .then(res => {
-          closeAllDialog()
+          closeAllDialog();
           localStorage.setItem("sealInfo", JSON.stringify(res.data));
           ElMessage.success("已发起");
           router.push("/pdf");
@@ -91,6 +102,19 @@ const sign = () => {
     <div class="tc head">
       <h2>发起签章</h2>
     </div>
+    <el-form :model="form" :style="{ width: `${screen.width - 200}px` }">
+      <el-form-item>
+        <template #label>
+          <div style="line-height: 40px; font-size: 20px">文件名</div>
+        </template>
+        <el-input
+          v-model="form.docName"
+          clearable
+          placeholder="请输入文件名（未输入则默认文件名）"
+          size="large"
+        />
+      </el-form-item>
+    </el-form>
     <div
       class="search-area"
       :style="{
@@ -103,6 +127,7 @@ const sign = () => {
         type="file"
         action="#"
         :limit="1"
+        accept=".pdf,.doc,.docx"
         :auto-upload="false"
         @change="change"
       >
@@ -120,7 +145,9 @@ const sign = () => {
             style="width: 30px; height: 20px"
             :src="fp('verify/下载.png')"
           />
-          <div class="upload">上传PDF、OFD格式文档</div>
+          <div class="upload">
+            {{ defaultName ? defaultName : "上传PDF、OFD格式文档" }}
+          </div>
         </el-button>
       </el-upload>
       <el-button class="check" @click="sign"> 发起签章</el-button>

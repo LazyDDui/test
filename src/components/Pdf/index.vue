@@ -214,8 +214,8 @@ const showpdf = (pdfUrl: any) => {
   let caches = JSON.parse(localStorage.getItem("signs") as any); //获取缓存字符串后转换为对象
   ctx.value = canvas.value.getContext("2d");
   PDFJS.getDocument({
-    // url: pdfUrl,
-    url: "../../../public/pdf/test.pdf",
+    url: pdfUrl,
+    // url: "../../../public/pdf/test.pdf",
     rangeChunkSize: 65536,
     disableAutoFetch: false
     // cMapUrl: "/static/cmaps/"
