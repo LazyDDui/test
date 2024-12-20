@@ -43,10 +43,18 @@ export const preSign = (url: string, file: FormData) =>
     }
   );
 
-export const getSealImg = (custNo: string) =>
-  http.post("/app/seal/queryUni", {
-    data: {
-      custNo
+// export const getSealImg = (custNo: string) =>
+//   http.post("/app/seal/queryUni", {
+//     data: {
+//       custNo
+//     }
+//   });
+
+export const getSealImg = (current: number,size:number) =>
+  http.post("/app/userAuthentication/seal/page", {
+    params: {
+      current,
+      size
     }
   });
 
@@ -103,3 +111,42 @@ export const getCurrentAuthentication = (data?: object) =>
 //api接口调用记录
 export const getRequestPage = (page?: object) =>
   http.post<{ data: any }>("/app/app/pageRequest", { params: page }, {});
+///userAuthentication/remove
+export const removeUserAuthenticationApi = (id: string) =>
+  http.post<{ data: any }>("/app/userAuthentication/remove", {
+    params: {
+      id
+    }
+  });
+
+// http
+//   .post(
+//     `/app/file/upload`,
+//     {
+//       data: {
+//         file: file.raw
+//       }
+//     },
+//     {
+//       headers: {
+//         "Content-Type": "multipart/form-data"
+//       }
+//     }
+//   )
+//下载文件
+export const uploadFileApi = (file: File) =>
+  http.post(
+    "/app/file/upload",
+    {
+      data: { file }
+    },
+    {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    }
+  );
+
+export const downloadFileApi = (id: string) => http.get(`/app/file/${id}`,{},{
+  responseType: "blob"
+});

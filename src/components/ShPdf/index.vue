@@ -515,8 +515,13 @@ const signSeal = () => {
   return signData.value;
 };
 
+const getPageNum = () => {
+  return pages.value.length;
+};
+
 defineExpose({
-  signSeal
+  signSeal,
+  getPageNum
 });
 
 const clearSignature = () => {

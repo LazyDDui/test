@@ -28,3 +28,60 @@ export async function downloadPdf(url, filename = "document.pdf") {
     console.error("There was a problem with the fetch operation:", error);
   }
 }
+
+export function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file); // 将文件读取为 Data URL
+    reader.onload = () => resolve(reader.result); // 成功读取后调用
+    reader.onerror = error => reject(error); // 发生错误时调用
+  });
+}
+
+export const getFileBlob = file => {
+  const blobUrl = URL.createObjectURL(file.raw);
+  return blobUrl;
+};
+
+export const downLoadFile = (blob: Blob, docName?: string) => {
+  // 创建一个带有Blob URL的对象URL
+  const blobUrl = URL.createObjectURL(blob);
+  // 创建一个隐藏的<a>元素用于触发下载
+  const a = document.createElement("a");
+  a.style.display = "none";
+  a.href = blobUrl;
+  a.download = docName ? docName : "文件" + `.pdf`; // 设置下载文件名
+
+  // 将<a>元素添加到DOM中
+  document.body.appendChild(a);
+
+  // 模拟点击以触发下载
+  a.click();
+
+  // 下载完成后移除<a>元素并释放对象URL
+  document.body.removeChild(a);
+  URL.revokeObjectURL(blobUrl);
+};
+
+export const preViewFile = (blob: Blob) => {
+  return URL.createObjectURL(blob);
+};
+
+export function uniqueByIdReduce(arr, props: string, childProps?: string) {
+  return arr.reduce((acc, current) => {
+    const x = acc.find(
+      item =>
+        (childProps ? item[props][childProps] : item[props]) ===
+        (childProps ? current[props][childProps] : current[props])
+    );
+    if (!x) {
+      return acc.concat([current]);
+    } else {
+      return acc;
+    }
+  }, []);
+}
+
+export const getBase64 = (url:string) => {
+  return "data:image/png;base64,"+url
+}

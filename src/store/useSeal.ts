@@ -7,11 +7,25 @@
  */
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { getSignRequestFile } from "@/api/test";
+import { downloadFileApi, getSignRequestFile } from "@/api/test";
 import { http } from "@/utils/http";
+import { preViewFile } from "@/utils/common";
 
 export const useSeal = defineStore("seal", () => {
   const auth = ref<any>({});
+  const fileId = ref(
+    window.localStorage.getItem("fileId")
+      ? JSON.parse(window.localStorage.getItem("fileId"))
+      : ""
+  );
+  const getPdf = async () => {
+    return await downloadFileApi(fileId.value);
+  };
+
+  const setFileId = (id: string) => {
+    fileId.value = id;
+    localStorage.setItem("fileId", JSON.stringify(id));
+  };
 
   const userStatus = ref(false);
 
@@ -29,7 +43,7 @@ export const useSeal = defineStore("seal", () => {
     userStatus.value = status;
   };
 
-  const fileList = ref<any[]>([]);
+  const fileList = ref<any>([]);
 
   const getList = async page => {
     const { data } = await getSignRequestFile(page);
@@ -72,17 +86,21 @@ export const useSeal = defineStore("seal", () => {
 
   const list = ref([]);
 
-  const setAuth = async (au: any) => {
-    auth.value = au;
-    if (auth.value.subjectId) {
-      localStorage.setItem("subjectId", auth.value.subjectId);
-      if (auth.value.type == "0") {
-        list.value = list0;
-      } else {
-        list.value = list1;
+  const setAuth = async (au?: any) => {
+    if (au) {
+      auth.value = au;
+      if (auth.value.subjectId) {
+        localStorage.setItem("subjectId", auth.value.subjectId);
+        if (auth.value.type == "0") {
+          list.value = list0;
+        } else {
+          list.value = list1;
+        }
       }
+      await getList(1);
+    } else {
+      list.value = list1;
     }
-    await getList(1);
   };
 
   const getSubjectId = () => {
@@ -99,6 +117,9 @@ export const useSeal = defineStore("seal", () => {
     setUserStatus,
     userStatus,
     sealManage,
-    getSealManageInfo
+    getSealManageInfo,
+    fileId,
+    setFileId,
+    getPdf
   };
 });

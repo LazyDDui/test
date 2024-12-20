@@ -6,7 +6,9 @@ import { h } from "vue";
 import { useRouter } from "vue-router";
 import {
   changeAuthenticationApi,
+  companySign,
   getCurrentAuthentication,
+  personSign,
   userAuthentication
 } from "@/api/test";
 import AuthticaltionTable from "@/views/signSeal/AuthenticationDialog/index.vue";
@@ -30,22 +32,14 @@ const useSealFn = () => {
 };
 import { h, ref } from "vue";
 import { http } from "@/utils/http";
+import { AuthTypeMap } from "../../utils/map";
+import PrincipalType from "@/views/signSeal/PrincipalType/index.vue";
+import { ElMessage } from "element-plus";
 
 const router = useRouter();
 
-const sealCount = ref(0);
-
-const getMyInfo = async () => {
-  const res: any = await getCurrentAuthentication();
-  await changeAuthenticationApi(res.data.id);
-  await getSealManageInfo();
-  const sealInfo: any = await http.post(`/app/userAuthentication/seal/page`);
-  sealCount.value = sealInfo.data.total;
-};
-
 const total = ref(0);
 
-getMyInfo();
 const toGoPage = () => {
   router.push({ name: "verify" });
 };
@@ -54,10 +48,18 @@ const getUserAuthenlication = async () => {
   const res: any = await userAuthentication();
   userAuthenlicationInfo.value = res.data.records;
   total.value = res.data.total;
+
   if (res.data.records.length > 0) {
-    setAuth(userAuthenlicationInfo.value[0]);
+    const res2 = await getCurrentAuthentication();
+    //如果已切换认证，hold住状态
+    if (res2.data) {
+      setAuth(res2.data);
+    } else {
+      setAuth(userAuthenlicationInfo.value[0]);
+    }
     setUserStatus(true);
   } else {
+    setAuth();
     setUserStatus(false);
   }
 };
@@ -88,7 +90,9 @@ const changeAuthentication = () => {
       return h(AuthticaltionTable, {
         tableData: userAuthenlicationInfo.value,
         cols: authenlicationCol,
-        total: total.value
+        total: total.value,
+        getUserAuthenlication,
+        goToCert
       });
     },
     hideFooter: true,
@@ -118,6 +122,83 @@ const signManageSeeMore = () => {
 
 const getSealData = ref("99");
 
+const isPerson = ref(true);
+
+const unCertForm = ref({});
+
+const clearUnCertForm = () => {
+  for (const i in unCertForm.value) {
+    unCertForm.value[i] = "";
+  }
+};
+
+let clearUnCertInnerForm = null;
+
+const goToCert = () => {
+  addDialog({
+    title: "主体类型",
+    fullscreen: true,
+    contentRenderer: () => {
+      return h(PrincipalType, {
+        ref(ref: any) {
+          if (!clearUnCertInnerForm) {
+            clearUnCertInnerForm = ref.clear;
+          }
+        },
+        change: data => {
+          unCertForm.value = data;
+        },
+        tabClick: tab => {
+          isPerson.value = tab.props.name == "person";
+          clearUnCertInnerForm();
+          clearUnCertForm();
+        }
+      });
+    },
+    async beforeSure(done) {
+      if (isPerson.value) {
+        const res: any = await personSign(unCertForm.value);
+        if (res.code == "00") {
+          ElMessage({
+            message: "认证成功",
+            type: "success"
+          });
+        } else {
+          ElMessage({
+            message: res.msg,
+            type: "error"
+          });
+        }
+        getUserAuthenlication();
+        done();
+      } else {
+        const res: any = await companySign(unCertForm.value);
+        if (res.code == "00") {
+          ElMessage({
+            message: "认证成功",
+            type: "success"
+          });
+        } else {
+          ElMessage({
+            message: res.msg,
+            type: "error"
+          });
+        }
+        getUserAuthenlication();
+        done();
+      }
+    }
+  });
+};
+
+const unCertGetSealShow = ref(false);
+
+const isPersonGetSeal = ref("1");
+
+const unCertGetSeal = () => {
+  unCertGetSealShow.value = true;
+};
+
 const getSeal = () => {
   addDialog({
     title: "申领印章",
@@ -137,6 +218,31 @@ const getSeal = () => {
     }
   });
 };
+
+const unCertGetSealRadioChange = (e: "1" | "0") => {
+  unCertGetSealShow.value = false;
+  if (e == "1") {
+    addDialog({
+      width: 1200,
+      title: "个人私章申领",
+      contentRenderer: () => {
+        return h(GetSeal, {
+          type: "1"
+        });
+      }
+    });
+  } else {
+    addDialog({
+      width: 1200,
+      title: "企业公章申领",
+      contentRenderer: () => {
+        return h(GetSeal, {
+          type: "0"
+        });
+      }
+    });
+  }
+};
 </script>
 
 <template>
@@ -155,7 +261,15 @@ const getSeal = () => {
                 } else if (item.name === '签章验证') {
                   toGoPage();
                 } else if (item.name === '申领印章') {
-                  getSeal();
+                  if (userStatus) {
+                    if (auth.type == '1') {
+                      unCertGetSealRadioChange('1');
+                    } else {
+                      unCertGetSealRadioChange('2');
+                    }
+                  } else {
+                    unCertGetSeal();
+                  }
                 } else if (item.name === 'api管理') {
                   router.push('/welcome');
                 }
@@ -190,7 +304,7 @@ const getSeal = () => {
               </h2>
               <p class="p-2">{{ auth?.subjectId }}</p>
               <p>
-                <span class="black tag">企业单位</span>
+                <span class="black tag">{{ AuthTypeMap.get(auth.type) }}</span>
                 <span class="green tag">已认证</span>
               </p>
             </div>
@@ -198,7 +312,9 @@ const getSeal = () => {
               <el-button type="danger" style="margin-bottom: 10px">
                 未认证
               </el-button>
-              <el-button type="text" size="small">前往认证</el-button>
+              <el-button type="text" size="small" @click="goToCert"
+                >前往认证
+              </el-button>
             </div>
           </div>
           <div class="left2">
@@ -233,6 +349,32 @@ const getSeal = () => {
         </div>
       </div>
     </div>
+    <el-dialog v-model="unCertGetSealShow">
+      <template #title>主体类型</template>
+      <div
+        style="
+          display: flex;
+          width: 100%;
+          justify-content: center;
+          padding: 40px;
+        "
+      >
+        <el-radio-group v-model="isPersonGetSeal">
+          <el-radio
+            value="1"
+            size="large"
+            @click="unCertGetSealRadioChange('1')"
+            >个人私章申领</el-radio
+          >
+          <el-radio
+            value="0"
+            size="large"
+            @click="unCertGetSealRadioChange('0')"
+            >单位公章申领</el-radio
+          >
+        </el-radio-group>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -240,7 +382,9 @@ const getSeal = () => {
 .shContainer {
   padding-top: 20px;
   background-color: #f2f2f2;
-  height: 100%;
+  box-sizing: border-box;
+  height: 100vh;
+  overflow-y: hidden;
 }
 
 .shBox {

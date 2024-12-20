@@ -50,7 +50,6 @@ export const useMainStore = defineStore("main", () => {
     const rect = document.body.getBoundingClientRect();
     deviceInfo.value.width = window.innerWidth;
     deviceInfo.value.height = window.innerHeight;
-    console.log(deviceInfo.value);
     screen.value.width = window.screen.width;
     screen.value.height = window.screen.height;
     if (!document.hidden) {

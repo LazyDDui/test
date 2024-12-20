@@ -19,6 +19,8 @@ const { fileList } = storeToRefs(useSeal());
 //   total: 0
 // });
 
+getList()
+
 const columns: TableColumnList = [
   {
     label: "文档名称",
@@ -59,14 +61,13 @@ const columns: TableColumnList = [
 
 <template>
   <div class="recent">
-    <pure-table :data="fileList.records" :columns="columns" />
+    <pure-table :height="400" :data="fileList.records" :columns="columns" />
   </div>
 </template>
 
 <style scoped lang="scss">
 .recent {
   padding: 20px;
-  height: 440px;
-  overflow-y: scroll;
+  height: 100%;
 }
 </style>

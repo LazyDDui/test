@@ -13,3 +13,8 @@ export const CertStatusMap = new Map([
   ["01", "待审核"],
   ["02", "认证失败"]
 ]);
+
+export const AuthTypeMap = new Map([
+  ["0", "企业单位"],
+  ["1", "个人"]
+]);

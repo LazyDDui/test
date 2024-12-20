@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {h, reactive, ref, toRaw} from "vue";
+import { h, reactive, ref, toRaw } from "vue";
 import Btn from "@/views/signSeal/AuthenticationDialog/btn/index.vue";
 import {
   addDialog,
@@ -15,22 +15,24 @@ import {
   changeAuthentication,
   getCurrentAuthentication
 } from "@/api/test";
-import {useSeal} from "@/store/useSeal";
-import {storeToRefs} from "pinia";
-import {ElMessage} from "element-plus";
-import {http} from "@/utils/http";
-import {CertStatusMap} from "@/utils/map";
+import { useSeal } from "@/store/useSeal";
+import { storeToRefs } from "pinia";
+import { ElMessage } from "element-plus";
+import { http } from "@/utils/http";
+import { CertStatusMap } from "@/utils/map";
 
-const {setAuth, getSealManageInfo} = useSeal();
-const {auth} = storeToRefs(useSeal());
+const { setAuth, getSealManageInfo } = useSeal();
+const { auth } = storeToRefs(useSeal());
 type ShTable = {
   cols: TableColumnList;
   tableData: any[];
   total: number;
+  getUserAuthenlication: () => void;
+  goToCert: () => void;
 };
 
 const props = defineProps<ShTable>();
-const personData = ref<object>();
+const personData = ref<any>();
 const columns: TableColumnList = [
   {
     label: "名称",
@@ -50,9 +52,12 @@ const columns: TableColumnList = [
     cellRenderer(data) {
       return h(Btn, {
         data: data.row,
+        onUpdateList: () => {
+          props.getUserAuthenlication();
+        },
         cgClick: async () => {
-          const res = await changeAuthentication(data.row.id);
-          const res2 = await getCurrentAuthentication();
+          const res: any = await changeAuthentication(data.row.id);
+          const res2: any = await getCurrentAuthentication();
           if (res.code == "0") {
             ElMessage({
               message: "切换成功！",
@@ -61,7 +66,7 @@ const columns: TableColumnList = [
           }
           setAuth(res2.data);
           closeAllDialog();
-          await getSealManageInfo()
+          await getSealManageInfo();
         }
       });
     }
@@ -71,73 +76,19 @@ const currentChange = e => {
   console.log(e);
 };
 const isPerson = ref(false);
+
 const addAuthentication = () => {
   closeAllDialog();
-  addDialog({
-    title: "主体类型",
-    contentRenderer: () =>
-      h(PrincipalType, {
-        change: form => {
-          console.log(form);
-          personData.value = form;
-        },
-        tabClick: tab => {
-          console.log(tab.props.name);
-          if (tab.props.name == "person") {
-            isPerson.value = true;
-          } else {
-            isPerson.value = false;
-          }
-        }
-      }),
-    async beforeSure(done) {
-      console.log("参数", personData.value);
-      if (isPerson.value) {
-        const res = await personSign(personData.value);
-        if (res.code == "00") {
-          ElMessage({
-            message: "认证成功",
-            type: "success"
-          });
-        } else {
-          ElMessage({
-            message: res.msg,
-            type: "error"
-          });
-        }
-        personData.value.forEach(item => {
-          item.value = null; // 否则，将 value 设置为空字符串
-        });
-        done();
-      } else {
-        const res = await companySign(personData.value);
-        if (res.code == "00") {
-          ElMessage({
-            message: "认证成功",
-            type: "success"
-          });
-        } else {
-          ElMessage({
-            message: res.msg,
-            type: "error"
-          });
-        }
-        personData.value.forEach(item => {
-          item.value = null; // 否则，将 value 设置为空字符串
-        });
-        done();
-      }
-    }
-  });
+  props.goToCert();
 };
 </script>
 
 <template>
   <div>
     <el-button size="small" type="primary" @click="addAuthentication"
-    >新增认证
+      >新增认证
     </el-button>
-    <pure-table style="margin-top: 20px" :data="tableData" :columns="columns"/>
+    <pure-table style="margin-top: 20px" :data="tableData" :columns="columns" />
     <el-row style="margin-top: 20px; justify-content: flex-end; width: 100%">
       <el-pagination
         background
