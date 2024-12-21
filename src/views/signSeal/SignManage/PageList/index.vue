@@ -7,7 +7,7 @@ import { http } from "@/utils/http";
 import { message } from "@/utils/message";
 import { useSeal } from "@/store/useSeal";
 import { storeToRefs } from "pinia";
-import {downloadPdf} from "@/utils/common";
+import { downloadPdf } from "@/utils/common";
 
 const { getList } = useSeal();
 const { fileList } = storeToRefs(useSeal());
@@ -33,7 +33,7 @@ const columns: TableColumnList = [
     cellRenderer(data) {
       return h(Btn, {
         dwClick: () => {
-          downloadPdf(data.row.signedFileUrl,data.row.docName + ".pdf");
+          downloadPdf(data.row.signedFileUrl, data.row.docName + ".pdf");
         },
         delClick: () => {
           http.post(`/app/signRequestFile/remove/${data.row.id}`).then(() => {
@@ -49,25 +49,39 @@ const columns: TableColumnList = [
   }
 ];
 
+const current = ref(1);
+
 const form = reactive({
-  name: "",
+  docName: "",
   userStatus: "",
   status: ""
 });
 
-const currentChange = async e => {
-  await getList(e);
+const currentChange = async (e: number) => {
+  current.value = e;
+  await getList(e, {
+    docName: form.docName
+  });
 };
 </script>
 
 <template>
   <el-row class="page">
     <el-input
-      v-model="form.name"
+      v-model="form.docName"
       style="width: 200px; margin-right: 10px"
-      size="small"
+      size="default"
       placeholder="文档名称"
     />
+    <el-button
+      type="primary"
+      @click="
+        getList(current, {
+          docName: form.docName
+        })
+      "
+      >搜索</el-button
+    >
     <!--    <el-select-->
     <!--      v-model="form.userStatus"-->
     <!--      placeholder="用户状态"-->

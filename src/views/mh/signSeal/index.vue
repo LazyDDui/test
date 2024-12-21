@@ -1,20 +1,14 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="shBox">
-    <div class="header">
-
-    </div>
+    <div class="header" />
     <div class="content">
       <div class="left-side">
-        <div class="left1"></div>
-        <div class="left2"></div>
+        <div class="left1" />
+        <div class="left2" />
       </div>
-      <div class="right-side">
-
-      </div>
+      <div class="right-side" />
     </div>
   </div>
 </template>

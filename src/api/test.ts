@@ -50,9 +50,9 @@ export const preSign = (url: string, file: FormData) =>
 //     }
 //   });
 
-export const getSealImg = (current: number,size:number) =>
+export const getSealImg = (current: number, size: number) =>
   http.post("/app/userAuthentication/seal/page", {
-    params: {
+    data: {
       current,
       size
     }
@@ -61,33 +61,40 @@ export const getSealImg = (current: number,size:number) =>
 export const companyCertApi = (data: object) =>
   http.post(`/app/uni/approve`, data);
 // /userAuthentication/seal/page
-export const getUserAuthentication = (current: number) =>
+export const getUserAuthentication = (current: number, name?: string) =>
   http.post(`/app/userAuthentication/seal/page`, {
     data: {
       current,
-      size: 10
+      size: 10,
+      name
     }
   });
 //签署请求文件/signRequestFile/page
-export const getSignRequestFile = (current: number) =>
+export const getSignRequestFile = (current: number, search?: object = {}) =>
+  http.post<{ data: any }>(`/app/signRequestFile/page`, {
+    data: {
+      current,
+      size: 10,
+      ...search
+    }
+  });
+
+//认证信息列表
+export const userAuthentication = (
+  current?: number = 1,
+  search?: object = {}
+) =>
   http.post<{ data: any }>(
-    `/app/signRequestFile/page`,
+    "/app/userAuthentication/page",
     {
       data: {
+        ...search,
         current,
         size: 10
       }
     },
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      }
-    }
+    {}
   );
-
-//认证信息列表
-export const userAuthentication = (data?: object) =>
-  http.post<{ data: any }>("/app/userAuthentication/page", { data }, {});
 
 //切换认证信息
 export const changeAuthentication = (id: string) =>
@@ -147,6 +154,43 @@ export const uploadFileApi = (file: File) =>
     }
   );
 
-export const downloadFileApi = (id: string) => http.get(`/app/file/${id}`,{},{
-  responseType: "blob"
-});
+export const downloadFileApi = (id: string) =>
+  http.get(
+    `/app/file/${id}`,
+    {},
+    {
+      responseType: "blob"
+    }
+  );
+// /userAuthentication/seal/add
+export const sealAddApi = (data: object) =>
+  http.post<{ data: any }>(`/app/userAuthentication/seal/add`, {
+    data
+  });
+//获取图形验证码/user/graphCode
+export const getUserGraphCode = (randomStr: string) =>
+  http.hRequest<any>("get", `/app/user/graphCode`, {
+    responseType: "blob",
+    params: {
+      randomStr
+    }
+  });
+//获取短信验证码
+export const getUserSmsCodeApi = (
+  randomStr: string,
+  graphCode: string,
+  phone: string
+) =>
+  http.post<{ data: any }>(`/app/user/smsCode`, {
+    data: {
+      randomStr,
+      graphCode,
+      phone
+    }
+  });
+
+//注册
+export const userRegisterApi = (data: object) =>
+  http.post(`/app/user/register`, {
+    data
+  });

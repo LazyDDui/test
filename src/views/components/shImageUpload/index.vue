@@ -44,7 +44,6 @@
       "
     >
       <Close
-        @click="removeImage"
         style="
           width: 20px;
           height: 20px;
@@ -54,6 +53,7 @@
           z-index: 10;
           cursor: pointer;
         "
+        @click="removeImage"
       />
       <el-image
         style="width: 100%"
@@ -139,7 +139,7 @@ defineOptions({
 
 const props = defineProps<ShUploadProps>();
 
-const emit = defineEmits(["change"]);
+const emit = defineEmits(["change", "getBase64"]);
 
 const fileList = ref([]); // 图片列表
 const dialogImageUrl = ref(""); // 预览图url
@@ -150,10 +150,11 @@ const upload = ref<UploadInstance>();
 const previewFileList = ref([]);
 
 const removeImage = () => {
-  fileList.value = []
-  previewFileList.value = []
-  emit("change","")
-}
+  fileList.value = [];
+  previewFileList.value = [];
+  emit("change", "");
+  emit("getBase64", "");
+};
 
 // 更新上传加号按钮显示状态
 function updateUploadShown() {
@@ -179,6 +180,8 @@ const fileChange = async (_file, resfileList) => {
   const data = await fileToBase64(fileList.value[0].raw);
   previewFileList.value = [data];
   const file = fileList.value[0];
+
+  emit("getBase64", data);
 
   // formData.append(file.name, file);
   // console.log(formData)

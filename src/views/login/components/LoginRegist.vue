@@ -12,17 +12,31 @@ import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import Lock from "@iconify-icons/ri/lock-fill";
 import Iphone from "@iconify-icons/ep/iphone";
 import User from "@iconify-icons/ri/user-3-fill";
+import { v4 as uuidv4 } from "uuid";
+import {
+  getUserGraphCode,
+  getUserSmsCodeApi,
+  login,
+  userRegisterApi
+} from "@/api/test";
+import { useRouter } from "vue-router";
 
 const { t } = useI18n();
 const checked = ref(false);
 const loading = ref(false);
+const router = useRouter();
+
 const ruleForm = reactive({
-  username: "",
+  // username: "",
+  // verifyCode: "",
+  loginName: "",
   phone: "",
-  verifyCode: "",
+  smsCode: "",
   password: "",
   repeatPassword: ""
 });
+
+const graphCode = ref("");
 const ruleFormRef = ref<FormInstance>();
 const { isDisabled, text } = useVerifyCode();
 const repeatPasswordRule = [
@@ -45,16 +59,22 @@ const repeatPasswordRule = [
 const onUpdate = async (formEl: FormInstance | undefined) => {
   loading.value = true;
   if (!formEl) return;
-  await formEl.validate(valid => {
+  await formEl.validate(async valid => {
     if (valid) {
       if (checked.value) {
         // 模拟请求，需根据实际开发进行修改
-        setTimeout(() => {
-          message(transformI18n($t("login.pureRegisterSuccess")), {
-            type: "success"
-          });
-          loading.value = false;
-        }, 2000);
+        await userRegisterApi({
+          loginName: ruleForm.loginName,
+          phone: ruleForm.phone,
+          randomStr: randomStr.value,
+          smsCode: ruleForm.smsCode,
+          password: ruleForm.password
+        });
+        message(transformI18n($t("login.pureRegisterSuccess")), {
+          type: "success"
+        });
+        loading.value = false;
+        onBack();
       } else {
         loading.value = false;
         message(transformI18n($t("login.pureTickPrivacy")), {
@@ -71,6 +91,23 @@ function onBack() {
   useVerifyCode().end();
   useUserStoreHook().SET_CURRENTPAGE(0);
 }
+
+const imageCode = ref("");
+
+const randomStr = ref("");
+
+const getImage = async () => {
+  randomStr.value = uuidv4();
+  const result = await getUserGraphCode(randomStr.value);
+  imageCode.value = URL.createObjectURL(result);
+  ruleForm.randomStr = randomStr;
+};
+
+getImage();
+
+const getPhoneCode = async () => {
+  await getUserSmsCodeApi(randomStr.value, graphCode.value, ruleForm.phone);
+};
 </script>
 
 <template>
@@ -89,10 +126,10 @@ function onBack() {
             trigger: 'blur'
           }
         ]"
-        prop="username"
+        prop="loginName"
       >
         <el-input
-          v-model="ruleForm.username"
+          v-model="ruleForm.loginName"
           clearable
           :placeholder="t('login.pureUsername')"
           :prefix-icon="useRenderIcon(User)"
@@ -112,10 +149,25 @@ function onBack() {
     </Motion>
 
     <Motion :delay="150">
-      <el-form-item prop="verifyCode">
+      <el-form-item prop="graphCode">
+        <el-input
+          v-model="graphCode"
+          clearable
+          :placeholder="t('login.pureVerifyCode')"
+          :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
+        >
+          <template v-slot:append>
+            <el-image :src="imageCode" alt="code" @click="getImage" />
+          </template>
+        </el-input>
+      </el-form-item>
+    </Motion>
+
+    <Motion :delay="150">
+      <el-form-item prop="smsCode">
         <div class="w-full flex justify-between">
           <el-input
-            v-model="ruleForm.verifyCode"
+            v-model="ruleForm.smsCode"
             clearable
             :placeholder="t('login.pureSmsVerifyCode')"
             :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
@@ -123,7 +175,12 @@ function onBack() {
           <el-button
             :disabled="isDisabled"
             class="ml-2"
-            @click="useVerifyCode().start(ruleFormRef, 'phone')"
+            @click="
+              async () => {
+                await useVerifyCode().start(ruleFormRef, 'phone');
+                await getPhoneCode();
+              }
+            "
           >
             {{
               text.length > 0

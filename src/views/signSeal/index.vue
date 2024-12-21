@@ -39,6 +39,7 @@ import { ElMessage } from "element-plus";
 const router = useRouter();
 
 const total = ref(0);
+const { getList } = useSeal();
 
 const toGoPage = () => {
   router.push({ name: "verify" });
@@ -62,10 +63,11 @@ const getUserAuthenlication = async () => {
     setAuth();
     setUserStatus(false);
   }
+  await getSealManageInfo()
 };
 
-const getUserAuthenlicationList = async () => {
-  const res = await userAuthentication();
+const getUserAuthenlicationList = async (data?: any) => {
+  const res = await userAuthentication(data ? data.current : null, data);
   userAuthenlicationInfo.value = res.data.records;
   total.value = res.data.total;
 };
@@ -92,7 +94,11 @@ const changeAuthentication = () => {
         cols: authenlicationCol,
         total: total.value,
         getUserAuthenlication,
-        goToCert
+        goToCert,
+        onSearch(data) {
+          console.log(data);
+          getUserAuthenlicationList(data);
+        }
       });
     },
     hideFooter: true,
@@ -116,7 +122,11 @@ const signManageSeeMore = () => {
     title: "签章文档",
     fullscreen: true,
     hideFooter: true,
-    contentRenderer: () => h(SignManagePageList)
+    contentRenderer: () => h(SignManagePageList),
+    beforeClose(done) {
+      getList(1);
+      done();
+    }
   });
 };
 
@@ -221,27 +231,18 @@ const getSeal = () => {
 
 const unCertGetSealRadioChange = (e: "1" | "0") => {
   unCertGetSealShow.value = false;
-  if (e == "1") {
-    addDialog({
-      width: 1200,
-      title: "个人私章申领",
-      contentRenderer: () => {
-        return h(GetSeal, {
-          type: "1"
-        });
-      }
-    });
-  } else {
-    addDialog({
-      width: 1200,
-      title: "企业公章申领",
-      contentRenderer: () => {
-        return h(GetSeal, {
-          type: "0"
-        });
-      }
-    });
-  }
+
+  addDialog({
+    width: 1200,
+    alignCenter: true,
+    hideFooter: true,
+    title: e == "1" ? "个人私章申领" : "企业公章申领",
+    contentRenderer: () => {
+      return h(GetSeal, {
+        type: e
+      });
+    }
+  });
 };
 </script>
 

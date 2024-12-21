@@ -1,65 +1,125 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import ShImageUpload from "@/views/components/shImageUpload/index.vue";
+import { stripBase64Prefix } from "@/utils/common";
+import { sealAddApi } from "@/api/test";
+import { SealTypeMap, StampShapeMap } from "@/utils/map";
 
 type GetSealProps = {
   d: (data) => void;
   type: "0" | "1";
 };
-
+const staticValue = ref("1");
 const props = defineProps<GetSealProps>();
 
 const form = ref({
-
+  type: "99",
+  //印章编码
+  code: "",
+  //印章名称
+  name: "",
+  //印章形状
+  shape: "",
+  //印章图片
+  stamp: "",
+  //印章长度mm
+  stampLength: "",
+  //印章宽度mm
+  stampWidth: "",
+  //pin码
+  pin: ""
 });
+
+const companyForm = ref({
+  type: "",
+  //印章编码
+  code: "",
+  //印章名称
+  name: "",
+  //印章形状
+  shape: "",
+  //印章图片
+  stamp: "",
+  //印章长度mm
+  stampLength: "",
+  //印章宽度mm
+  stampWidth: "",
+  //pin码
+  pin: ""
+});
+
+const pin = ref("");
 
 const radio = ref(3);
 
-const formData = ref("99");
+const submit = async () => {
+  if (props.type == "1") {
+    //个人逻辑
+    const { data } = sealAddApi(form.value);
+  } else {
+    const { data } = sealAddApi(companyForm.value);
+  }
+};
+
+const createType = ref("1");
+const ai = computed(() => {
+  return createType.value == "1";
+});
 </script>
 
 <template>
   <div v-if="type == '1'" class="sealBox">
     <el-form :model="form" label-width="auto">
-      <h2>信息录入</h2>
-      <el-form-item label="办理人员：">
-        <el-radio-group v-model="staticValue">
-          <el-radio value="1" size="large">本人</el-radio>
+      <h2>第1步，印章制作</h2>
+      <el-form-item label="申领方式：">
+        <el-radio-group v-model="createType">
+          <el-radio value="1" size="large">智能生成</el-radio>
+          <el-radio value="2" size="large">上传实物印迹</el-radio>
         </el-radio-group>
       </el-form-item>
-      <h2>个人信息</h2>
+      <el-form-item label="印章类型：">
+        <el-radio-group v-model="staticValue">
+          <el-radio value="1" size="large">个人私章</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <h2 v-if="!ai">个人信息</h2>
       <el-row>
-        <el-col :span="12">
-          <el-form-item label="姓名：">
+        <el-col v-if="!ai" :span="12">
+          <el-form-item label="印章名称：">
+            <el-input v-model="form.name" placeholder="请输入印章名称" />
+          </el-form-item>
+          <el-form-item label="印章编码：">
+            <el-input v-model="form.code" placeholder="请输入印章编码" />
+          </el-form-item>
+          <el-form-item v-if="!ai" label="印章形状：">
+            <el-select
+              v-model="form.shape"
+              placeholder="请输入印章形状"
+              size="default"
+              style="width: 200px"
+            >
+              <el-option
+                v-for="(item, index) in Array.from(StampShapeMap)"
+                :key="index"
+                :label="item[1]"
+                :value="item[0]"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="!ai" label="印章宽度(mm)：">
             <el-input
-              v-model="form.name"
-              placeholder="请输入姓名"
-              @change="change(form)"
+              v-model="form.stampWidth"
+              placeholder="请输入印章宽度(mm)"
             />
           </el-form-item>
-          <el-form-item label="个人身份证号：">
+          <el-form-item v-if="!ai" label="印章长度(mm)：">
             <el-input
-              v-model="form.idCard"
-              placeholder="请输入个人身份证号"
-              @change="change(form)"
-            />
-          </el-form-item>
-          <el-form-item label="个人实名手机号码：">
-            <el-input
-              v-model="form.tel"
-              placeholder="请输入个人实名手机号码"
-              @change="change(form)"
-            />
-          </el-form-item>
-          <el-form-item label="个人地址：">
-            <el-input
-              v-model="form.address"
-              placeholder="请输入个人地址"
-              @change="change(form)"
+              v-model="form.stampLength"
+              placeholder="请输入印章长度(mm)"
             />
           </el-form-item>
         </el-col>
-        <el-col :span="12" style="display: flex">
+        <el-col v-if="!ai" :span="12" style="display: flex">
           <el-form-item>
             <div
               style="
@@ -70,52 +130,145 @@ const formData = ref("99");
               "
             >
               <ShImageUpload
-                @change="
-                  id => {
-                    form.facePath = id;
+                @getBase64="
+                  (base64: string) => {
+                    if (base64) {
+                      form.stamp = stripBase64Prefix(base64);
+                    } else {
+                      form.stamp = ``;
+                    }
                   }
                 "
               />
-              <div>身份证正面</div>
-            </div>
-          </el-form-item>
-          <el-form-item>
-            <div
-              style="display: flex; align-items: center; flex-direction: column"
-            >
-              <ShImageUpload
-                @change="
-                  id => {
-                    form.backPath = id;
-                  }
-                "
-              />
-              <div>身份证反面</div>
+              <div>印章图片</div>
             </div>
           </el-form-item>
         </el-col>
       </el-row>
+      <h2>确认密码</h2>
+      <el-row>
+        <el-form-item label="密码：">
+          <el-input v-model="pin" placeholder="请输入密码" type="password" />
+        </el-form-item>
+        <el-form-item label="密码：">
+          <el-input
+            v-model="form.pin"
+            :disabled="!pin"
+            placeholder="请输入再次输入密码"
+            type="password"
+            @change="change(form)"
+          />
+        </el-form-item>
+      </el-row>
     </el-form>
-
-    <el-radio-group v-model="radio">
-      <el-radio value="99">个人印章</el-radio>
-      <el-radio value="01">法定名称章</el-radio>
-      <el-radio value="02">财务专用章</el-radio>
-      <el-radio value="03">发票专用章</el-radio>
-      <el-radio value="04">合同专用章</el-radio>
-      <el-radio value="05">法定代表人名章</el-radio>
-    </el-radio-group>
   </div>
-  <div v-if="type == '0'" class="sealBox">
-    <el-radio-group v-model="radio">
-      <el-radio value="99">个人印章</el-radio>
-      <el-radio value="01">法定名称章</el-radio>
-      <el-radio value="02">财务专用章</el-radio>
-      <el-radio value="03">发票专用章</el-radio>
-      <el-radio value="04">合同专用章</el-radio>
-      <el-radio value="05">法定代表人名章</el-radio>
-    </el-radio-group>
+  <div v-else class="sealBox">
+    <el-form :model="companyForm" label-width="auto">
+      <h2>第1步，印章制作</h2>
+      <el-form-item label="申领方式：">
+        <el-radio-group v-model="createType">
+          <el-radio value="1" size="large">智能生成</el-radio>
+          <el-radio value="2" size="large">上传实物印迹</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="印章类型：">
+        <el-select
+          v-model="companyForm.type"
+          placeholder="请选择印章类型"
+          size="default"
+          style="width: 200px"
+        >
+          <el-option
+            v-for="(item, index) in Array.from(SealTypeMap).slice(1)"
+            :key="index"
+            :label="item[1]"
+            :value="item[0]"
+          />
+        </el-select>
+      </el-form-item>
+      <h2 v-if="!ai">个人信息</h2>
+      <el-row>
+        <el-col v-if="!ai" :span="12">
+          <el-form-item label="印章名称：">
+            <el-input v-model="companyForm.name" placeholder="请输入印章名称" />
+          </el-form-item>
+          <el-form-item label="印章编码：">
+            <el-input v-model="companyForm.code" placeholder="请输入印章编码" />
+          </el-form-item>
+          <el-form-item v-if="!ai" label="印章形状：">
+            <el-select
+              v-model="companyForm.shape"
+              placeholder="请输入印章形状"
+              size="default"
+              style="width: 200px"
+            >
+              <el-option
+                v-for="(item, index) in Array.from(StampShapeMap)"
+                :key="index"
+                :label="item[1]"
+                :value="item[0]"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="!ai" label="印章宽度(mm)：">
+            <el-input
+              v-model="companyForm.stampWidth"
+              placeholder="请输入印章宽度(mm)"
+            />
+          </el-form-item>
+          <el-form-item v-if="!ai" label="印章长度(mm)：">
+            <el-input
+              v-model="companyForm.stampLength"
+              placeholder="请输入印章长度(mm)"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col v-if="!ai" :span="12" style="display: flex">
+          <el-form-item>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                margin-right: 20px;
+              "
+            >
+              <ShImageUpload
+                @getBase64="
+                  (base64: string) => {
+                    if (base64) {
+                      companyForm.stamp = stripBase64Prefix(base64);
+                    } else {
+                      companyForm.stamp = ``;
+                    }
+                  }
+                "
+              />
+              <div>印章图片</div>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <h2>确认密码</h2>
+      <el-row>
+        <el-form-item label="密码：">
+          <el-input v-model="pin" placeholder="请输入密码" type="password" />
+        </el-form-item>
+        <el-form-item label="密码：">
+          <el-input
+            v-model="form.pin"
+            :disabled="!pin"
+            placeholder="请输入再次输入密码"
+            type="password"
+          />
+        </el-form-item>
+      </el-row>
+    </el-form>
   </div>
+  <el-row style="width: 100%; justify-content: flex-end">
+    <el-button>上一步</el-button>
+    <el-button @click="submit">确认申领</el-button>
+  </el-row>
 </template>
 
 <style scoped lang="scss">
@@ -128,5 +281,14 @@ const formData = ref("99");
     margin-bottom: 4px;
     color: black;
   }
+}
+
+.el-form-item {
+  align-items: center;
+  margin-bottom: 4px !important;
+}
+
+.el-input {
+  width: 200px;
 }
 </style>

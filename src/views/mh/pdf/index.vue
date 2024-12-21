@@ -229,19 +229,6 @@ const title = ref(JSON.parse(localStorage.getItem("docName")));
     <el-row style="width: 100%; justify-content: flex-end; margin-top: 20px">
       <el-button type="primary" @click="submit">确认签署</el-button>
     </el-row>
-    <!--    <el-input-->
-    <!--      v-model="psw"-->
-    <!--      placeholder="请填写签署密码"-->
-    <!--      size="default"-->
-    <!--      type="text"-->
-    <!--      maxlength="6"-->
-    <!--    />-->
-    <!--    <template #footer>-->
-    <!--      <div class="dialog-footer">-->
-    <!--        <el-button @click="show = false">退出</el-button>-->
-    <!--        <el-button type="primary" @click="submit"> 确认</el-button>-->
-    <!--      </div>-->
-    <!--    </template>-->
   </el-dialog>
   <ShPdf
     v-if="pdf"

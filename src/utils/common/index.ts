@@ -82,6 +82,11 @@ export function uniqueByIdReduce(arr, props: string, childProps?: string) {
   }, []);
 }
 
-export const getBase64 = (url:string) => {
-  return "data:image/png;base64,"+url
+export const getBase64 = (url: string) => {
+  return "data:image/png;base64," + url;
+};
+
+export function stripBase64Prefix(base64Data) {
+  // 去除base64数据的前缀，例如"data:image/jpeg;base64,"
+  return base64Data.replace(/^data:image\/[a-z]+;base64,/, "");
 }

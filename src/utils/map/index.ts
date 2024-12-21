@@ -5,7 +5,7 @@ export const SealTypeMap = new Map([
   ["03", "发票专用章"],
   ["04", "合同专用章"],
   ["05", "法定代表人名章"],
-  ["00", "test"]
+  ["00", "测试"]
 ]);
 
 export const CertStatusMap = new Map([
@@ -17,4 +17,10 @@ export const CertStatusMap = new Map([
 export const AuthTypeMap = new Map([
   ["0", "企业单位"],
   ["1", "个人"]
+]);
+
+export const StampShapeMap = new Map([
+  ["0", "圆形"],
+  ["1", "椭圆"],
+  ["2", "方形"]
 ]);

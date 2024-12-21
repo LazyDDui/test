@@ -145,9 +145,10 @@ const tableData = ref({
 });
 
 const getList = async () => {
-  // const {data} = await http.post(`/app/signRequestFile/page`)
-  // console.log('......', data)
-  const { data } = await getUserAuthentication(tableData.value.current);
+  const { data } = await getUserAuthentication(
+    tableData.value.current,
+    form.name
+  );
   console.log(data);
   tableData.value = data;
 };
@@ -164,9 +165,9 @@ getList();
     <el-input
       v-model="form.name"
       style="width: 200px; margin-right: 10px"
-      size="small"
-      placeholder="文档名称"
+      placeholder="请输入印章名称"
     />
+    <el-button type="primary" @click="getList">搜索</el-button>
     <pure-table
       style="margin-top: 20px"
       :data="tableData.records"

@@ -30,8 +30,12 @@ type ShTable = {
   getUserAuthenlication: () => void;
   goToCert: () => void;
 };
-
+const form = reactive({
+  authenticationName: "",
+  current: 1
+});
 const props = defineProps<ShTable>();
+const emit = defineEmits(["search"]);
 const personData = ref<any>();
 const columns: TableColumnList = [
   {
@@ -72,8 +76,8 @@ const columns: TableColumnList = [
     }
   }
 ];
-const currentChange = e => {
-  console.log(e);
+const currentChange = (e: number) => {
+  form.current = e;
 };
 const isPerson = ref(false);
 
@@ -85,9 +89,26 @@ const addAuthentication = () => {
 
 <template>
   <div>
-    <el-button size="small" type="primary" @click="addAuthentication"
+    <el-button
+      style="margin-bottom: 10px"
+      size="small"
+      type="success"
+      @click="addAuthentication"
       >新增认证
     </el-button>
+    <br />
+    <el-input
+      v-model="form.authenticationName"
+      style="width: 200px; margin-right: 10px"
+      size="small"
+      placeholder="请输入名称"
+    />
+    <el-button
+      size="small"
+      type="primary"
+      @click="emit('search', form)"
+      >搜索</el-button
+    >
     <pure-table style="margin-top: 20px" :data="tableData" :columns="columns" />
     <el-row style="margin-top: 20px; justify-content: flex-end; width: 100%">
       <el-pagination

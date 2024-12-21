@@ -35,7 +35,11 @@ export const useSeal = defineStore("seal", () => {
   });
 
   const getSealManageInfo = async () => {
-    const sealInfo: any = await http.post(`/app/userAuthentication/seal/page`);
+    const sealInfo: any = await http.post(`/app/userAuthentication/seal/page`, {
+      data: {
+        current: 1
+      }
+    });
     sealManage.value = sealInfo.data;
   };
 
@@ -45,8 +49,8 @@ export const useSeal = defineStore("seal", () => {
 
   const fileList = ref<any>([]);
 
-  const getList = async page => {
-    const { data } = await getSignRequestFile(page);
+  const getList = async (page: number, search?: object = {}) => {
+    const { data } = await getSignRequestFile(page, search);
     fileList.value = data;
   };
 

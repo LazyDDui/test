@@ -32,8 +32,9 @@ import Lock from "@iconify-icons/ri/lock-fill";
 import Check from "@iconify-icons/ep/check";
 import User from "@iconify-icons/ri/user-3-fill";
 import Info from "@iconify-icons/ri/information-line";
-import { login } from "@/api/test";
+import { getUserGraphCode, login } from "@/api/test";
 import { getToken, removeToken, setToken } from "@/utils/auth";
+import { v4 as uuidv4 } from "uuid";
 
 defineOptions({
   name: "Login"
@@ -63,7 +64,7 @@ const { locale, translationCh, translationEn } = useTranslationLang();
 const ruleForm = reactive({
   username: "18202823011",
   password: "123123",
-  verifyCode: ""
+  code: ""
 });
 
 const onLogin = async (formEl: FormInstance | undefined) => {
@@ -74,6 +75,8 @@ const onLogin = async (formEl: FormInstance | undefined) => {
       login({
         username: ruleForm.username,
         password: ruleForm.password,
+        code: ruleForm.code,
+        randomStr: randomStr.value,
         grant_type: "password",
         scope: "server"
       })
@@ -85,7 +88,6 @@ const onLogin = async (formEl: FormInstance | undefined) => {
             accessToken: `${res.token_type} ${res.access_token}`
           });
           return initRouter().then(() => {
-            console.log(getToken());
             disabled.value = true;
             router
               .push("/SignManage")
@@ -94,9 +96,6 @@ const onLogin = async (formEl: FormInstance | undefined) => {
               })
               .finally(() => (disabled.value = false));
           });
-        })
-        .catch(() => {
-          message(t("login.pureLoginFail"), { type: "error" });
         })
         .finally(() => (loading.value = false));
     }
@@ -123,6 +122,18 @@ watch(checked, bool => {
 watch(loginDay, value => {
   useUserStoreHook().SET_LOGINDAY(value);
 });
+
+const imageCode = ref("");
+const randomStr = ref("");
+
+const getImage = async () => {
+  randomStr.value = uuidv4();
+  const result = await getUserGraphCode(randomStr.value);
+  imageCode.value = URL.createObjectURL(result);
+  ruleForm.randomStr = randomStr;
+};
+
+getImage();
 </script>
 
 <template>
@@ -223,21 +234,34 @@ watch(loginDay, value => {
                 />
               </el-form-item>
             </Motion>
-
-            <Motion :delay="200">
-              <el-form-item prop="verifyCode">
+            <Motion :delay="150">
+              <el-form-item prop="code">
                 <el-input
-                  v-model="ruleForm.verifyCode"
+                  v-model="ruleForm.code"
                   clearable
                   :placeholder="t('login.pureVerifyCode')"
                   :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
                 >
                   <template v-slot:append>
-                    <ReImageVerify v-model:code="imgCode" />
+                    <el-image :src="imageCode" alt="code" @click="getImage" />
                   </template>
                 </el-input>
               </el-form-item>
             </Motion>
+            <!--            <Motion :delay="200">-->
+            <!--              <el-form-item prop="verifyCode">-->
+            <!--                <el-input-->
+            <!--                  v-model="ruleForm.verifyCode"-->
+            <!--                  clearable-->
+            <!--                  :placeholder="t('login.pureVerifyCode')"-->
+            <!--                  :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"-->
+            <!--                >-->
+            <!--                  <template v-slot:append>-->
+            <!--                    <ReImageVerify v-model:code="imgCode" />-->
+            <!--                  </template>-->
+            <!--                </el-input>-->
+            <!--              </el-form-item>-->
+            <!--            </Motion>-->
 
             <Motion :delay="250">
               <el-form-item>
@@ -329,11 +353,11 @@ watch(loginDay, value => {
           <!--            </el-form-item>-->
           <!--          </Motion>-->
           <!-- 手机号登录 -->
-          <LoginPhone v-if="currentPage === 1" />
+          <!--          <LoginPhone v-if="currentPage === 1" />-->
           <!-- 二维码登录 -->
           <!--          <LoginQrCode v-if="currentPage === 2" />-->
           <!-- 注册 -->
-          <LoginRegist v-if="currentPage === 3" />
+          <LoginRegist v-if="currentPage === 1" />
           <!-- 忘记密码 -->
           <!--          <LoginUpdate v-if="currentPage === 4"/>-->
         </div>

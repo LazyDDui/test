@@ -70,10 +70,13 @@ const handleChange = (uploadFile, uploadFiles) => {
   name.value = uploadFile.name;
   chkFile.value = uploadFile.raw;
 };
-const handleExceed = (file, files) => {
-  console.log("reChange", file, files);
-  name.value = files[0].name;
-  chkFile.value = files[0].raw;
+const handleExceed: UploadProps["onExceed"] = async files => {
+  uploadRef.value!.clearFiles();
+  const file = files[0] as UploadRawFile;
+  name.value = file.name;
+  chkFile.value = file.raw;
+  file.uid = genFileId();
+  uploadRef.value!.handleStart(file);
 };
 const handleProgress = (ev, file, files) => {
   console.log("pro", ev, file, files);

@@ -13,6 +13,7 @@ import { stringify } from "qs";
 import NProgress from "../progress";
 import { getToken, formatToken } from "@/utils/auth";
 import { useUserStoreHook } from "@/store/modules/user";
+import { message } from "@/utils/message";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
@@ -162,6 +163,33 @@ class PureHttp {
     );
   }
 
+  /** 通用请求工具函数，只返回后端数据 */
+  public hRequest<T>(
+    method: RequestMethods,
+    url: string,
+    param?: AxiosRequestConfig,
+    axiosConfig?: PureHttpRequestConfig
+  ): Promise<{ data: T; headers: any }> {
+    const config = {
+      method,
+      url,
+      ...param,
+      ...axiosConfig
+    } as PureHttpRequestConfig;
+
+    // 单独处理自定义请求/响应回调
+    return new Promise((resolve, reject) => {
+      PureHttp.axiosInstance
+        .request(config)
+        .then(response => {
+          resolve(response);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+
   /** 通用请求工具函数 */
   public request<T>(
     method: RequestMethods,
@@ -185,6 +213,9 @@ class PureHttp {
         })
         .catch(error => {
           reject(error);
+          message(error.response.data.msg, {
+            type: "error"
+          });
         });
     });
   }
