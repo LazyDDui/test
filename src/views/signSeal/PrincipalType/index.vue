@@ -35,19 +35,19 @@ const initialCompanyForm = {
   // 单位类型 0:一般企业，1：事业单位
   unitType: "",
   //单位名称
-  custName: "",
+  custName: "成都泰和瑞祥科技有限公司",
   //统一信用代码
-  custCreditNo: "",
+  custCreditNo: "91510100MA6CPCRP4G",
   //住址
   address: "",
   //营业执照/证书/文件
   businessPicture: "",
   //法定代表人姓名
-  juriName: "",
+  juriName: "洪峰",
   //法定代表人手机号
-  juriTel: "",
+  juriTel: "18183279409",
   //法定代表人证件号码
-  juriIdNo: "",
+  juriIdNo: "422130197803190131",
   //法定代表人身份证正面照存储标识
   juriFacePath: "",
   //法定代表人身份证反面照存储标识
@@ -57,7 +57,8 @@ const initialCompanyForm = {
   //经办人实名手机号码
   operatorTel: "",
   //经办人证件号码
-  operatorIdNo: ""
+  operatorIdNo: "",
+  juriIdType: "0"
 };
 
 const companyForm = ref(initialCompanyForm);

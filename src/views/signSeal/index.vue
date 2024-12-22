@@ -51,19 +51,25 @@ const getUserAuthenlication = async () => {
   total.value = res.data.total;
 
   if (res.data.records.length > 0) {
-    const res2 = await getCurrentAuthentication();
-    //如果已切换认证，hold住状态
-    if (res2.data) {
-      setAuth(res2.data);
-    } else {
-      setAuth(userAuthenlicationInfo.value[0]);
-    }
-    setUserStatus(true);
+    await getCurrentAuthentication()
+      .then(res2 => {
+        //如果已切换认证，hold住状态
+        if (res2.data) {
+          setAuth(res2.data);
+        } else {
+          setAuth(userAuthenlicationInfo.value[0]);
+        }
+        setUserStatus(true);
+      })
+      .catch(async () => {
+        changeAuthenticationApi(res.data.records[0].id);
+        await getUserAuthenlication();
+      });
+    await getSealManageInfo();
   } else {
     setAuth();
     setUserStatus(false);
   }
-  await getSealManageInfo()
 };
 
 const getUserAuthenlicationList = async (data?: any) => {
@@ -96,7 +102,6 @@ const changeAuthentication = () => {
         getUserAuthenlication,
         goToCert,
         onSearch(data) {
-          console.log(data);
           getUserAuthenlicationList(data);
         }
       });
@@ -179,7 +184,7 @@ const goToCert = () => {
             type: "error"
           });
         }
-        getUserAuthenlication();
+        await getUserAuthenlication();
         done();
       } else {
         const res: any = await companySign(unCertForm.value);
@@ -194,7 +199,7 @@ const goToCert = () => {
             type: "error"
           });
         }
-        getUserAuthenlication();
+        await getUserAuthenlication();
         done();
       }
     }

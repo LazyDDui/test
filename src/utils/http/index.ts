@@ -195,7 +195,8 @@ class PureHttp {
     method: RequestMethods,
     url: string,
     param?: AxiosRequestConfig,
-    axiosConfig?: PureHttpRequestConfig
+    axiosConfig?: PureHttpRequestConfig,
+    noMessage?: boolean
   ): Promise<T & { data: any }> {
     const config = {
       method,
@@ -213,6 +214,9 @@ class PureHttp {
         })
         .catch(error => {
           reject(error);
+          if (noMessage) {
+            return;
+          }
           message(error.response.data.msg, {
             type: "error"
           });
@@ -224,18 +228,26 @@ class PureHttp {
   public post<T>(
     url: string,
     params?: AxiosRequestConfig,
-    config?: PureHttpRequestConfig
+    config?: PureHttpRequestConfig,
+    noMessage?: boolean
   ): Promise<T & { data: any }> {
-    return this.request<T & { data: any }>("post", url, params, config);
+    return this.request<T & { data: any }>(
+      "post",
+      url,
+      params,
+      config,
+      noMessage
+    );
   }
 
   /** 单独抽离的`get`工具函数 */
   public get<T>(
     url: string,
     params?: AxiosRequestConfig,
-    config?: PureHttpRequestConfig
+    config?: PureHttpRequestConfig,
+    noMessage?: boolean
   ): Promise<T & { data: any }> {
-    return this.request<T & { data: any }>("get", url, params, config);
+    return this.request<T & { data: any }>("get", url, params, config,noMessage);
   }
 }
 

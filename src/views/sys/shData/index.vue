@@ -9,19 +9,25 @@ const state = ref({
   setNum: ""
 });
 
+const empty = ref(true);
+
 const s = ref("");
 
 const getData = async () => {
-  const { data } = await http.get(`/app/app`);
-  state.value = data;
-  console.log(data);
+  const res = await http.get(`/app/app`);
+  if (res.data) {
+    state.value = res.data;
+    empty.value = false;
+  } else {
+    empty.value = true;
+  }
 };
 
 getData();
 </script>
 
 <template>
-  <el-row style="display: flex">
+  <el-row v-if="!empty" style="display: flex">
     <div class="shbox">
       <div class="title">我的api</div>
       <div class="innerBox" style="display: flex">
@@ -42,6 +48,9 @@ getData();
         <!--        <el-button type="text">查看调用记录</el-button>-->
       </div>
     </div>
+  </el-row>
+  <el-row v-else>
+    <div class="shbox" style="width: 100%;height: 500px;">用户暂未开通api</div>
   </el-row>
 </template>
 

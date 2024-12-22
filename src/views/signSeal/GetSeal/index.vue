@@ -4,12 +4,16 @@ import ShImageUpload from "@/views/components/shImageUpload/index.vue";
 import { stripBase64Prefix } from "@/utils/common";
 import { sealAddApi } from "@/api/test";
 import { SealTypeMap, StampShapeMap } from "@/utils/map";
+import { useSeal } from "@/store/useSeal";
+import { closeAllDialog } from "@/components/ReDialog/index";
+import { message } from "@/utils/message";
 
 type GetSealProps = {
   d: (data) => void;
   type: "0" | "1";
 };
 const staticValue = ref("1");
+const { getSealManageInfo } = useSeal();
 const props = defineProps<GetSealProps>();
 
 const form = ref({
@@ -55,10 +59,15 @@ const radio = ref(3);
 const submit = async () => {
   if (props.type == "1") {
     //个人逻辑
-    const { data } = sealAddApi(form.value);
+    const { data } = await sealAddApi(form.value);
   } else {
-    const { data } = sealAddApi(companyForm.value);
+    const { data } = await sealAddApi(companyForm.value);
   }
+  message("申领成功", {
+    type: "success"
+  });
+  closeAllDialog();
+  await getSealManageInfo();
 };
 
 const createType = ref("1");
@@ -82,10 +91,10 @@ const ai = computed(() => {
           <el-radio value="1" size="large">个人私章</el-radio>
         </el-radio-group>
       </el-form-item>
-      <h2 v-if="!ai">个人信息</h2>
+      <h2>个人信息</h2>
       <el-row>
-        <el-col v-if="!ai" :span="12">
-          <el-form-item label="印章名称：">
+        <el-col :span="12">
+          <el-form-item v-if="!ai" label="印章名称：">
             <el-input v-model="form.name" placeholder="请输入印章名称" />
           </el-form-item>
           <el-form-item label="印章编码：">
@@ -186,10 +195,10 @@ const ai = computed(() => {
           />
         </el-select>
       </el-form-item>
-      <h2 v-if="!ai">个人信息</h2>
+      <h2>个人信息</h2>
       <el-row>
-        <el-col v-if="!ai" :span="12">
-          <el-form-item label="印章名称：">
+        <el-col :span="12">
+          <el-form-item v-if="!ai" label="印章名称：">
             <el-input v-model="companyForm.name" placeholder="请输入印章名称" />
           </el-form-item>
           <el-form-item label="印章编码：">
@@ -256,7 +265,7 @@ const ai = computed(() => {
         </el-form-item>
         <el-form-item label="密码：">
           <el-input
-            v-model="form.pin"
+            v-model="companyForm.pin"
             :disabled="!pin"
             placeholder="请输入再次输入密码"
             type="password"

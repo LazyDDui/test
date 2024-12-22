@@ -52,8 +52,8 @@ console.log(Object.keys(modules));
 const r = [
   "./modules/shData.ts",
   "./modules/shApi.ts",
-  "./modules/shPdf.ts",
-  "./modules/test.ts"
+  "./modules/shPdf.ts"
+  // "./modules/test.ts"
 ];
 
 r.forEach(key => {

@@ -29,8 +29,10 @@ export const checkFile = file =>
     }
   );
 
-export const personSign = data => http.post("/app/per/approve", { data }, {});
-export const companySign = data => http.post("/app/uni/approve", { data }, {});
+export const personSign = data =>
+  http.post("/app/userAuthentication/addPer", { data }, {});
+export const companySign = data =>
+  http.post("/app/userAuthentication/addUni", { data }, {});
 export const preSign = (url: string, file: FormData) =>
   http.request(
     "put",
@@ -97,31 +99,29 @@ export const userAuthentication = (
   );
 
 //切换认证信息
-export const changeAuthentication = (id: string) =>
-  http.post<{ data: any }>("/app/session/changeUserAuthentication", {
-    params: {
-      id
-    }
-  });
-
 export const changeAuthenticationApi = (id: string) =>
   http.post<{ data: any }>("/app/session/changeUserAuthentication", {
-    params: {
+    data: {
       id
     }
   });
 
 //获取当前认证信息
 export const getCurrentAuthentication = (data?: object) =>
-  http.post<{ data: any }>("/app/session/userAuthentication", { data }, {});
+  http.post<{ data: any }>(
+    "/app/session/userAuthentication",
+    { data },
+    {},
+    true
+  );
 
 //api接口调用记录
 export const getRequestPage = (page?: object) =>
-  http.post<{ data: any }>("/app/app/pageRequest", { params: page }, {});
+  http.post<{ data: any }>("/app/app/pageRequest", { data: page }, {});
 ///userAuthentication/remove
 export const removeUserAuthenticationApi = (id: string) =>
   http.post<{ data: any }>("/app/userAuthentication/remove", {
-    params: {
+    data: {
       id
     }
   });

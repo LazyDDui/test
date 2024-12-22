@@ -12,7 +12,7 @@ import {
   personSign,
   companySign,
   userAuthentication,
-  changeAuthentication,
+  changeAuthenticationApi,
   getCurrentAuthentication
 } from "@/api/test";
 import { useSeal } from "@/store/useSeal";
@@ -56,11 +56,12 @@ const columns: TableColumnList = [
     cellRenderer(data) {
       return h(Btn, {
         data: data.row,
-        onUpdateList: () => {
+        onUpdateList: async () => {
           props.getUserAuthenlication();
+          await getSealManageInfo();
         },
         cgClick: async () => {
-          const res: any = await changeAuthentication(data.row.id);
+          const res: any = await changeAuthenticationApi(data.row.id);
           const res2: any = await getCurrentAuthentication();
           if (res.code == "0") {
             ElMessage({
@@ -103,10 +104,7 @@ const addAuthentication = () => {
       size="small"
       placeholder="请输入名称"
     />
-    <el-button
-      size="small"
-      type="primary"
-      @click="emit('search', form)"
+    <el-button size="small" type="primary" @click="emit('search', form)"
       >搜索</el-button
     >
     <pure-table style="margin-top: 20px" :data="tableData" :columns="columns" />
