@@ -10,6 +10,7 @@ import { message } from "@/utils/message";
 import { Check, Delete, Back } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 import { v4 as uuidv4 } from "uuid";
+import { fp } from "@/utils";
 
 defineOptions({
   name: "ShPdf"
@@ -47,7 +48,7 @@ watch(
 // const workerSrc = import("pdfjs-dist/build/pdf.worker.entry");
 const previewPage = ref<number[]>([]);
 const preCanvasRefs = ref<HTMLCanvasElement[]>([]);
-// const pdfInstance = ref<any>(null);
+const pdfInstance = ref<any>(null);
 const gaiCanvasRefs = ref<HTMLCanvasElement[]>([]);
 const gaiFabric = ref([]);
 const gai = reactive({
@@ -66,28 +67,23 @@ const signBoxEle = ref<HTMLDivElement>();
 const loadPdfToCanvas = async () => {
   try {
     //@ts-ignore
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "../../../node_modules/pdfjs-dist/build/pdf.worker.js";
-    console.log(props.pdfUrl);
-    // return
-    const loadingTask = pdfjsLib.getDocument({
-      url: props.pdfUrl
-    });
-    // pdfInstance.value = await loadingTask.promise;
-    await loadingTask.promise.then(async pdfInstance => {
-      const totalPages = pdfInstance.numPages;
-      previewPage.value = Array.from({ length: totalPages }, (_, i) => i + 1);
+    pdfjsLib.GlobalWorkerOptions.workerSrc = fp("pdf/pdf.worker.js");
+    const loadingTask = pdfjsLib.getDocument({ url: props.pdfUrl });
+    pdfInstance.value = await loadingTask.promise;
 
-      pages.value = Array.from({ length: totalPages }, (_, i) => i + 1);
-      for (const pageIndex of previewPage.value) {
-        await renderPageToCanvas(pdfInstance, pageIndex);
-      }
+    const totalPages = pdfInstance.value.numPages;
+    previewPage.value = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-      for (const pageIndex of pages.value) {
-        await renderPageToCanvas(pdfInstance, pageIndex, true);
-      }
-      loadPdf.value = false;
-      signBoxEle.value.addEventListener("scroll", signScroll);
-    });
+    pages.value = Array.from({ length: totalPages }, (_, i) => i + 1);
+    for (const pageIndex of previewPage.value) {
+      await renderPageToCanvas(pageIndex);
+    }
+
+    for (const pageIndex of pages.value) {
+      await renderPageToCanvas(pageIndex, true);
+    }
+    loadPdf.value = false;
+    signBoxEle.value.addEventListener("scroll", signScroll);
   } catch (error) {
     console.log(error);
     message("pdf文件加载失败", {
@@ -96,13 +92,9 @@ const loadPdfToCanvas = async () => {
   }
 };
 
-const renderPageToCanvas = async (
-  pdfInstance: any,
-  pageIndex: number,
-  isSign?: boolean
-) => {
-  if (!pdfInstance) return;
-  const page = await pdfInstance.getPage(pageIndex);
+const renderPageToCanvas = async (pageIndex: number, isSign?: boolean) => {
+  if (!pdfInstance.value) return;
+  const page = await toRaw(pdfInstance.value).getPage(pageIndex);
   if (isSign) {
     const viewport = page.getViewport({ scale: 1 });
     const canvas = document.querySelector(
