@@ -29,8 +29,10 @@ const pdf = ref();
 const loadingPdf = ref();
 
 const getPdfFile = async () => {
-  const blob = await getPdf();
-  pdf.value = preViewFile(blob);
+  // const blob = await getPdf();
+  // pdf.value = preViewFile(blob);
+  pdf.value = "http://182.151.13.73:9999" + "/app/file/" + fileId.value;
+  // console.log(import.meta.env.VITE_BASE_URL)
 };
 
 getPdfFile();
