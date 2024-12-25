@@ -167,7 +167,7 @@ export const sealAddApi = (data: object) =>
   http.post<{ data: any }>(`/app/userAuthentication/seal/add`, {
     data
   });
-//获取图形验证码/user/graphCode
+//获取图形验证码/auth/code/image
 export const getUserGraphCode = (randomStr: string) =>
   http.hRequest<any>("get", `/app/user/graphCode`, {
     responseType: "blob",

@@ -1,6 +1,4 @@
-import {http} from "@/utils/http/request";
-
-;
+import { http } from "@/utils/http/request";
 
 type Result = {
   success: boolean;

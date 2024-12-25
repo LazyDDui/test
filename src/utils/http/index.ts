@@ -12,9 +12,9 @@ import type {
 import { stringify } from "qs";
 import NProgress from "../progress";
 import { getToken, formatToken, removeToken } from "@/utils/auth";
-import {useUserStore, useUserStoreHook} from "@/store/modules/user";
+import { useUserStore, useUserStoreHook } from "@/store/modules/user";
 import { message } from "@/utils/message";
-import {useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
@@ -32,7 +32,6 @@ const defaultConfig: AxiosRequestConfig = {
   },
   baseURL: "http://182.151.13.73:9999"
 };
-
 
 class PureHttp {
   constructor() {

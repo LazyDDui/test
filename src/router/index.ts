@@ -49,19 +49,19 @@ const modules: Record<string, any> = import.meta.glob(
 const routes = [];
 console.log(Object.keys(modules));
 
-const r = [
-  "./modules/shData.ts",
-  "./modules/shApi.ts",
-  "./modules/shPdf.ts"
-  // "./modules/test.ts"
-];
-
-r.forEach(key => {
-  routes.push(modules[key].default);
-});
-// Object.keys(modules).forEach(key => {
+// const r = [
+//   "./modules/shData.ts",
+//   "./modules/shApi.ts",
+//   "./modules/shPdf.ts"
+//   // "./modules/test.ts"
+// ];
+//
+// r.forEach(key => {
 //   routes.push(modules[key].default);
 // });
+Object.keys(modules).forEach(key => {
+  routes.push(modules[key].default);
+});
 
 /** 导出处理后的静态路由（三级及以上的路由全部拍成二级） */
 export const constantRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(

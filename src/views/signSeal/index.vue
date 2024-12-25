@@ -143,6 +143,15 @@ const unCertForm = ref({});
 
 const clearUnCertForm = () => {
   for (const i in unCertForm.value) {
+    console.log(i);
+    if (
+      i == "idType" ||
+      i == "juriIdType" ||
+      i == "responsibilityIdType" ||
+      i == "operatorIdType"
+    ) {
+      continue;
+    }
     unCertForm.value[i] = "";
   }
 };

@@ -1,6 +1,6 @@
-import {$t} from "@/plugins/i18n";
+import { $t } from "@/plugins/i18n";
 
-const {VITE_HIDE_HOME} = import.meta.env;
+const { VITE_HIDE_HOME } = import.meta.env;
 const Layout = () => import("@/layout/index.vue");
 
 export default {
@@ -10,7 +10,8 @@ export default {
   meta: {
     icon: "ep:home-filled",
     title: $t("menus.pureHome"),
-    rank: 3
+    rank: 3,
+    showLink: false
   },
   children: [
     {

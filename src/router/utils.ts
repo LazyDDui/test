@@ -67,11 +67,13 @@ function ascending(arr: any[]) {
       }
     });
 
-    return routes.sort((a: { meta: { rank: number } }, b: { meta: { rank: number } }) => {
-      if (!a.meta) a.meta = { rank: Infinity };
-      if (!b.meta) b.meta = { rank: Infinity };
-      return a.meta.rank - b.meta.rank;
-    });
+    return routes.sort(
+      (a: { meta: { rank: number } }, b: { meta: { rank: number } }) => {
+        if (!a.meta) a.meta = { rank: Infinity };
+        if (!b.meta) b.meta = { rank: Infinity };
+        return a.meta.rank - b.meta.rank;
+      }
+    );
   }
 
   // 对顶级路由进行排序
@@ -223,13 +225,14 @@ function initRouter() {
     const asyncRouteList = storageLocal().getItem(key) as any;
     if (asyncRouteList && asyncRouteList?.length > 0) {
       return new Promise(resolve => {
+        console.log(asyncRouteList)
         handleAsyncRoutes(asyncRouteList);
         resolve(router);
       });
     } else {
       return new Promise(resolve => {
         getAsyncRoutes().then(({ data }) => {
-          console.log(data)
+          console.log(data);
           handleAsyncRoutes(cloneDeep(data));
           storageLocal().setItem(key, data);
           resolve(router);
@@ -239,7 +242,7 @@ function initRouter() {
   } else {
     return new Promise(resolve => {
       getAsyncRoutes().then(({ data }) => {
-        console.log(data)
+        console.log(data);
         handleAsyncRoutes(cloneDeep(data));
         resolve(router);
       });

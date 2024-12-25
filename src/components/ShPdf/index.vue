@@ -467,7 +467,7 @@ const createPagingStamps = (imageUrl: string, pageCount: number) => {
           });
           const clippedImage = fabric.util.object.clone(img);
 
-          if (isLastFivePages) {
+          if (isLastFivePages && pageCount >=2) {
             clippedImage.set({
               left: -sliceIndex * (stampWidth - overlap) - halfWidth,
               clipTo: function (ctx) {
