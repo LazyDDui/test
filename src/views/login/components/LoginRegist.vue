@@ -106,7 +106,10 @@ const getImage = async () => {
 getImage();
 
 const getPhoneCode = async () => {
-  await getUserSmsCodeApi(randomStr.value, graphCode.value, ruleForm.phone);
+  const res = await getUserSmsCodeApi(randomStr.value, graphCode.value, ruleForm.phone);
+  // message(res.msg,{
+  //
+  // })
 };
 </script>
 

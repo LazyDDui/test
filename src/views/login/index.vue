@@ -81,7 +81,6 @@ const onLogin = async (formEl: FormInstance | undefined) => {
         scope: "server"
       })
         .then(res => {
-          console.log(res);
           // 获取后端路由
           setToken({
             ...res,
@@ -352,8 +351,8 @@ getImage();
           <!--              </div>-->
           <!--            </el-form-item>-->
           <!--          </Motion>-->
-          <!-- 手机号登录 -->
-          <!--          <LoginPhone v-if="currentPage === 1" />-->
+          <!--           手机号登录 -->
+<!--          <LoginPhone v-if="currentPage === 1" />-->
           <!-- 二维码登录 -->
           <!--          <LoginQrCode v-if="currentPage === 2" />-->
           <!-- 注册 -->

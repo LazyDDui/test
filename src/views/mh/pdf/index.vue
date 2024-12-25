@@ -154,7 +154,7 @@ const getFile = () => {
         }
       })
       .then(res => {
-        if (res.data[0].stateMsg == "签署成功") {
+        if (res.data[0].state == "0") {
           clearInterval(timer);
           timer = null;
           downloadPdf(
