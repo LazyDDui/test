@@ -90,3 +90,14 @@ export function stripBase64Prefix(base64Data) {
   // 去除base64数据的前缀，例如"data:image/jpeg;base64,"
   return base64Data.replace(/^data:image\/[a-z]+;base64,/, "");
 }
+
+export const enIdNo = (no: string) => {
+  if(!no){
+    return ""
+  }
+  let a = "";
+  for (let i = 0; i < no.length - 8; i++) {
+    a += "*";
+  }
+  return no.slice(0, 8) + a;
+};

@@ -131,6 +131,7 @@ const randomStr = ref("");
 const getImage = async () => {
   randomStr.value = uuidv4();
   const result = await getUserGraphCode(randomStr.value);
+  //@ts-ignore
   imageCode.value = URL.createObjectURL(result);
 };
 

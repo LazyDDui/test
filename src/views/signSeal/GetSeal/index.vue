@@ -74,18 +74,11 @@ const submit = async () => {
     }
   } else {
     const res: any = await sealAddApi(companyForm.value);
-    if (!res.data) {
-      message(res.msg, {
-        type: "error"
-      });
-    } else {
-      message("申领成功", {
-        type: "success"
-      });
-
-      closeAllDialog();
-      await getSealManageInfo();
-    }
+    message("申领成功", {
+      type: "success"
+    });
+    closeAllDialog();
+    await getSealManageInfo();
   }
 };
 
@@ -184,7 +177,6 @@ const ai = computed(() => {
             :disabled="!pin"
             placeholder="请输入再次输入密码"
             type="password"
-            @change="change(form)"
           />
         </el-form-item>
       </el-row>

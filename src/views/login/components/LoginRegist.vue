@@ -100,7 +100,6 @@ const getImage = async () => {
   randomStr.value = uuidv4();
   const result = await getUserGraphCode(randomStr.value);
   imageCode.value = URL.createObjectURL(result);
-  ruleForm.randomStr = randomStr;
 };
 
 getImage();

@@ -9,6 +9,7 @@ type BtnProps = {
   detailClick: () => void;
   // addClick: () => void;
   data: any;
+  getList: () => void;
 };
 
 const props = defineProps<BtnProps>();
@@ -26,16 +27,16 @@ const showCpwDialog = () => {
 
 const remove = () => {
   addDialog({
-    title: "注意",
+    title: "确认注销" + props.data.name + "?",
     contentRenderer() {
-        return h("div",null,"确认删除" + props.data.name + "?")
+      return h("div", null, "确认删除" + props.data.name + "?");
     },
     beforeSure(done, { options, index }) {
       http
-        .post(`/userAuthentication/seal/revoke`, {
-          params: {
+        .post(`/app/userAuthentication/seal/revoke`, {
+          data: {
             id: props.data.id,
-            reason: ""
+            reason: "..."
           }
         })
         .then(() => {
@@ -43,6 +44,7 @@ const remove = () => {
             type: "success"
           });
           done();
+          props.getList();
         });
     }
   });
@@ -55,7 +57,7 @@ const remove = () => {
       >修改密码
     </el-button>
     <el-button size="small" type="text" @click="detailClick"
-    >查看备案
+      >查看备案
     </el-button>
     <!--    <el-button size="small" type="text" @click="addClick">续费</el-button>-->
     <el-button size="small" type="text" @click="remove">注销</el-button>

@@ -14,6 +14,7 @@ import {
 } from "@/utils/common";
 import { storeToRefs } from "pinia";
 import { ElLoading } from "element-plus";
+import { message } from "@/utils/message";
 
 const sign = ref();
 const psw = ref();
@@ -154,6 +155,14 @@ const getFile = () => {
         }
       })
       .then(res => {
+        if (res.data[0].state == "2" || res.data[0].state == "2") {
+          clearInterval(timer);
+          timer = null;
+          loadingPdf.value.close();
+          message("签署失败", {
+            type: "error"
+          });
+        }
         if (res.data[0].state == "0") {
           clearInterval(timer);
           timer = null;

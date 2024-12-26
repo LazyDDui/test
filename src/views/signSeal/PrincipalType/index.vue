@@ -184,7 +184,7 @@ const tabChange = e => {
                       }
                     "
                   />
-                  <div>身份证正面</div>
+                  <div>身份证人像面</div>
                 </div>
               </el-form-item>
               <el-form-item>
@@ -202,7 +202,7 @@ const tabChange = e => {
                       }
                     "
                   />
-                  <div>身份证反面</div>
+                  <div>身份证国徽面</div>
                 </div>
               </el-form-item>
             </el-col>

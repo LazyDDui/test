@@ -35,6 +35,7 @@ import { http } from "@/utils/http";
 import { AuthTypeMap } from "../../utils/map";
 import PrincipalType from "@/views/signSeal/PrincipalType/index.vue";
 import { ElMessage } from "element-plus";
+import {enIdNo} from "@/utils/common";
 
 const router = useRouter();
 
@@ -141,11 +142,11 @@ const isPerson = ref(true);
 
 const unCertForm = ref({});
 
-const clearUnCertForm = () => {
-  for (const i in unCertForm.value) {
-    unCertForm.value[i] = "";
-  }
-};
+// const clearUnCertForm = () => {
+//   for (const i in unCertForm.value) {
+//     unCertForm.value[i] = "";
+//   }
+// };
 
 let clearUnCertInnerForm = null;
 
@@ -154,7 +155,8 @@ const goToCert = () => {
     title: "主体类型",
     fullscreen: true,
     beforeClose(done) {
-      clearUnCertForm();
+      unCertForm.value = {};
+      isPerson.value = true
       done();
     },
     contentRenderer: () => {
@@ -190,7 +192,6 @@ const goToCert = () => {
           });
         }
         await getUserAuthenlication();
-
       } else {
         const res: any = await companySign(unCertForm.value);
         if (res.code == "00") {
@@ -206,7 +207,6 @@ const goToCert = () => {
           });
         }
         await getUserAuthenlication();
-
       }
     }
   });
@@ -277,7 +277,7 @@ const unCertGetSealRadioChange = (e: "1" | "0") => {
                     if (auth.type == '1') {
                       unCertGetSealRadioChange('1');
                     } else {
-                      unCertGetSealRadioChange('2');
+                      unCertGetSealRadioChange('0');
                     }
                   } else {
                     unCertGetSeal();
@@ -314,7 +314,9 @@ const unCertGetSealRadioChange = (e: "1" | "0") => {
               <h2 class="h_2">
                 {{ auth?.authenticationName }}
               </h2>
-              <p class="p-2">{{ auth?.subjectId }}</p>
+              <p class="p-2">
+                {{ auth?.type == "0" ? auth.unifiedCreditCode : enIdNo(auth?.idNo) }}
+              </p>
               <p>
                 <span class="black tag">{{ AuthTypeMap.get(auth.type) }}</span>
                 <span class="green tag">已认证</span>

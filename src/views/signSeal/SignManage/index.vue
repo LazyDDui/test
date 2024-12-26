@@ -56,6 +56,7 @@ const columns: TableColumnList = [
     cellRenderer(data) {
       return h(SealBtn, {
         data: data.row,
+        getList,
         detailClick: () => {
           http
             .get(
@@ -149,7 +150,6 @@ const getList = async () => {
     tableData.value.current,
     form.name
   );
-  console.log(data);
   tableData.value = data;
 };
 
