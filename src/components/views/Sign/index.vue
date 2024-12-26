@@ -67,6 +67,7 @@ const handleExceed: UploadProps["onExceed"] = async files => {
 
 const change = async (e: UploadFile) => {
   defaultName.value = e.name;
+  form.docName = e.name;
   f.value = e.raw;
   const file = new FormData();
   file.append("file", f.value);
@@ -76,7 +77,7 @@ const change = async (e: UploadFile) => {
 
 // const { screen } = storeToRefs(useMainStore());
 
-const { getSubjectId } = useSeal();
+const { getSubjectId, setSealInfo } = useSeal();
 
 const sign = () => {
   if (fileNo.value) {
@@ -99,7 +100,8 @@ const sign = () => {
           JSON.stringify(form.docName ? form.docName : defaultName.value)
         );
         closeAllDialog();
-        localStorage.setItem("sealInfo", JSON.stringify(res.data));
+        setSealInfo(res.data);
+
         ElMessage.success("已发起");
         router.push("/pdf");
       });

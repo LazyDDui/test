@@ -212,8 +212,8 @@ const end = (e: any) => {
         img.set({
           left: e.originalEvent.layerX,
           top: e.originalEvent.layerY,
-          scaleX: 0.1,
-          scaleY: 0.1,
+          scaleX: 0.55,
+          scaleY: 0.55,
           selectable: false,
           index: e.newDraggableIndex,
           borderColor: "transparent",
@@ -280,8 +280,8 @@ const end = (e: any) => {
       img.set({
         left: e.originalEvent.layerX,
         top: e.originalEvent.layerY,
-        scaleX: 0.1,
-        scaleY: 0.1,
+        scaleX: 0.55,
+        scaleY: 0.55,
         selectable: false,
         index: e.newDraggableIndex,
         borderColor: "transparent", // 隐藏默认边框
@@ -360,10 +360,10 @@ const end = (e: any) => {
 
         fabric.Image.fromURL(stamps.value[i], (img: any) => {
           img.set({
-            left: gai.width - img.width! * 0.1,
+            left: gai.width - img.width! * 0.2,
             top: e.originalEvent.layerY,
-            scaleX: 0.1,
-            scaleY: 0.1,
+            scaleX: 0.55,
+            scaleY: 0.55,
             selectable: false,
             index: e.newDraggableIndex,
             borderColor: "transparent",
@@ -385,8 +385,8 @@ const end = (e: any) => {
 
           gaiCanvas.on("object:moving", options => {
             const obj = options.target;
-            obj.set("left", gai.width - img.width! * 0.1);
-            const halfHeight = (obj.height! / 2) * 0.1;
+            obj.set("left", gai.width - img.width! * 0.2);
+            const halfHeight = (obj.height! / 2) * 0.2;
 
             if (obj.top! < halfHeight) {
               obj.set("top", halfHeight);
@@ -467,7 +467,7 @@ const createPagingStamps = (imageUrl: string, pageCount: number) => {
           });
           const clippedImage = fabric.util.object.clone(img);
 
-          if (isLastFivePages && pageCount >=2) {
+          if (isLastFivePages && pageCount >= 2) {
             clippedImage.set({
               left: -sliceIndex * (stampWidth - overlap) - halfWidth,
               clipTo: function (ctx) {

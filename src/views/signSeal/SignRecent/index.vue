@@ -20,7 +20,7 @@ const { fileList } = storeToRefs(useSeal());
 //   total: 0
 // });
 
-getList();
+getList(1);
 
 const columns: TableColumnList = [
   {
@@ -42,6 +42,8 @@ const columns: TableColumnList = [
     label: "操作",
     cellRenderer(data) {
       return h(Btn, {
+        canDownload: data.row.status == 0,
+        data: data.row,
         dwClick: () => {
           downloadPdf(data.row.signedFileUrl, data.row.docName + ".pdf");
         },

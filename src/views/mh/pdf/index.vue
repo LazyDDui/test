@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, ref, toRaw } from "vue";
+import { h, onBeforeUnmount, ref, toRaw } from "vue";
 import { getSealImg } from "@/api/test";
 import { ElMessage } from "element-plus";
 import { http } from "@/utils/http";
@@ -15,6 +15,7 @@ import {
 import { storeToRefs } from "pinia";
 import { ElLoading } from "element-plus";
 import { message } from "@/utils/message";
+import { addDialog } from "@/components/ReDialog/index";
 
 const sign = ref();
 const psw = ref();
@@ -22,7 +23,7 @@ const pdfInfo = ref();
 const appno = ref("");
 
 const { getPdf } = useSeal();
-const { fileId } = storeToRefs(useSeal());
+const { fileId, sealInfo, docName } = storeToRefs(useSeal());
 let timer;
 
 const pdf = ref();
@@ -30,6 +31,7 @@ const pdf = ref();
 const loadingPdf = ref();
 
 const getPdfFile = async () => {
+  console.log(fileId.value);
   // const blob = await getPdf();
   // pdf.value = preViewFile(blob);
   pdf.value = "http://182.151.13.73:9999" + "/app/file/" + fileId.value;
@@ -44,8 +46,6 @@ const pdfRef = ref();
 const sealList = ref([]);
 
 const error = ref(false);
-
-const { getSubjectId } = useSeal();
 
 const stampList = ref([]);
 
@@ -65,8 +65,7 @@ const submit = async () => {
     ElMessage.error("请输入章密码");
     return;
   }
-  const sealInfo = JSON.parse(localStorage.getItem("sealInfo"));
-  console.log(submitStampListUi.value);
+
   normalArr.value.forEach(item => {
     for (const i of submitStampListUi.value) {
       if (item.info.id === i.info.id) {
@@ -116,7 +115,7 @@ const submit = async () => {
 
   const res = await http.post(`/app/sign/commit`, {
     data: {
-      appno: sealInfo.appno,
+      appno: sealInfo.value.appno,
       signDataList: [
         {
           absoluteSignModes,
@@ -143,8 +142,6 @@ const submit = async () => {
   getFile();
 };
 
-const docName = ref(JSON.parse(window.localStorage.getItem("docName")));
-
 const getFile = () => {
   timer = setInterval(() => {
     http
@@ -155,13 +152,14 @@ const getFile = () => {
         }
       })
       .then(res => {
-        if (res.data[0].state == "2" || res.data[0].state == "2") {
+        if (res.data[0].state == "2" || res.data[0].state == "-1") {
           clearInterval(timer);
           timer = null;
           loadingPdf.value.close();
           message("签署失败", {
             type: "error"
           });
+          return;
         }
         if (res.data[0].state == "0") {
           clearInterval(timer);
@@ -173,6 +171,7 @@ const getFile = () => {
               : docName.value + ".pdf"
           );
           loadingPdf.value.close();
+          return;
         }
       });
   }, 1500);
@@ -181,6 +180,16 @@ const getFile = () => {
 const signData = ref([]);
 
 const shSign = () => {
+  console.log("....", signData.value);
+  if (signData.value.length == 0) {
+    addDialog({
+      title: "注意",
+      contentRenderer() {
+        return h("div", null, "请拖动并添加印章信息");
+      }
+    });
+    return;
+  }
   signData.value = pdfRef.value.signSeal();
 
   const normal = toRaw(signData.value).filter(item => !item.info.uId);
@@ -208,8 +217,6 @@ const normalArr = ref([]);
 const qfArr = ref([]);
 
 const submitStampListUi = ref([]);
-
-const title = ref(JSON.parse(localStorage.getItem("docName")));
 </script>
 
 <template>
@@ -244,7 +251,7 @@ const title = ref(JSON.parse(localStorage.getItem("docName")));
   <ShPdf
     v-if="pdf"
     ref="pdfRef"
-    :title="title"
+    :title="docName"
     :pdf-url="pdf"
     :stamp-list="stampList"
     @sign="shSign"

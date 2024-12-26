@@ -92,23 +92,28 @@ const addAuthentication = () => {
   <div>
     <el-button
       style="margin-bottom: 10px"
-      size="small"
+      size="large"
       type="primary"
       plain
       round
       @click="addAuthentication"
-      >新增认证
+    >新增认证
     </el-button>
-    <br />
-    <el-input
-      v-model="form.authenticationName"
-      style="width: 200px; margin-right: 10px"
-      size="small"
-      placeholder="请输入名称"
-    />
-    <el-button size="small" type="primary" @click="emit('search', form)"
-      >搜索</el-button
-    >
+    <el-row>
+      <div>
+        <el-input
+          v-model="form.authenticationName"
+          style="width: 200px; margin-right: 10px"
+          size="default"
+          placeholder="请输入名称"
+        />
+        <el-button size="default" type="primary" @click="emit('search', form)"
+        >搜索</el-button
+        >
+      </div>
+    </el-row>
+
+
     <pure-table style="margin-top: 20px" :data="tableData" :columns="columns" />
     <el-row style="margin-top: 20px; justify-content: flex-end; width: 100%">
       <el-pagination

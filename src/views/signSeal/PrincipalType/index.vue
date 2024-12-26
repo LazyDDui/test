@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { SealTypeMap } from "@/utils/map";
 import Header from "@/components/Common/Header.vue";
 import ShImageUpload from "@/views/components/shImageUpload/index.vue";
+import { FormRules } from "element-plus";
 
 type PrinciType = {
   change: (form: any) => void;
   tabClick: (tab: any) => void;
+  isPerson: boolean;
 };
 
 const staticValue = ref("1");
@@ -96,7 +98,7 @@ const initialCompanyForm = {
 const companyForm = ref(initialCompanyForm);
 const form = ref(initialPersonForm);
 
-const activeName = ref("person");
+const activeName = ref(props.isPerson ? "person" : "company");
 
 const clear = (isPerson: boolean) => {
   if (isPerson) {
@@ -117,6 +119,34 @@ const tabChange = e => {
     props.change(form.value);
   }
 };
+
+const personRule = reactive<FormRules>({
+  name: [
+    {
+      required: true,
+      message: "请输入姓名",
+      trigger: "blur"
+    }
+  ],
+  tel: [
+    {
+      required: true,
+      message: "请输入手机号",
+      trigger: "blur"
+    }
+  ],
+  idCard: [
+    {
+      required: true,
+      message: "请输入身份证号",
+      trigger: "blur"
+    }
+  ]
+});
+
+const companyRule = reactive<FormRules>({
+
+})
 </script>
 
 <template>
@@ -128,7 +158,7 @@ const tabChange = e => {
       @tab-click="tabClick"
     >
       <el-tab-pane class="content" label="个人认证" name="person">
-        <el-form :model="form" label-width="auto">
+        <el-form :rules="personRule" :model="form" label-width="auto">
           <h2>信息录入</h2>
           <el-form-item label="办理人员：">
             <el-radio-group v-model="staticValue">
@@ -138,21 +168,21 @@ const tabChange = e => {
           <h2>个人信息</h2>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="姓名：">
+              <el-form-item label="姓名：" prop="name">
                 <el-input
                   v-model="form.name"
                   placeholder="请输入姓名"
                   @change="change(form)"
                 />
               </el-form-item>
-              <el-form-item label="个人身份证号：">
+              <el-form-item label="个人身份证号：" prop="idCard">
                 <el-input
                   v-model="form.idCard"
                   placeholder="请输入个人身份证号"
                   @change="change(form)"
                 />
               </el-form-item>
-              <el-form-item label="个人实名手机号码：">
+              <el-form-item label="个人实名手机号码：" prop="tel">
                 <el-input
                   v-model="form.tel"
                   placeholder="请输入个人实名手机号码"
@@ -168,7 +198,7 @@ const tabChange = e => {
               </el-form-item>
             </el-col>
             <el-col :span="12" style="display: flex">
-              <el-form-item>
+              <el-form-item prop="facePath">
                 <div
                   style="
                     display: flex;
@@ -184,10 +214,11 @@ const tabChange = e => {
                       }
                     "
                   />
-                  <div>身份证人像面</div>
+
+                  <div><span style="color:red">*</span>身份证人像面</div>
                 </div>
               </el-form-item>
-              <el-form-item>
+              <el-form-item prop="backPath">
                 <div
                   style="
                     display: flex;
@@ -202,7 +233,7 @@ const tabChange = e => {
                       }
                     "
                   />
-                  <div>身份证国徽面</div>
+                  <div><span style="color:red">*</span>身份证国徽面</div>
                 </div>
               </el-form-item>
             </el-col>
@@ -411,12 +442,12 @@ const tabChange = e => {
 
 <style scoped lang="scss">
 .content {
-  height: 500px;
+  height: calc(100vh - 200px);
   overflow-y: scroll;
 }
 .el-form-item {
   align-items: center;
-  margin-bottom: 4px !important;
+  margin-bottom: 20px !important;
 }
 h2 {
   width: 100%;

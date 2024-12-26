@@ -18,10 +18,29 @@ export const useSeal = defineStore("seal", () => {
       ? JSON.parse(window.localStorage.getItem("fileId"))
       : ""
   );
+  const docName = ref(
+    window.localStorage.getItem("docName")
+      ? JSON.parse(window.localStorage.getItem("docName"))
+      : ""
+  );
+
+  const setDocName = (n: string) => {
+    docName.value = n;
+    localStorage.setItem("docName", n);
+  };
   const getPdf = async () => {
     return await downloadFileApi(fileId.value);
   };
 
+  const sealInfo = ref(
+    window.localStorage.getItem("sealInfo")
+      ? JSON.parse(window.localStorage.getItem("sealInfo"))
+      : ""
+  );
+  const setSealInfo = (info: any) => {
+    sealInfo.value = info;
+    window.localStorage.setItem("sealInfo", JSON.stringify(info));
+  };
   const setFileId = (id: string) => {
     fileId.value = id;
     localStorage.setItem("fileId", JSON.stringify(id));
@@ -124,6 +143,10 @@ export const useSeal = defineStore("seal", () => {
     getSealManageInfo,
     fileId,
     setFileId,
-    getPdf
+    getPdf,
+    sealInfo,
+    setSealInfo,
+    docName,
+    setDocName
   };
 });

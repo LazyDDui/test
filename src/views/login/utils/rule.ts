@@ -77,11 +77,23 @@ const phoneRules = reactive<FormRules>({
 
 /** 忘记密码校验 */
 const updateRules = reactive<FormRules>({
+  smsCode: [
+    {
+      validator: (rule, value, callback) => {
+        if (value === "") {
+          callback(new Error(transformI18n("请输入验证码")));
+        } else {
+          callback();
+        }
+      },
+      trigger: "blur"
+    }
+  ],
   loginName: [
     {
       validator: (rule, value, callback) => {
         if (value === "") {
-          callback(new Error(transformI18n($t("login.purePassWordReg"))));
+          callback(new Error(transformI18n("请输入账号")));
         } else if (!REGEXP_PWD.test(value)) {
           callback(new Error(transformI18n($t("login.purePassWordRuleReg"))));
         } else {

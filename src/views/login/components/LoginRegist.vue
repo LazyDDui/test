@@ -105,10 +105,16 @@ const getImage = async () => {
 getImage();
 
 const getPhoneCode = async () => {
-  const res = await getUserSmsCodeApi(randomStr.value, graphCode.value, ruleForm.phone);
-  // message(res.msg,{
-  //
-  // })
+  const res: any = await getUserSmsCodeApi(
+    randomStr.value,
+    graphCode.value,
+    ruleForm.phone
+  );
+  if (res.code == "1") {
+    message(res.msg, {
+      type: "error"
+    });
+  }
 };
 </script>
 
@@ -179,6 +185,12 @@ const getPhoneCode = async () => {
             class="ml-2"
             @click="
               async () => {
+                if (!graphCode) {
+                  message(`清先输入验证码`, {
+                    type: 'error'
+                  });
+                  return;
+                }
                 await useVerifyCode().start(ruleFormRef, 'phone');
                 await getPhoneCode();
               }
@@ -220,12 +232,14 @@ const getPhoneCode = async () => {
 
     <Motion :delay="300">
       <el-form-item>
-        <el-checkbox v-model="checked">
-          {{ t("login.pureReadAccept") }}
-        </el-checkbox>
-        <el-button link type="primary">
-          {{ t("login.purePrivacyPolicy") }}
-        </el-button>
+        <div style="display: flex;">
+          <el-checkbox v-model="checked">
+            {{ t("login.pureReadAccept") }}
+          </el-checkbox>
+          <el-button link type="primary">
+            隐私协议、用户服务协议
+          </el-button>
+        </div>
       </el-form-item>
     </Motion>
 

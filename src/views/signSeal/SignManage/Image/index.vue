@@ -12,7 +12,7 @@ const srcList = ref<string[]>(["data:image/png;base64," + props.pic]);
   <el-image
     style="width: 100px; height: 100px"
     :src="'data:image/png;base64,' + pic"
-    fit="cover"
+    fit="contain"
     lazy
   />
 </template>

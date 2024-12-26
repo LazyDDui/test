@@ -9,7 +9,6 @@ import { closeAllDialog } from "@/components/ReDialog/index";
 import { message } from "@/utils/message";
 
 type GetSealProps = {
-  d?: (data) => void;
   type?: "0" | "1";
 };
 const staticValue = ref("1");
@@ -60,7 +59,7 @@ const submit = async () => {
   if (props.type == "1") {
     const res: any = await sealAddApi(form.value);
     console.log(res);
-    if (!res.data) {
+    if (res.msg) {
       message(res.msg, {
         type: "error"
       });
@@ -68,7 +67,6 @@ const submit = async () => {
       message("申领成功", {
         type: "success"
       });
-
       closeAllDialog();
       await getSealManageInfo();
     }

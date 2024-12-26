@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { h, reactive, ref } from "vue";
-import { tableData } from "@/views/table/base/data";
 import Btn from "@/views/signSeal/SignManage/btn/index.vue";
 import { getSignRequestFile } from "@/api/test";
 import { http } from "@/utils/http";
@@ -11,6 +10,12 @@ import { downloadPdf } from "@/utils/common";
 
 const { getList } = useSeal();
 const { fileList } = storeToRefs(useSeal());
+
+const state = ref({
+  records: [],
+  current: 1,
+  total: 0
+});
 
 const columns: TableColumnList = [
   {
@@ -35,14 +40,17 @@ const columns: TableColumnList = [
         dwClick: () => {
           downloadPdf(data.row.signedFileUrl, data.row.docName + ".pdf");
         },
+        canDownload: data.row.status == "0",
         delClick: () => {
           http.post(`/app/signRequestFile/remove/${data.row.id}`).then(() => {
             message("删除成功", {
               type: "success"
             });
             getList(1);
+            currentChange(state.value.current);
           });
-        }
+        },
+        data: data.row
       });
     },
     align: "center"
@@ -59,10 +67,13 @@ const form = reactive({
 
 const currentChange = async (e: number) => {
   current.value = e;
-  await getList(e, {
+  const { data } = await getSignRequestFile(e, {
     docName: form.docName
   });
+  state.value = data;
 };
+
+currentChange(1);
 </script>
 
 <template>
@@ -110,15 +121,15 @@ const currentChange = async (e: number) => {
     <!--    </el-select>-->
     <pure-table
       style="margin-top: 20px"
-      :data="fileList.records"
+      :data="state.records"
       :columns="columns"
     />
     <el-row style="margin-top: 20px; justify-content: flex-end; width: 100%">
       <el-pagination
-        v-model="fileList.current"
+        v-model="state.current"
         background
         layout="prev, pager, next"
-        :total="fileList.total"
+        :total="state.total"
         @current-change="currentChange"
       />
     </el-row>

@@ -136,6 +136,16 @@ const getImage = async () => {
 };
 
 getImage();
+
+const titleMap = computed(() => {
+  if (currentPage.value == 0) {
+    return "用户登陆";
+  } else if (currentPage.value == 1) {
+    return "用户注册";
+  } else {
+    return "找回密码";
+  }
+});
 </script>
 
 <template>
@@ -193,7 +203,16 @@ getImage();
           <Motion>
             <h2 class="outline-none">
               <TypeIt
-                :options="{ strings: ['电子印章'], cursor: false, speed: 100 }"
+                v-if="currentPage == 0"
+                :options="{ strings: ['用户登陆'], cursor: false, speed: 100 }"
+              />
+              <TypeIt
+                v-else-if="currentPage == 1"
+                :options="{ strings: ['用户注册'], cursor: false, speed: 100 }"
+              />
+              <TypeIt
+                v-else
+                :options="{ strings: ['找回密码'], cursor: false, speed: 100 }"
               />
             </h2>
           </Motion>
@@ -250,58 +269,8 @@ getImage();
                 </el-input>
               </el-form-item>
             </Motion>
-            <!--            <Motion :delay="200">-->
-            <!--              <el-form-item prop="verifyCode">-->
-            <!--                <el-input-->
-            <!--                  v-model="ruleForm.verifyCode"-->
-            <!--                  clearable-->
-            <!--                  :placeholder="t('login.pureVerifyCode')"-->
-            <!--                  :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"-->
-            <!--                >-->
-            <!--                  <template v-slot:append>-->
-            <!--                    <ReImageVerify v-model:code="imgCode" />-->
-            <!--                  </template>-->
-            <!--                </el-input>-->
-            <!--              </el-form-item>-->
-            <!--            </Motion>-->
-
             <Motion :delay="250">
               <el-form-item>
-                <!--                <div class="w-full h-[20px] flex justify-between items-center">-->
-                <!--                  <el-checkbox v-model="checked">-->
-                <!--                    <span class="flex">-->
-                <!--                      <select-->
-                <!--                        v-model="loginDay"-->
-                <!--                        :style="{-->
-                <!--                          width: loginDay < 10 ? '10px' : '16px',-->
-                <!--                          outline: 'none',-->
-                <!--                          background: 'none',-->
-                <!--                          appearance: 'none'-->
-                <!--                        }"-->
-                <!--                      >-->
-                <!--                        <option value="1">1</option>-->
-                <!--                        <option value="7">7</option>-->
-                <!--                        <option value="30">30</option>-->
-                <!--                      </select>-->
-                <!--                      {{ t("login.pureRemember") }}-->
-                <!--                      <IconifyIconOffline-->
-                <!--                        v-tippy="{-->
-                <!--                          content: t('login.pureRememberInfo'),-->
-                <!--                          placement: 'top'-->
-                <!--                        }"-->
-                <!--                        :icon="Info"-->
-                <!--                        class="ml-1"-->
-                <!--                      />-->
-                <!--                    </span>-->
-                <!--                  </el-checkbox>-->
-                <!--                  <el-button-->
-                <!--                    link-->
-                <!--                    type="primary"-->
-                <!--                    @click="useUserStoreHook().SET_CURRENTPAGE(4)"-->
-                <!--                  >-->
-                <!--                    {{ t("login.pureForget") }}-->
-                <!--                  </el-button>-->
-                <!--                </div>-->
                 <el-button
                   class="w-full mt-4"
                   size="default"
@@ -312,6 +281,20 @@ getImage();
                 >
                   {{ t("login.pureLogin") }}
                 </el-button>
+              </el-form-item>
+              <el-form-item>
+                <div
+                  style="width: 100%; display: flex; justify-content: flex-end"
+                  class="w-full h-[20px] flex flex-end"
+                >
+                  <el-button
+                    link
+                    type="primary"
+                    @click="useUserStoreHook().SET_CURRENTPAGE(4)"
+                  >
+                    {{ t("login.pureForget") }}
+                  </el-button>
+                </div>
               </el-form-item>
             </Motion>
 
@@ -332,50 +315,22 @@ getImage();
             </Motion>
           </el-form>
 
-          <!--          <Motion v-if="currentPage === 0" :delay="350">-->
-          <!--            <el-form-item>-->
-          <!--              <el-divider>-->
-          <!--                <p class="text-gray-500 text-xs">-->
-          <!--                  {{ t("login.pureThirdLogin") }}-->
-          <!--                </p>-->
-          <!--              </el-divider>-->
-          <!--              <div class="w-full flex justify-evenly">-->
-          <!--                <span-->
-          <!--                  v-for="(item, index) in thirdParty"-->
-          <!--                  :key="index"-->
-          <!--                  :title="t(item.title)"-->
-          <!--                >-->
-          <!--                  <IconifyIconOnline-->
-          <!--                    :icon="`ri:${item.icon}-fill`"-->
-          <!--                    width="20"-->
-          <!--                    class="cursor-pointer text-gray-500 hover:text-blue-400"-->
-          <!--                  />-->
-          <!--                </span>-->
-          <!--              </div>-->
-          <!--            </el-form-item>-->
-          <!--          </Motion>-->
-          <!--           手机号登录 -->
-          <!--          <LoginPhone v-if="currentPage === 1" />-->
           <!-- 二维码登录 -->
           <!--          <LoginQrCode v-if="currentPage === 2" />-->
           <!-- 注册 -->
           <LoginRegist v-if="currentPage === 1" />
           <!-- 忘记密码 -->
-          <!--          <LoginUpdate v-if="currentPage === 4"/>-->
+          <LoginUpdate v-if="currentPage === 4" />
         </div>
       </div>
     </div>
     <div
       class="w-full flex-c absolute bottom-3 text-sm text-[rgba(0,0,0,0.6)] dark:text-[rgba(220,220,242,0.8)]"
     >
-      Copyright © 2020-present
-      <a
-        class="hover:text-primary"
-        href="https://github.com/pure-admin"
-        target="_blank"
-      >
-        &nbsp;{{ title }}
-      </a>
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <div>公安备案|全国互认|一键核验</div>
+        <div>copyright©2024全国电子印章管理与服务平台蜀ICP备 2023020519号</div>
+      </div>
     </div>
   </div>
 </template>

@@ -35,7 +35,7 @@ import { http } from "@/utils/http";
 import { AuthTypeMap } from "../../utils/map";
 import PrincipalType from "@/views/signSeal/PrincipalType/index.vue";
 import { ElMessage } from "element-plus";
-import {enIdNo} from "@/utils/common";
+import { enIdNo } from "@/utils/common";
 
 const router = useRouter();
 
@@ -136,7 +136,6 @@ const signManageSeeMore = () => {
   });
 };
 
-const getSealData = ref("99");
 
 const isPerson = ref(true);
 
@@ -156,7 +155,7 @@ const goToCert = () => {
     fullscreen: true,
     beforeClose(done) {
       unCertForm.value = {};
-      isPerson.value = true
+      isPerson.value = true;
       done();
     },
     contentRenderer: () => {
@@ -173,7 +172,8 @@ const goToCert = () => {
           isPerson.value = tab.props.name == "person";
           // clearUnCertInnerForm();
           // clearUnCertForm();
-        }
+        },
+        isPerson: isPerson.value
       });
     },
     async beforeSure(done) {
@@ -220,25 +220,6 @@ const unCertGetSeal = () => {
   unCertGetSealShow.value = true;
 };
 
-const getSeal = () => {
-  addDialog({
-    title: "申领印章",
-    contentRenderer: () =>
-      h(GetSeal, {
-        d: (data: string) => {
-          getSealData.value = data;
-        }
-      }),
-    beforeSure: async done => {
-      const { data } = await http.post(`/app/userAuthentication/seal/add`, {
-        data: {
-          type: getSealData.value
-        }
-      });
-      done();
-    }
-  });
-};
 
 const unCertGetSealRadioChange = (e: "1" | "0") => {
   unCertGetSealShow.value = false;
@@ -315,7 +296,11 @@ const unCertGetSealRadioChange = (e: "1" | "0") => {
                 {{ auth?.authenticationName }}
               </h2>
               <p class="p-2">
-                {{ auth?.type == "0" ? auth.unifiedCreditCode : enIdNo(auth?.idNo) }}
+                {{
+                  auth?.type == "0"
+                    ? auth.unifiedCreditCode
+                    : enIdNo(auth?.idNo)
+                }}
               </p>
               <p>
                 <span class="black tag">{{ AuthTypeMap.get(auth.type) }}</span>
@@ -377,14 +362,24 @@ const unCertGetSealRadioChange = (e: "1" | "0") => {
           <el-radio
             value="1"
             size="large"
-            @click="unCertGetSealRadioChange('1')"
-            >个人私章申领</el-radio
+            @click="
+              () => {
+                isPerson = true;
+                goToCert();
+              }
+            "
+            >个人认证</el-radio
           >
           <el-radio
             value="0"
             size="large"
-            @click="unCertGetSealRadioChange('0')"
-            >单位公章申领</el-radio
+            @click="
+              () => {
+                isPerson = false;
+                goToCert();
+              }
+            "
+            >企业认证</el-radio
           >
         </el-radio-group>
       </div>

@@ -92,8 +92,8 @@ export function stripBase64Prefix(base64Data) {
 }
 
 export const enIdNo = (no: string) => {
-  if(!no){
-    return ""
+  if (!no) {
+    return "";
   }
   let a = "";
   for (let i = 0; i < no.length - 8; i++) {
@@ -101,3 +101,8 @@ export const enIdNo = (no: string) => {
   }
   return no.slice(0, 8) + a;
 };
+
+export function removeLetters(str: string) {
+  // 使用正则表达式匹配所有字母（不分大小写），并用空字符串替换它们
+  return str.replaceAll(/[a-zA-Z]/g, "");
+}

@@ -18,7 +18,7 @@ const psd = reactive({
 const submit = () => {
   http
     .post(`/app/userAuthentication/seal/changePin`, {
-      params: {
+      data: {
         oldPin: psd.oldPin,
         newPin: psd.newPin,
         id: props.data.id
