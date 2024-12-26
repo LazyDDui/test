@@ -14,7 +14,6 @@ type BtnProps = {
 const props = defineProps<BtnProps>();
 
 const showCpwDialog = () => {
-  console.log(props.data);
   addDialog({
     title: "修改密码:" + props.data.name,
     hideFooter: true,
@@ -27,7 +26,10 @@ const showCpwDialog = () => {
 
 const remove = () => {
   addDialog({
-    title: "确认删除" + props.data.id + "?",
+    title: "注意",
+    contentRenderer() {
+        return h("div",null,"确认删除" + props.data.name + "?")
+    },
     beforeSure(done, { options, index }) {
       http
         .post(`/userAuthentication/seal/revoke`, {

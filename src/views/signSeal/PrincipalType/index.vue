@@ -109,11 +109,24 @@ const clear = (isPerson: boolean) => {
 defineExpose({
   clear
 });
+
+const tabChange = e => {
+  if (e === "company") {
+    props.change(companyForm.value);
+  } else {
+    props.change(form.value);
+  }
+};
 </script>
 
 <template>
   <div>
-    <el-tabs v-model="activeName" class="demo-tabs" @tab-click="tabClick">
+    <el-tabs
+      v-model="activeName"
+      class="demo-tabs"
+      @tab-change="tabChange"
+      @tab-click="tabClick"
+    >
       <el-tab-pane class="content" label="个人认证" name="person">
         <el-form :model="form" label-width="auto">
           <h2>信息录入</h2>
@@ -200,7 +213,10 @@ defineExpose({
         <el-form :model="companyForm" label-width="auto">
           <h2>信息录入</h2>
           <el-form-item label="企业类型：">
-            <el-radio-group v-model="companyForm.unitType">
+            <el-radio-group
+              v-model="companyForm.unitType"
+              @change="change(companyForm)"
+            >
               <el-radio value="0" size="large">企业单位</el-radio>
               <el-radio value="1" size="large">事业单位</el-radio>
             </el-radio-group>

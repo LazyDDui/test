@@ -80,7 +80,7 @@ const onLogin = async (formEl: FormInstance | undefined) => {
         grant_type: "password",
         scope: "server"
       })
-        .then(res => {
+        .then((res: any) => {
           // 获取后端路由
           setToken({
             ...res,
@@ -95,6 +95,9 @@ const onLogin = async (formEl: FormInstance | undefined) => {
               })
               .finally(() => (disabled.value = false));
           });
+        })
+        .catch(() => {
+          getImage();
         })
         .finally(() => (loading.value = false));
     }
@@ -129,7 +132,6 @@ const getImage = async () => {
   randomStr.value = uuidv4();
   const result = await getUserGraphCode(randomStr.value);
   imageCode.value = URL.createObjectURL(result);
-  ruleForm.randomStr = randomStr;
 };
 
 getImage();
@@ -352,7 +354,7 @@ getImage();
           <!--            </el-form-item>-->
           <!--          </Motion>-->
           <!--           手机号登录 -->
-<!--          <LoginPhone v-if="currentPage === 1" />-->
+          <!--          <LoginPhone v-if="currentPage === 1" />-->
           <!-- 二维码登录 -->
           <!--          <LoginQrCode v-if="currentPage === 2" />-->
           <!-- 注册 -->

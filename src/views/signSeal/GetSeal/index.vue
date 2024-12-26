@@ -9,8 +9,8 @@ import { closeAllDialog } from "@/components/ReDialog/index";
 import { message } from "@/utils/message";
 
 type GetSealProps = {
-  d: (data) => void;
-  type: "0" | "1";
+  d?: (data) => void;
+  type?: "0" | "1";
 };
 const staticValue = ref("1");
 const { getSealManageInfo } = useSeal();
@@ -58,16 +58,35 @@ const radio = ref(3);
 
 const submit = async () => {
   if (props.type == "1") {
-    //个人逻辑
-    const { data } = await sealAddApi(form.value);
+    const res: any = await sealAddApi(form.value);
+    console.log(res);
+    if (!res.data) {
+      message(res.msg, {
+        type: "error"
+      });
+    } else {
+      message("申领成功", {
+        type: "success"
+      });
+
+      closeAllDialog();
+      await getSealManageInfo();
+    }
   } else {
-    const { data } = await sealAddApi(companyForm.value);
+    const res: any = await sealAddApi(companyForm.value);
+    if (!res.data) {
+      message(res.msg, {
+        type: "error"
+      });
+    } else {
+      message("申领成功", {
+        type: "success"
+      });
+
+      closeAllDialog();
+      await getSealManageInfo();
+    }
   }
-  message("申领成功", {
-    type: "success"
-  });
-  closeAllDialog();
-  await getSealManageInfo();
 };
 
 const createType = ref("1");

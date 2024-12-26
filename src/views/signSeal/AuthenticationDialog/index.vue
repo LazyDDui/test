@@ -93,7 +93,9 @@ const addAuthentication = () => {
     <el-button
       style="margin-bottom: 10px"
       size="small"
-      type="success"
+      type="primary"
+      plain
+      round
       @click="addAuthentication"
       >新增认证
     </el-button>

@@ -143,15 +143,6 @@ const unCertForm = ref({});
 
 const clearUnCertForm = () => {
   for (const i in unCertForm.value) {
-    console.log(i);
-    if (
-      i == "idType" ||
-      i == "juriIdType" ||
-      i == "responsibilityIdType" ||
-      i == "operatorIdType"
-    ) {
-      continue;
-    }
     unCertForm.value[i] = "";
   }
 };
@@ -162,6 +153,10 @@ const goToCert = () => {
   addDialog({
     title: "主体类型",
     fullscreen: true,
+    beforeClose(done) {
+      clearUnCertForm();
+      done();
+    },
     contentRenderer: () => {
       return h(PrincipalType, {
         ref(ref: any) {
@@ -174,8 +169,8 @@ const goToCert = () => {
         },
         tabClick: tab => {
           isPerson.value = tab.props.name == "person";
-          clearUnCertInnerForm();
-          clearUnCertForm();
+          // clearUnCertInnerForm();
+          // clearUnCertForm();
         }
       });
     },
@@ -187,6 +182,7 @@ const goToCert = () => {
             message: "认证成功",
             type: "success"
           });
+          done();
         } else {
           ElMessage({
             message: res.msg,
@@ -194,7 +190,7 @@ const goToCert = () => {
           });
         }
         await getUserAuthenlication();
-        done();
+
       } else {
         const res: any = await companySign(unCertForm.value);
         if (res.code == "00") {
@@ -202,6 +198,7 @@ const goToCert = () => {
             message: "认证成功",
             type: "success"
           });
+          done();
         } else {
           ElMessage({
             message: res.msg,
@@ -209,7 +206,7 @@ const goToCert = () => {
           });
         }
         await getUserAuthenlication();
-        done();
+
       }
     }
   });
