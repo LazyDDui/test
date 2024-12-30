@@ -6,12 +6,14 @@ const state = ref({
   useNum: 0,
   appId: "",
   secret: "",
-  setNum: ""
+  setNum: "",
+  serverPublicKey: ""
 });
 
 const empty = ref(true);
 
 const s = ref("");
+const serverPublicKey = ref("");
 
 const getData = async () => {
   const res = await http.get(`/app/app`);
@@ -32,9 +34,21 @@ getData();
       <div class="title">我的api</div>
       <div class="innerBox" style="display: flex">
         <div class="count"><span>appId:</span>{{ state.appId }}</div>
-        <el-button type="text" @click="s = state.secret">获取密钥</el-button>
+        <div style="display: flex; flex-direction: column">
+          <el-button type="text" @click="s = state.secret">获取密钥</el-button>
+          <el-button
+            type="text"
+            @click="serverPublicKey = state.serverPublicKey"
+            >获取服务端公钥</el-button
+          >
+        </div>
       </div>
-      <div v-if="s">appSK:{{ s }}</div>
+      <div style="width: 500px; display: flex; flex-direction: column">
+        <div>appSK:</div>
+        <div v-if="s" style="margin-bottom: 20px">{{ s }}</div>
+        <div>服务端公钥:</div>
+        <div v-if="serverPublicKey">{{ serverPublicKey }}</div>
+      </div>
     </div>
     <div class="shbox">
       <div class="title">调用次数</div>
@@ -58,9 +72,8 @@ getData();
 .shbox {
   background-color: #ffffff;
   padding: 20px;
-  margin-right: 20px;
-  width: 400px;
-
+  width: 100%;
+  margin-bottom: 20px;
   .innerBox {
     width: 100%;
     justify-content: space-between;

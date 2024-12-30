@@ -197,8 +197,6 @@ const sealChange = (index: number) => {
 };
 
 const end = (e: any) => {
-  console.log(gai.width)
-  console.log(gai.height)
   const { newIndex } = e;
   const targetId = e.originalEvent.target.parentElement.parentElement.id;
   const targetIndex = Number(targetId.split("_")[1]);

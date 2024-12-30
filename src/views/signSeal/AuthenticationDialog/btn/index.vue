@@ -15,13 +15,18 @@ const props = defineProps<BtnProps>();
 const emit = defineEmits(["updateList"]);
 const apiClick = () => {
   if (props.data.isApplyApi == "0") {
-    http.post(`/app/userAuthentication/api/apply`).then(() => {
-      message(props.data.row.id + "已开通", {
-        type: "success"
+    http
+      .post(`/app/userAuthentication/api/apply`, {
+        data: {
+          id: props.data.row.id
+        }
+      })
+      .then(() => {
+        message(props.data.row.id + "已开通", {
+          type: "success"
+        });
       });
-    });
   }
-  console.log(props.data);
 };
 
 const remove = async () => {
@@ -43,12 +48,13 @@ const remove = async () => {
   <el-row>
     <el-button size="small" type="text" @click="cgClick">切换</el-button>
     <el-button
+      v-if="data.isApplyApi == '0'"
       size="small"
-      :disabled="data.isApplyApi != '0'"
       type="text"
       @click="apiClick"
       >api开通</el-button
     >
+    <el-tag v-else type="success" style="margin-right: 10px">已开通api</el-tag>
     <el-button size="small" type="danger" @click="remove">删除</el-button>
   </el-row>
 </template>

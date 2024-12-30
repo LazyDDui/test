@@ -8,7 +8,7 @@ export default {
   path: "/",
   name: "Home",
   component: Layout,
-  redirect: "/welcome",
+  redirect: "/SignManage",
   meta: {
     icon: "ep:home-filled",
     title: $t("menus.pureHome"),

@@ -118,6 +118,25 @@ export const useSeal = defineStore("seal", () => {
     }
   ];
 
+  const list3 = [
+    {
+      name: "申领印章",
+      src: "signSeal/u3009.png"
+    },
+    {
+      name: "印章使用",
+      src: "signSeal/u3009.png"
+    },
+    {
+      name: "签章验证",
+      src: "signSeal/u3009.png"
+    },
+    {
+      name: "api开通",
+      src: "signSeal/u3009.png"
+    }
+  ];
+
   const list = ref([]);
 
   const setAuth = async (au?: any) => {
@@ -126,7 +145,12 @@ export const useSeal = defineStore("seal", () => {
       if (auth.value.subjectId) {
         localStorage.setItem("subjectId", auth.value.subjectId);
         if (auth.value.type == "0") {
-          list.value = list0;
+          if(auth.value.isApplyApi == '1'){
+            list.value = list0;
+          }else {
+            list.value = list3
+          }
+
         } else {
           list.value = list1;
         }

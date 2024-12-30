@@ -20,7 +20,7 @@ import { useSeal } from "@/store/useSeal";
 import { storeToRefs } from "pinia";
 
 const { setAuth, setUserStatus, getSealManageInfo } = useSeal();
-const { auth, list, userStatus, sealManage,userInfo } = storeToRefs(useSeal());
+const { auth, list, userStatus, sealManage, userInfo } = storeToRefs(useSeal());
 
 const useSealFn = () => {
   addDialog({
@@ -37,6 +37,7 @@ import PrincipalType from "@/views/signSeal/PrincipalType/index.vue";
 import { ElMessage } from "element-plus";
 import { enIdNo } from "@/utils/common";
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
+import { message } from "@/utils/message";
 
 const router = useRouter();
 
@@ -237,6 +238,23 @@ const unCertGetSealRadioChange = (e: "1" | "0") => {
 };
 const { onReset } = useDataThemeChange();
 
+const apiCreate = () => {
+  addDialog({
+    title: "注意",
+    contentRenderer() {
+      return h("div", null, "确认开通api？");
+    },
+    beforeSure(done) {
+      http.post(`/app/userAuthentication/api/apply`).then(() => {
+        message("api已开通", {
+          type: "success"
+        });
+        getUserAuthenlication();
+        done();
+      });
+    }
+  });
+};
 </script>
 
 <template>
@@ -246,7 +264,7 @@ const { onReset } = useDataThemeChange();
         style="background-color: #fff; height: 40px; padding: 10px"
         class="flex align-center justify-end mb-2"
       >
-        <div class="mr-6">{{userInfo.user_info.phone}}</div>
+        <div class="mr-6">{{ userInfo.user_info.phone }}</div>
         <el-button type="text" @click="onReset">退出登陆</el-button>
       </div>
       <div class="header">
@@ -273,6 +291,8 @@ const { onReset } = useDataThemeChange();
                   }
                 } else if (item.name === 'api管理') {
                   router.push('/welcome');
+                } else if (item.name === 'api开通') {
+                  apiCreate();
                 }
               }
             "
@@ -461,7 +481,7 @@ const { onReset } = useDataThemeChange();
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding-top: 40px;
+          padding: 40px 8px 0 8px;
 
           .h_2 {
             font-size: 16px;

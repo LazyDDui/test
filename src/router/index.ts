@@ -239,6 +239,10 @@ router.beforeEach((to: ToRouteType, _from, next) => {
       next();
     }
   }
+  if ((to.path = "/")) {
+    console.log(to)
+    next({ path: "/SignManage" });
+  }
 });
 
 router.afterEach(() => {
