@@ -197,6 +197,8 @@ const sealChange = (index: number) => {
 };
 
 const end = (e: any) => {
+  console.log(gai.width)
+  console.log(gai.height)
   const { newIndex } = e;
   const targetId = e.originalEvent.target.parentElement.parentElement.id;
   const targetIndex = Number(targetId.split("_")[1]);
@@ -212,8 +214,8 @@ const end = (e: any) => {
         img.set({
           left: e.originalEvent.layerX,
           top: e.originalEvent.layerY,
-          scaleX: 0.55,
-          scaleY: 0.55,
+          scaleX: 0.35,
+          scaleY: 0.35,
           selectable: false,
           index: e.newDraggableIndex,
           borderColor: "transparent",
@@ -280,8 +282,8 @@ const end = (e: any) => {
       img.set({
         left: e.originalEvent.layerX,
         top: e.originalEvent.layerY,
-        scaleX: 0.55,
-        scaleY: 0.55,
+        scaleX: 0.35,
+        scaleY: 0.35,
         selectable: false,
         index: e.newDraggableIndex,
         borderColor: "transparent", // 隐藏默认边框
@@ -362,8 +364,8 @@ const end = (e: any) => {
           img.set({
             left: gai.width - img.width! * 0.2,
             top: e.originalEvent.layerY,
-            scaleX: 0.55,
-            scaleY: 0.55,
+            scaleX: 0.35,
+            scaleY: 0.35,
             selectable: false,
             index: e.newDraggableIndex,
             borderColor: "transparent",
@@ -385,8 +387,8 @@ const end = (e: any) => {
 
           gaiCanvas.on("object:moving", options => {
             const obj = options.target;
-            obj.set("left", gai.width - img.width! * 0.2);
-            const halfHeight = (obj.height! / 2) * 0.2;
+            obj.set("left", gai.width - img.width! * 0.35);
+            const halfHeight = (obj.height! / 2) * 0.35;
 
             if (obj.top! < halfHeight) {
               obj.set("top", halfHeight);

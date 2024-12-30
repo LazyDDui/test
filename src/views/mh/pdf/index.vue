@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {h, onBeforeUnmount, ref, toRaw} from "vue";
-import {getSealImg} from "@/api/test";
-import {ElMessage} from "element-plus";
-import {http} from "@/utils/http";
-import {useSeal} from "@/store/useSeal";
+import { h, onBeforeUnmount, ref, toRaw } from "vue";
+import { getSealImg } from "@/api/test";
+import { ElMessage } from "element-plus";
+import { http } from "@/utils/http";
+import { useSeal } from "@/store/useSeal";
 import ShPdf from "@/components/ShPdf/index.vue";
 import {
   downLoadFile,
@@ -12,18 +12,18 @@ import {
   preViewFile,
   uniqueByIdReduce
 } from "@/utils/common";
-import {storeToRefs} from "pinia";
-import {ElLoading} from "element-plus";
-import {message} from "@/utils/message";
-import {addDialog} from "@/components/ReDialog/index";
+import { storeToRefs } from "pinia";
+import { ElLoading } from "element-plus";
+import { message } from "@/utils/message";
+import { addDialog } from "@/components/ReDialog/index";
 
 const sign = ref();
 const psw = ref();
 const pdfInfo = ref();
 const appno = ref("");
 
-const {getPdf} = useSeal();
-const {fileId, sealInfo, docName} = storeToRefs(useSeal());
+const { getPdf } = useSeal();
+const { fileId, sealInfo, docName } = storeToRefs(useSeal());
 let timer;
 
 const pdf = ref();
@@ -50,7 +50,7 @@ const error = ref(false);
 const stampList = ref([]);
 
 const getSeal = async () => {
-  const {data} = await getSealImg(1, 100);
+  const { data } = await getSealImg(1, 100);
   stampList.value = data.records.map(item => ({
     ...item,
     id: item.id,
@@ -180,6 +180,7 @@ const getFile = () => {
 const signData = ref([]);
 
 const shSign = () => {
+  signData.value = pdfRef.value.signSeal();
   if (signData.value.length == 0) {
     addDialog({
       title: "注意",
@@ -189,7 +190,6 @@ const shSign = () => {
     });
     return;
   }
-  signData.value = pdfRef.value.signSeal();
 
   const normal = toRaw(signData.value).filter(item => !item.info.uId);
   const qf = toRaw(signData.value).filter(item => item.info.uId);
@@ -221,16 +221,16 @@ const submitStampListUi = ref([]);
 <template>
   <el-dialog v-model="show" title="签署密码" width="1000">
     <el-table :data="submitStampListUi" style="width: 100%">
-      <!--      <el-table-column prop="info.name" label="章名称" align="center" />-->
-      <!--      <el-table-column label="章图片" align="center">-->
-      <!--        <template #default="scope">-->
-      <!--          <img-->
-      <!--            style="width: 80px; height: 80px"-->
-      <!--            :alt="scope.row.info.name"-->
-      <!--            :src="getBase64(scope.row.info.pic)"-->
-      <!--          />-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
+      <el-table-column prop="info.name" label="章名称" align="center" />
+      <el-table-column label="章图片" align="center">
+        <template #default="scope">
+          <img
+            style="width: 80px; height: 80px"
+            :alt="scope.row.info.name"
+            :src="getBase64(scope.row.info.pic)"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="密码" align="center">
         <template #default="scope">
           <el-input

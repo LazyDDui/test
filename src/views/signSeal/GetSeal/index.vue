@@ -278,15 +278,15 @@ const ai = computed(() => {
         <el-form-item label="密码：">
           <el-input
             v-model="pin"
-            :maxlength="13"
-            placeholder="请输入13位纯数字"
+            :maxlength="6"
+            placeholder="请输入6位纯数字"
             type="password"
           />
         </el-form-item>
         <el-form-item label="密码：">
           <el-input
             v-model="companyForm.pin"
-            :maxlength="13"
+            :maxlength="6"
             :disabled="!pin"
             placeholder="请输入再次输入密码"
             type="password"

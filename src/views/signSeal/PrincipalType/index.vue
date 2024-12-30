@@ -35,25 +35,25 @@ const initialPersonForm = {
 //   responsibilityIdType: "0",
 //   operatorIdType: "0",
 //   // 单位类型 0:一般企业，1：事业单位
-//   unitType: "",
+//   unitType: "0",
 //   //单位名称
-//   custName: "成都泰和瑞祥科技有限公司",
+//   custName: "郫都区一辰卷饼餐饮服务部(个体工商户)",
 //   //统一信用代码
-//   custCreditNo: "91510100MA6CPCRP4G",
+//   custCreditNo: "92510124MAD1WQ023U",
 //   //住址
-//   address: "",
+//   address: "四川省成都市青羊区光华大道一段888号",
 //   //营业执照/证书/文件
-//   businessPicture: "",
+//   businessPicture: "1872101553694896129",
 //   //法定代表人姓名
-//   juriName: "洪峰",
+//   juriName: "赵浩",
 //   //法定代表人手机号
-//   juriTel: "18183279409",
+//   juriTel: "18111293122",
 //   //法定代表人证件号码
-//   juriIdNo: "422130197803190131",
+//   juriIdNo: "51303019970818205X",
 //   //法定代表人身份证正面照存储标识
-//   juriFacePath: "",
+//   juriFacePath: "1872101562901393409",
 //   //法定代表人身份证反面照存储标识
-//   juriBackPath: "",
+//   juriBackPath: "1872101572107890690",
 //   //经办人姓名
 //   operatorName: "",
 //   //经办人实名手机号码
@@ -62,6 +62,8 @@ const initialPersonForm = {
 //   operatorIdNo: "",
 //   juriIdType: "0"
 // };
+
+// {"responsibilityIdType":"0","operatorIdType":"0","unitType":"","custName":"郫都区一辰卷饼餐饮服务部个体工商户)","custCreditNo":"92510124MAD1WQ023U","address":"四川省成都市青羊区光华大道一段888号","businessPicture":"1872101553694896129","juriName":"赵浩","juriTel":"18111293122","juriIdNo":"51303019970818205X","juriFacePath":"1872101562901393409","juriBackPath":"1872101572107890690","operatorName":"","operatorTel":"","operatorIdNo":"","juriIdType":"0"}
 
 const initialCompanyForm = {
   responsibilityIdType: "0",
@@ -144,9 +146,7 @@ const personRule = reactive<FormRules>({
   ]
 });
 
-const companyRule = reactive<FormRules>({
-
-})
+const companyRule = reactive<FormRules>({});
 </script>
 
 <template>
@@ -215,7 +215,7 @@ const companyRule = reactive<FormRules>({
                     "
                   />
 
-                  <div><span style="color:red">*</span>身份证人像面</div>
+                  <div><span style="color: red">*</span>身份证人像面</div>
                 </div>
               </el-form-item>
               <el-form-item prop="backPath">
@@ -233,7 +233,7 @@ const companyRule = reactive<FormRules>({
                       }
                     "
                   />
-                  <div><span style="color:red">*</span>身份证国徽面</div>
+                  <div><span style="color: red">*</span>身份证国徽面</div>
                 </div>
               </el-form-item>
             </el-col>
