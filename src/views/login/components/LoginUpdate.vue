@@ -11,15 +11,25 @@ import { useUserStoreHook } from "@/store/modules/user";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import Lock from "@iconify-icons/ri/lock-fill";
 import Iphone from "@iconify-icons/ep/iphone";
+import { v4 as uuidv4 } from "uuid";
+import {
+  getUserGraphCode,
+  getUserSmsCodeApi,
+  resetPasswordApi
+} from "@/api/test";
 
 const { t } = useI18n();
 const loading = ref(false);
+const imageCode = ref("");
 const ruleForm = reactive({
   phone: "",
-  verifyCode: "",
-  password: "",
-  repeatPassword: ""
+  randomStr: "",
+  smsCode: "",
+  newPassword: ""
 });
+
+const repeatPassword = ref("");
+
 const ruleFormRef = ref<FormInstance>();
 const { isDisabled, text } = useVerifyCode();
 const repeatPasswordRule = [
@@ -27,7 +37,7 @@ const repeatPasswordRule = [
     validator: (rule, value, callback) => {
       if (value === "") {
         callback(new Error(transformI18n($t("login.purePassWordSureReg"))));
-      } else if (ruleForm.password !== value) {
+      } else if (ruleForm.newPassword !== value) {
         callback(
           new Error(transformI18n($t("login.purePassWordDifferentReg")))
         );
@@ -42,15 +52,15 @@ const repeatPasswordRule = [
 const onUpdate = async (formEl: FormInstance | undefined) => {
   loading.value = true;
   if (!formEl) return;
-  await formEl.validate(valid => {
+  await formEl.validate(async valid => {
     if (valid) {
       // 模拟请求，需根据实际开发进行修改
-      setTimeout(() => {
-        message(transformI18n($t("login.purePassWordUpdateReg")), {
-          type: "success"
-        });
-        loading.value = false;
-      }, 2000);
+      await resetPasswordApi(ruleForm);
+      message(transformI18n($t("login.purePassWordUpdateReg")), {
+        type: "success"
+      });
+      loading.value = false;
+      onBack();
     } else {
       loading.value = false;
     }
@@ -61,6 +71,29 @@ function onBack() {
   useVerifyCode().end();
   useUserStoreHook().SET_CURRENTPAGE(0);
 }
+const graphCode = ref("");
+
+const getPhoneCode = async () => {
+  const res: any = await getUserSmsCodeApi(
+    ruleForm.randomStr,
+    graphCode.value,
+    ruleForm.phone
+  );
+  if (res.code == "1") {
+    message(res.msg, {
+      type: "error"
+    });
+  }
+};
+
+const getImage = async () => {
+  ruleForm.randomStr = uuidv4();
+  const result = await getUserGraphCode(ruleForm.randomStr);
+  //@ts-ignore
+  imageCode.value = URL.createObjectURL(result);
+};
+
+getImage();
 </script>
 
 <template>
@@ -80,12 +113,26 @@ function onBack() {
         />
       </el-form-item>
     </Motion>
+    <Motion :delay="150">
+      <el-form-item prop="code">
+        <el-input
+          v-model="graphCode"
+          clearable
+          :placeholder="t('login.pureVerifyCode')"
+          :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
+        >
+          <template v-slot:append>
+            <el-image :src="imageCode" alt="code" @click="getImage" />
+          </template>
+        </el-input>
+      </el-form-item>
+    </Motion>
 
-    <Motion :delay="100">
-      <el-form-item prop="verifyCode">
+    <Motion :delay="150">
+      <el-form-item prop="code">
         <div class="w-full flex justify-between">
           <el-input
-            v-model="ruleForm.verifyCode"
+            v-model="ruleForm.smsCode"
             clearable
             :placeholder="t('login.pureSmsVerifyCode')"
             :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
@@ -93,7 +140,17 @@ function onBack() {
           <el-button
             :disabled="isDisabled"
             class="ml-2"
-            @click="useVerifyCode().start(ruleFormRef, 'phone')"
+            @click="
+              async () => {
+                if (!graphCode) {
+                  message('请输入输入验证码', {
+                    type: 'error'
+                  });
+                }
+                await useVerifyCode().start(ruleFormRef, 'phone');
+                await getPhoneCode();
+              }
+            "
           >
             {{
               text.length > 0
@@ -106,9 +163,9 @@ function onBack() {
     </Motion>
 
     <Motion :delay="150">
-      <el-form-item prop="password">
+      <el-form-item prop="newPassword">
         <el-input
-          v-model="ruleForm.password"
+          v-model="ruleForm.newPassword"
           clearable
           show-password
           :placeholder="t('login.purePassword')"
@@ -118,9 +175,9 @@ function onBack() {
     </Motion>
 
     <Motion :delay="200">
-      <el-form-item :rules="repeatPasswordRule" prop="repeatPassword">
+      <el-form-item :rules="repeatPasswordRule">
         <el-input
-          v-model="ruleForm.repeatPassword"
+          v-model="repeatPassword"
           clearable
           show-password
           :placeholder="t('login.pureSure')"

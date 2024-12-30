@@ -1,3 +1,8 @@
+import CryptoJS from 'crypto-js';
+
+// 配置加密相关的参数
+const key = CryptoJS.enc.Utf8.parse('thanks,pig4cloud'); // 密钥，确保长度为16字节
+const iv = CryptoJS.enc.Utf8.parse('thanks,pig4cloud'); // 偏移量，确保长度为16字节
 export async function downloadPdf(url, filename = "document.pdf") {
   try {
     const response = await fetch(url);
@@ -105,4 +110,13 @@ export const enIdNo = (no: string) => {
 export function removeLetters(str: string) {
   // 使用正则表达式匹配所有字母（不分大小写），并用空字符串替换它们
   return str.replaceAll(/[a-zA-Z]/g, "");
+}
+
+export function encryptCFB(plainText: string): string {
+  const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CFB,
+    padding: CryptoJS.pad.NoPadding,
+  });
+  return encrypted.toString();
 }

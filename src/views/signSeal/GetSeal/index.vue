@@ -21,14 +21,14 @@ const form = ref({
   code: "",
   //印章名称
   name: "",
-  //印章形状
-  shape: "",
-  //印章图片
+  // //印章形状
+  // shape: "",
+  // //印章图片
   stamp: "",
-  //印章长度mm
-  stampLength: "",
-  //印章宽度mm
-  stampWidth: "",
+  // //印章长度mm
+  stampLength: "10",
+  // //印章宽度mm
+  stampWidth: "20",
   //pin码
   pin: ""
 });
@@ -110,33 +110,33 @@ const ai = computed(() => {
           <el-form-item label="印章编码：">
             <el-input v-model="form.code" placeholder="请输入印章编码" />
           </el-form-item>
-          <el-form-item v-if="!ai" label="印章形状：">
-            <el-select
-              v-model="form.shape"
-              placeholder="请输入印章形状"
-              size="default"
-              style="width: 200px"
-            >
-              <el-option
-                v-for="(item, index) in Array.from(StampShapeMap)"
-                :key="index"
-                :label="item[1]"
-                :value="item[0]"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item v-if="!ai" label="印章宽度(mm)：">
-            <el-input
-              v-model="form.stampWidth"
-              placeholder="请输入印章宽度(mm)"
-            />
-          </el-form-item>
-          <el-form-item v-if="!ai" label="印章长度(mm)：">
-            <el-input
-              v-model="form.stampLength"
-              placeholder="请输入印章长度(mm)"
-            />
-          </el-form-item>
+          <!--          <el-form-item v-if="!ai" label="印章形状：">-->
+          <!--            <el-select-->
+          <!--              v-model="form.shape"-->
+          <!--              placeholder="请输入印章形状"-->
+          <!--              size="default"-->
+          <!--              style="width: 200px"-->
+          <!--            >-->
+          <!--              <el-option-->
+          <!--                v-for="(item, index) in Array.from(StampShapeMap)"-->
+          <!--                :key="index"-->
+          <!--                :label="item[1]"-->
+          <!--                :value="item[0]"-->
+          <!--              />-->
+          <!--            </el-select>-->
+          <!--          </el-form-item>-->
+          <!--          <el-form-item v-if="!ai" label="印章宽度(mm)：">-->
+          <!--            <el-input-->
+          <!--              v-model="form.stampWidth"-->
+          <!--              placeholder="请输入印章宽度(mm)"-->
+          <!--            />-->
+          <!--          </el-form-item>-->
+          <!--          <el-form-item v-if="!ai" label="印章长度(mm)：">-->
+          <!--            <el-input-->
+          <!--              v-model="form.stampLength"-->
+          <!--              placeholder="请输入印章长度(mm)"-->
+          <!--            />-->
+          <!--          </el-form-item>-->
         </el-col>
         <el-col v-if="!ai" :span="12" style="display: flex">
           <el-form-item>
@@ -167,11 +167,17 @@ const ai = computed(() => {
       <h2>确认密码</h2>
       <el-row>
         <el-form-item label="密码：">
-          <el-input v-model="pin" placeholder="请输入密码" type="password" />
+          <el-input
+            v-model="pin"
+            :maxlength="6"
+            placeholder="请输入6位纯数字"
+            type="password"
+          />
         </el-form-item>
         <el-form-item label="密码：">
           <el-input
             v-model="form.pin"
+            :maxlength="6"
             :disabled="!pin"
             placeholder="请输入再次输入密码"
             type="password"
@@ -270,11 +276,17 @@ const ai = computed(() => {
       <h2>确认密码</h2>
       <el-row>
         <el-form-item label="密码：">
-          <el-input v-model="pin" placeholder="请输入密码" type="password" />
+          <el-input
+            v-model="pin"
+            :maxlength="13"
+            placeholder="请输入13位纯数字"
+            type="password"
+          />
         </el-form-item>
         <el-form-item label="密码：">
           <el-input
             v-model="companyForm.pin"
+            :maxlength="13"
             :disabled="!pin"
             placeholder="请输入再次输入密码"
             type="password"

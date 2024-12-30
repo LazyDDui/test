@@ -20,7 +20,7 @@ import { useSeal } from "@/store/useSeal";
 import { storeToRefs } from "pinia";
 
 const { setAuth, setUserStatus, getSealManageInfo } = useSeal();
-const { auth, list, userStatus, sealManage } = storeToRefs(useSeal());
+const { auth, list, userStatus, sealManage,userInfo } = storeToRefs(useSeal());
 
 const useSealFn = () => {
   addDialog({
@@ -36,6 +36,7 @@ import { AuthTypeMap } from "../../utils/map";
 import PrincipalType from "@/views/signSeal/PrincipalType/index.vue";
 import { ElMessage } from "element-plus";
 import { enIdNo } from "@/utils/common";
+import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
 
 const router = useRouter();
 
@@ -136,7 +137,6 @@ const signManageSeeMore = () => {
   });
 };
 
-
 const isPerson = ref(true);
 
 const unCertForm = ref({});
@@ -220,7 +220,6 @@ const unCertGetSeal = () => {
   unCertGetSealShow.value = true;
 };
 
-
 const unCertGetSealRadioChange = (e: "1" | "0") => {
   unCertGetSealShow.value = false;
 
@@ -236,11 +235,20 @@ const unCertGetSealRadioChange = (e: "1" | "0") => {
     }
   });
 };
+const { onReset } = useDataThemeChange();
+
 </script>
 
 <template>
   <div class="shContainer">
     <div class="shBox">
+      <div
+        style="background-color: #fff; height: 40px; padding: 10px"
+        class="flex align-center justify-end mb-2"
+      >
+        <div class="mr-6">{{userInfo.user_info.phone}}</div>
+        <el-button type="text" @click="onReset">退出登陆</el-button>
+      </div>
       <div class="header">
         <div class="w">
           <div
@@ -389,7 +397,7 @@ const unCertGetSealRadioChange = (e: "1" | "0") => {
 
 <style scoped lang="scss">
 .shContainer {
-  padding-top: 20px;
+  padding-top: 0px;
   background-color: #f2f2f2;
   box-sizing: border-box;
   height: 100vh;

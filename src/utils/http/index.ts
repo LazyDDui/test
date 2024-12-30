@@ -11,11 +11,11 @@ import type {
 } from "./types.d";
 import { stringify } from "qs";
 import NProgress from "../progress";
-import { getToken, formatToken, removeToken } from "@/utils/auth";
-import { useUserStore, useUserStoreHook } from "@/store/modules/user";
+import { getToken, formatToken } from "@/utils/auth";
+import {  useUserStoreHook } from "@/store/modules/user";
 import { message } from "@/utils/message";
-import { useRouter } from "vue-router";
-import {removeLetters} from "@/utils/common";
+import { removeLetters } from "@/utils/common";
+import router from "@/router";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
@@ -222,10 +222,8 @@ class PureHttp {
           message(removeLetters(error.response.data.msg), {
             type: "error"
           });
-
           if (error.response.data.msg == "请求令牌已过期") {
-            // const router = useRouter()
-            // router.replace('/login')
+            router.replace("/login");
           }
         });
     });

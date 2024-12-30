@@ -12,6 +12,17 @@ import { http } from "@/utils/http";
 import { preViewFile } from "@/utils/common";
 
 export const useSeal = defineStore("seal", () => {
+  const userInfo = ref(
+    window.localStorage.getItem("sealUserInfo")
+      ? JSON.parse(window.localStorage.getItem("sealUserInfo"))
+      : ""
+  );
+
+  const setUserInfo = (usrInfo: any) => {
+    userInfo.value = usrInfo
+    window.localStorage.setItem("sealUserInfo", JSON.stringify(usrInfo));
+  };
+
   const auth = ref<any>({});
   const fileId = ref(
     window.localStorage.getItem("fileId")
@@ -68,7 +79,7 @@ export const useSeal = defineStore("seal", () => {
 
   const fileList = ref<any>([]);
 
-  const getList = async (page: number, search?: object = {}) => {
+  const getList = async (page: number, search?: any = {}) => {
     const { data } = await getSignRequestFile(page, search);
     fileList.value = data;
   };
@@ -147,6 +158,8 @@ export const useSeal = defineStore("seal", () => {
     sealInfo,
     setSealInfo,
     docName,
-    setDocName
+    setDocName,
+    setUserInfo,
+    userInfo
   };
 });

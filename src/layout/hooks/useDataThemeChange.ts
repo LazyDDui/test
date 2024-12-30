@@ -14,6 +14,7 @@ import {
   lighten,
   toggleTheme
 } from "@pureadmin/theme/dist/browser-utils";
+import { userLogoutApi } from "@/api/test";
 
 export function useDataThemeChange() {
   const { layoutTheme, layout } = useLayout();
@@ -128,6 +129,7 @@ export function useDataThemeChange() {
     router.push("/login");
     useMultiTagsStoreHook().handleTags("equal", [...routerArrays]);
     resetRouter();
+    userLogoutApi();
   }
 
   return {

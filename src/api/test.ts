@@ -2,19 +2,24 @@ import { http } from "@/utils/http";
 
 export const login = (data: object) =>
   http.post(
-    "/app/oauth2/token",
+    "/app/user/login/username",
     {
       data
     },
     {
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
         Authorization: "Basic dGVzdDp0ZXN0"
       }
     }
   );
 
 export const sealUpload = () => http.post("/app/getPreFileUrl");
+
+//手机号登陆
+export const phoneLoginApi = (data: object) =>
+  http.post(`/app/user/login/phone`, {
+    data
+  });
 ///saas/sign/init
 
 export const signInit = () => http.post("/app/sign/init");
@@ -194,3 +199,12 @@ export const userRegisterApi = (data: object) =>
   http.post(`/app/user/register`, {
     data
   });
+
+//忘记密码
+export const resetPasswordApi = (data: object) =>
+  http.post(`/app/user/resetPass`, {
+    data
+  });
+
+//登出/user/logout
+export const userLogoutApi = () => http.post(`/app/user/logout`);

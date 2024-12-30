@@ -45,7 +45,7 @@ const loginRules = reactive<FormRules>({
 
 /** 手机登录校验 */
 const phoneRules = reactive<FormRules>({
-  phone: [
+  username: [
     {
       validator: (rule, value, callback) => {
         if (value === "") {
@@ -132,6 +132,20 @@ const updateRules = reactive<FormRules>({
     }
   ],
   password: [
+    {
+      validator: (rule, value, callback) => {
+        if (value === "") {
+          callback(new Error(transformI18n($t("login.purePassWordReg"))));
+        } else if (!REGEXP_PWD.test(value)) {
+          callback(new Error(transformI18n($t("login.purePassWordRuleReg"))));
+        } else {
+          callback();
+        }
+      },
+      trigger: "blur"
+    }
+  ],
+  newPassword: [
     {
       validator: (rule, value, callback) => {
         if (value === "") {

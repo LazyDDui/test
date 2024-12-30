@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 import { companyCertApi, companySign, personSign } from "@/api/test";
 import { downloadPdf } from "@/utils";
 import { http } from "@/utils/http";
+import {ElMessage} from "element-plus";
 
 let sealLoading = ref(false);
 let sealData = ref([]);

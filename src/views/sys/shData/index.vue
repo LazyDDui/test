@@ -31,10 +31,10 @@ getData();
     <div class="shbox">
       <div class="title">我的api</div>
       <div class="innerBox" style="display: flex">
-        <div class="count">{{ state.appId }}</div>
+        <div class="count"><span>appId:</span>{{ state.appId }}</div>
         <el-button type="text" @click="s = state.secret">获取密钥</el-button>
       </div>
-      <div v-if="s">{{ s }}</div>
+      <div v-if="s">appSK:{{ s }}</div>
     </div>
     <div class="shbox">
       <div class="title">调用次数</div>
@@ -50,7 +50,7 @@ getData();
     </div>
   </el-row>
   <el-row v-else>
-    <div class="shbox" style="width: 100%;height: 500px;">用户暂未开通api</div>
+    <div class="shbox" style="width: 100%; height: 500px">用户暂未开通api</div>
   </el-row>
 </template>
 

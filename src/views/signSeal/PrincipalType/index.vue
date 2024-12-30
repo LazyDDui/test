@@ -175,24 +175,24 @@ const companyRule = reactive<FormRules>({
                   @change="change(form)"
                 />
               </el-form-item>
-              <el-form-item label="个人身份证号：" prop="idCard">
+              <el-form-item label="身份证号码：" prop="idCard">
                 <el-input
                   v-model="form.idCard"
-                  placeholder="请输入个人身份证号"
+                  placeholder="请输入身份证号"
                   @change="change(form)"
                 />
               </el-form-item>
-              <el-form-item label="个人实名手机号码：" prop="tel">
+              <el-form-item label="实名手机号码：" prop="tel">
                 <el-input
                   v-model="form.tel"
-                  placeholder="请输入个人实名手机号码"
+                  placeholder="请输入实名手机号码"
                   @change="change(form)"
                 />
               </el-form-item>
-              <el-form-item label="个人地址：">
+              <el-form-item label="住址：">
                 <el-input
                   v-model="form.address"
-                  placeholder="请输入个人地址"
+                  placeholder="请输入住址"
                   @change="change(form)"
                 />
               </el-form-item>
@@ -278,7 +278,7 @@ const companyRule = reactive<FormRules>({
               <el-form-item label="住址：">
                 <el-input
                   v-model="companyForm.address"
-                  placeholder="请输入住址"
+                  placeholder="请输入住所"
                   @change="change(companyForm)"
                 />
               </el-form-item>

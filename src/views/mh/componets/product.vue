@@ -4,8 +4,8 @@ import { fp } from "@/utils";
 
 const mainStore = useMainStore()
 
-const banner = '/product/17134214866678.jpg'
-const bannerTips = '/product/productWords.png'
+const banner = fp('/product/17134214866678.jpg')
+const bannerTips = fp('/product/productWords.png')
 const area1 = fp('product/gxxcx.png')
 const area2 = fp('product/gxapp.png')
 const area3 = fp('product/gxkhd.png')

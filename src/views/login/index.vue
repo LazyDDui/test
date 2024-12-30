@@ -35,10 +35,14 @@ import Info from "@iconify-icons/ri/information-line";
 import { getUserGraphCode, login } from "@/api/test";
 import { getToken, removeToken, setToken } from "@/utils/auth";
 import { v4 as uuidv4 } from "uuid";
+import {encryptCFB} from "@/utils/common";
+import {useSeal} from "@/store/useSeal";
 
 defineOptions({
   name: "Login"
 });
+
+const {setUserInfo} = useSeal()
 
 const imgCode = ref("");
 const loginDay = ref(7);
@@ -62,8 +66,8 @@ const { title, getDropdownItemStyle, getDropdownItemClass } = useNav();
 const { locale, translationCh, translationEn } = useTranslationLang();
 
 const ruleForm = reactive({
-  username: "18202823011",
-  password: "123123",
+  username: "",
+  password: "",
   code: ""
 });
 
@@ -74,7 +78,7 @@ const onLogin = async (formEl: FormInstance | undefined) => {
       loading.value = true;
       login({
         username: ruleForm.username,
-        password: ruleForm.password,
+        password: encryptCFB(ruleForm.password),
         code: ruleForm.code,
         randomStr: randomStr.value,
         grant_type: "password",
@@ -86,6 +90,7 @@ const onLogin = async (formEl: FormInstance | undefined) => {
             ...res,
             accessToken: `${res.token_type} ${res.access_token}`
           });
+          setUserInfo(res)
           return initRouter().then(() => {
             disabled.value = true;
             router
@@ -137,15 +142,6 @@ const getImage = async () => {
 
 getImage();
 
-const titleMap = computed(() => {
-  if (currentPage.value == 0) {
-    return "用户登陆";
-  } else if (currentPage.value == 1) {
-    return "用户注册";
-  } else {
-    return "找回密码";
-  }
-});
 </script>
 
 <template>
@@ -208,6 +204,10 @@ const titleMap = computed(() => {
               />
               <TypeIt
                 v-else-if="currentPage == 1"
+                :options="{ strings: ['手机号登陆'], cursor: false, speed: 100 }"
+              />
+              <TypeIt
+                v-else-if="currentPage == 2"
                 :options="{ strings: ['用户注册'], cursor: false, speed: 100 }"
               />
               <TypeIt
@@ -314,11 +314,12 @@ const titleMap = computed(() => {
               </el-form-item>
             </Motion>
           </el-form>
-
+          <!-- 手机号登录 -->
+          <LoginPhone v-if="currentPage === 1" />
           <!-- 二维码登录 -->
           <!--          <LoginQrCode v-if="currentPage === 2" />-->
           <!-- 注册 -->
-          <LoginRegist v-if="currentPage === 1" />
+          <LoginRegist v-if="currentPage === 2" />
           <!-- 忘记密码 -->
           <LoginUpdate v-if="currentPage === 4" />
         </div>

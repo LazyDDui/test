@@ -29,7 +29,7 @@ const router = useRouter();
 const ruleForm = reactive({
   // username: "",
   // verifyCode: "",
-  loginName: "",
+  // loginName: "",
   phone: "",
   smsCode: "",
   password: "",
@@ -64,7 +64,6 @@ const onUpdate = async (formEl: FormInstance | undefined) => {
       if (checked.value) {
         // 模拟请求，需根据实际开发进行修改
         await userRegisterApi({
-          loginName: ruleForm.loginName,
           phone: ruleForm.phone,
           randomStr: randomStr.value,
           smsCode: ruleForm.smsCode,
@@ -125,25 +124,25 @@ const getPhoneCode = async () => {
     :rules="updateRules"
     size="large"
   >
-    <Motion>
-      <el-form-item
-        :rules="[
-          {
-            required: true,
-            message: transformI18n($t('login.pureUsernameReg')),
-            trigger: 'blur'
-          }
-        ]"
-        prop="loginName"
-      >
-        <el-input
-          v-model="ruleForm.loginName"
-          clearable
-          :placeholder="t('login.pureUsername')"
-          :prefix-icon="useRenderIcon(User)"
-        />
-      </el-form-item>
-    </Motion>
+<!--    <Motion>-->
+<!--      <el-form-item-->
+<!--        :rules="[-->
+<!--          {-->
+<!--            required: true,-->
+<!--            message: transformI18n($t('login.pureUsernameReg')),-->
+<!--            trigger: 'blur'-->
+<!--          }-->
+<!--        ]"-->
+<!--        prop="loginName"-->
+<!--      >-->
+<!--        <el-input-->
+<!--          v-model="ruleForm.loginName"-->
+<!--          clearable-->
+<!--          :placeholder="t('login.pureUsername')"-->
+<!--          :prefix-icon="useRenderIcon(User)"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--    </Motion>-->
 
     <Motion :delay="100">
       <el-form-item prop="phone">
@@ -232,13 +231,11 @@ const getPhoneCode = async () => {
 
     <Motion :delay="300">
       <el-form-item>
-        <div style="display: flex;">
+        <div style="display: flex">
           <el-checkbox v-model="checked">
             {{ t("login.pureReadAccept") }}
           </el-checkbox>
-          <el-button link type="primary">
-            隐私协议、用户服务协议
-          </el-button>
+          <el-button link type="primary"> 隐私协议、用户服务协议 </el-button>
         </div>
       </el-form-item>
     </Motion>
