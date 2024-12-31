@@ -2,7 +2,7 @@ import { http } from "@/utils/http";
 
 export const login = (data: object) =>
   http.post(
-    "/app/user/login/username",
+    "/app/user/login/phone/pass",
     {
       data
     },
