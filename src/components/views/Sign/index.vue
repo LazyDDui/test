@@ -30,6 +30,7 @@ onMounted(() => {
 
 const { screen } = storeToRefs(useMainStore());
 const { fileId } = storeToRefs(useSeal());
+const { setDocName } = useSeal();
 
 const { setFileId } = useSeal();
 
@@ -95,15 +96,13 @@ const sign = () => {
         }
       })
       .then(res => {
-        localStorage.setItem(
-          "docName",
-          JSON.stringify(form.docName ? form.docName : defaultName.value)
-        );
-        closeAllDialog();
+        setDocName(form.docName ? form.docName : defaultName.value);
         setSealInfo(res.data);
-
         ElMessage.success("已发起");
-        router.push("/pdf");
+        setTimeout(() => {
+          closeAllDialog();
+          router.push("/pdf");
+        }, 500);
       });
   } else {
     ElMessage.error("请先上传文件");

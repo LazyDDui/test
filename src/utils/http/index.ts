@@ -219,12 +219,12 @@ class PureHttp {
           if (noMessage) {
             return;
           }
-          message(removeLetters(error.response.data.msg), {
-            type: "error"
-          });
           if (error.response.data.msg == "请求令牌已过期") {
             router.replace("/login");
           }
+          message(removeLetters(error.response.data.msg), {
+            type: "error"
+          });
         });
     });
   }

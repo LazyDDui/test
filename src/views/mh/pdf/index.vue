@@ -209,6 +209,7 @@ const shSign = () => {
 
 onBeforeUnmount(() => {
   if (timer) {
+    loadingPdf.value.close();
     clearInterval(timer);
   }
 });

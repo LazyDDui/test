@@ -19,19 +19,19 @@ export const useSeal = defineStore("seal", () => {
   );
 
   const setUserInfo = (usrInfo: any) => {
-    userInfo.value = usrInfo
+    userInfo.value = usrInfo;
     window.localStorage.setItem("sealUserInfo", JSON.stringify(usrInfo));
   };
 
   const auth = ref<any>({});
   const fileId = ref(
     window.localStorage.getItem("fileId")
-      ? JSON.parse(window.localStorage.getItem("fileId"))
+      ? window.localStorage.getItem("fileId")
       : ""
   );
   const docName = ref(
     window.localStorage.getItem("docName")
-      ? JSON.parse(window.localStorage.getItem("docName"))
+      ? window.localStorage.getItem("docName")
       : ""
   );
 
@@ -145,12 +145,11 @@ export const useSeal = defineStore("seal", () => {
       if (auth.value.subjectId) {
         localStorage.setItem("subjectId", auth.value.subjectId);
         if (auth.value.type == "0") {
-          if(auth.value.isApplyApi == '1'){
+          if (auth.value.isApplyApi == "1") {
             list.value = list0;
-          }else {
-            list.value = list3
+          } else {
+            list.value = list3;
           }
-
         } else {
           list.value = list1;
         }
