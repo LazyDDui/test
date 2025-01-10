@@ -9,6 +9,7 @@ import { addDialog } from "@/components/ReDialog/index";
 import { message } from "@/utils/message";
 import { downloadByData } from "@pureadmin/utils";
 import { SealTypeMap } from "@/utils/map";
+import {useSeal} from "@/store/useSeal";
 
 const columns: TableColumnList = [
   {
@@ -145,12 +146,15 @@ const tableData = ref({
   total: 0
 });
 
+const {getSealManageInfo} = useSeal()
+
 const getList = async () => {
   const { data } = await getUserAuthentication(
     tableData.value.current,
     form.name
   );
   tableData.value = data;
+  await getSealManageInfo()
 };
 
 const currentChange = async e => {

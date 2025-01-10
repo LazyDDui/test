@@ -262,10 +262,10 @@ const apiCreate = () => {
   <div class="shContainer">
     <div class="shBox">
       <div
-        style="background-color: #fff; height: 60px; padding: 10px"
+        style="background-color: #fff; height: 40px; padding: 10px"
         class="flex align-center justify-between mb-2"
       >
-        <img alt="icon" :src="fp('index/logo.png')"/>
+        <img style="height: 40px" alt="icon" :src="fp('index/logo.png')"/>
         <div class="flex align-center">
           <div class="mr-6">{{ userInfo.user_info.phone }}</div>
           <el-button type="text" @click="onReset">退出登陆</el-button>
@@ -470,13 +470,13 @@ const apiCreate = () => {
     //display: flex;
     //justify-content: space-between;
     width: 100%;
-    height: 74vh;
-    overflow-y: scroll;
+    height: 70vh;
+    //overflow-y: scroll;
     .innerText {
       width: 100%;
       display: flex;
       justify-content: space-between;
-      height: calc(70vh + 60px);
+      height: calc(70vh);
       .left-side {
         flex: 1;
         display: flex;

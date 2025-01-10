@@ -4,8 +4,7 @@ export const SealTypeMap = new Map([
   ["02", "财务专用章"],
   ["03", "发票专用章"],
   ["04", "合同专用章"],
-  ["05", "法定代表人名章"],
-  ["00", "测试"]
+  ["05", "法定代表人名章"]
 ]);
 
 export const CertStatusMap = new Map([

@@ -81,7 +81,7 @@ const onLogin = async (formEl: FormInstance | undefined) => {
         password: encryptCFB(ruleForm.password),
         code: ruleForm.code,
         randomStr: randomStr.value,
-        grant_type: "password",
+        // grant_type: "password",
         scope: "server"
       })
         .then((res: any) => {

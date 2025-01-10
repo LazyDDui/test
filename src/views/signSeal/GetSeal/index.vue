@@ -186,10 +186,13 @@ const currentChange = async (e: number) => {
   templatePage.value.current = e;
   const {data} = await stampTemplatePageApi(templatePage.value.current, currentType.value);
   templatePage.value = {
-    records: data.records.map((item) => ({
+    records: props.type == '1'?data.records.map((item) => ({
       ...item,
-      select: false
-    })),
+      select: false,
+    })).filter((i)=>i.type == '99'):data.records.map((item) => ({
+      ...item,
+      select: false,
+    })).filter((i)=>i.type !== '99'),
     current: data.current,
     total: data.total
   };
@@ -206,10 +209,10 @@ if (props.type == "1") {
   sealKinds.splice(1)
 } else {
   sealKinds.splice(0, 1)
-  companyForm.value.type = sealKinds[0].value
+  // companyForm.value.type = sealKinds[0].value
 }
 
-const currentType = ref(sealKinds[0].value)
+const currentType = ref('')
 // console.log(getBase64())
 currentChange(1);
 
@@ -348,8 +351,8 @@ watch(step, (value) => {
               </el-radio-group>
             </el-form-item>
             <el-form-item v-if="createType == '1'" label="印章样式：" style="width: 100%">
-              <el-row style="width: 100%;">
-                <el-col @click="selectStampTemplate(item)" class="stampTemp" :span="4"
+              <el-row>
+                <el-col @click="selectStampTemplate(item)" class="stampTemp" :span="5"
                         v-for="(item,index) in templatePage.records" :key="index">
                   <el-image :src="getBase64(item.pic)" :alt="index"></el-image>
                   <el-tag :type="item.select?`danger`:`info`">{{ item.description }}</el-tag>
@@ -365,10 +368,10 @@ watch(step, (value) => {
           </el-col>
           <el-col :span="12" v-if="createType == '1'">
             <div style="display: flex;flex-direction: column;align-items: center;">
-              <el-image style="width: 140px;height: 140px;" alt="personPic" v-if="personPic"
+              <el-image style="width: 300px;height: 300px;" alt="personPic" v-if="personPic"
                         :src="getBase64(personPic)"></el-image>
               <div
-                style="font-size: 40px;display: flex;justify-content: center;align-items: center;width: 140px;height: 140px;border: 1px dashed black;"
+                style="font-size: 40px;display: flex;justify-content: center;align-items: center;width: 300px;height: 300px;border: 1px dashed black;"
                 v-else>
                 👁‍🗨
               </div>
@@ -510,6 +513,7 @@ watch(step, (value) => {
             </el-form-item>
             <el-form-item label="印章类型：">
               <el-select
+                clearable
                 @change="companyStampChange"
                 v-model="companyForm.type"
                 placeholder="请选择印章类型"
@@ -538,7 +542,7 @@ watch(step, (value) => {
             </el-form-item>
             <el-form-item v-if="createType == '1'" label="印章样式：" style="width: 100%">
               <el-row style="width: 100%;">
-                <el-col @click="selectStampTemplate(item)" class="stampTemp" :span="4"
+                <el-col @click="selectStampTemplate(item)" class="stampTemp" :span="5"
                         v-for="(item,index) in templatePage.records" :key="index">
                   <el-image :src="getBase64(item.pic)" :alt="index"></el-image>
                   <el-tag :type="item.select?`danger`:`info`">{{ item.description }}</el-tag>

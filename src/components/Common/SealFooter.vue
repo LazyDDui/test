@@ -27,18 +27,20 @@ defineOptions({
 <style scoped lang="scss">
 .footer {
   width: 100%;
-  height: 64px;
+  height: 4.5vh;
   margin: 0 auto;
-  margin-top: 10px;
   max-width: 1200px;
+  margin: 0.8vh;
   display: flex;
   color: #fff;
   align-items: center;
   justify-content: center;
+
   .item {
     display: flex;
     margin-right: 60px;
-
+    font-size: 11px;
+    align-items: center;
     img {
       margin-right: 10px;
       width: 20px;
