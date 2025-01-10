@@ -12,6 +12,7 @@ import { storeToRefs } from "pinia";
 import { useMainStore } from "@/store/useMainStore";
 import { checkFile } from "@/api/test";
 import { fp } from "@/utils";
+import SealFooter from "@/components/Common/SealFooter.vue";
 
 const isDisabled = ref<boolean>(false);
 const centerDialogVisible = ref<boolean>(false);
@@ -248,9 +249,9 @@ const handleProgress = (ev, file, files) => {
         </div>
       </div>
     </div>
-    <el-dialog v-model="dialogVisible" title="" width="300" align-center>
+    <el-dialog v-model="dialogVisible" width="300" align-center>
       <div style="text-align: center">
-        <img :src="fp('verify/loading.96e04459.gif')" />
+        <img alt="loading" :src="fp('verify/loading.96e04459.gif')" />
       </div>
     </el-dialog>
     <el-dialog
@@ -268,6 +269,7 @@ const handleProgress = (ev, file, files) => {
         </div>
       </template>
     </el-dialog>
+    <SealFooter/>
   </div>
 </template>
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { h, onBeforeUnmount, ref, toRaw } from "vue";
-import { getSealImg } from "@/api/test";
-import { ElMessage } from "element-plus";
-import { http } from "@/utils/http";
-import { useSeal } from "@/store/useSeal";
+import {h, onBeforeUnmount, ref, toRaw} from "vue";
+import {getSealImg} from "@/api/test";
+import {ElMessage} from "element-plus";
+import {http} from "@/utils/http";
+import {useSeal} from "@/store/useSeal";
 import ShPdf from "@/components/ShPdf/index.vue";
 import {
   downLoadFile,
@@ -12,18 +12,19 @@ import {
   preViewFile,
   uniqueByIdReduce
 } from "@/utils/common";
-import { storeToRefs } from "pinia";
-import { ElLoading } from "element-plus";
-import { message } from "@/utils/message";
-import { addDialog } from "@/components/ReDialog/index";
+import {storeToRefs} from "pinia";
+import {ElLoading} from "element-plus";
+import {message} from "@/utils/message";
+import {addDialog} from "@/components/ReDialog/index";
+import {fp} from "@/utils";
 
 const sign = ref();
 const psw = ref();
 const pdfInfo = ref();
 const appno = ref("");
 
-const { getPdf } = useSeal();
-const { fileId, sealInfo, docName } = storeToRefs(useSeal());
+const {getPdf} = useSeal();
+const {fileId, sealInfo, docName} = storeToRefs(useSeal());
 let timer;
 
 const pdf = ref();
@@ -50,7 +51,7 @@ const error = ref(false);
 const stampList = ref([]);
 
 const getSeal = async () => {
-  const { data } = await getSealImg(1, 100);
+  const {data} = await getSealImg(1, 100);
   stampList.value = data.records.map(item => ({
     ...item,
     id: item.id,
@@ -132,15 +133,18 @@ const submit = async () => {
       fileTransNo: `111`
     }
   });
-  loadingPdf.value = ElLoading.service({
-    lock: true,
-    text: "签署中，请耐心等待～",
-    background: "rgba(0, 0, 0, 0.7)"
-  });
-  ElMessage.success("签署成功");
+  // loadingPdf.value = ElLoading.service({
+  //   lock: true,
+  //   text: "签署中，请耐心等待～",
+  //   background: "rgba(0, 0, 0, 0.7)"
+  // });
+  loading.value = true
+  // ElMessage.success("签署成功");
   show.value = false;
   getFile();
 };
+
+const loading = ref(false)
 
 const getFile = () => {
   timer = setInterval(() => {
@@ -155,7 +159,8 @@ const getFile = () => {
         if (res.data[0].state == "2" || res.data[0].state == "-1") {
           clearInterval(timer);
           timer = null;
-          loadingPdf.value.close();
+          // loadingPdf.value.close();
+          loading.value = false
           message("签署失败", {
             type: "error"
           });
@@ -170,7 +175,8 @@ const getFile = () => {
               ? docName.value
               : docName.value + ".pdf"
           );
-          loadingPdf.value.close();
+          // loadingPdf.value.close();
+          loading.value = false
           return;
         }
       });
@@ -222,7 +228,7 @@ const submitStampListUi = ref([]);
 <template>
   <el-dialog v-model="show" title="签署密码" width="1000">
     <el-table :data="submitStampListUi" style="width: 100%">
-      <el-table-column prop="info.name" label="章名称" align="center" />
+      <el-table-column prop="info.name" label="章名称" align="center"/>
       <el-table-column label="章图片" align="center">
         <template #default="scope">
           <img
@@ -256,6 +262,12 @@ const submitStampListUi = ref([]);
     :stamp-list="stampList"
     @sign="shSign"
   />
+  <el-dialog v-model="loading" width="300" align-center>
+    <div style="text-align: center;display: flex;flex-direction: column;align-items: center">
+      <img alt="loading" :src="fp('verify/loading.96e04459.gif')" />
+      <div>签署中，请耐心等待～</div>
+    </div>
+  </el-dialog>
 </template>
 
 <style scoped lang="scss">

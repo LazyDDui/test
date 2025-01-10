@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import {useI18n} from "vue-i18n";
 import Motion from "./utils/motion";
-import { useRouter } from "vue-router";
-import { message } from "@/utils/message";
-import { loginRules } from "./utils/rule";
+import {useRouter} from "vue-router";
+import {message} from "@/utils/message";
+import {loginRules} from "./utils/rule";
 import TypeIt from "@/components/ReTypeit";
-import { debounce } from "@pureadmin/utils";
-import { useNav } from "@/layout/hooks/useNav";
-import { useEventListener } from "@vueuse/core";
-import type { FormInstance } from "element-plus";
-import { $t, transformI18n } from "@/plugins/i18n";
-import { operates, thirdParty } from "./utils/enums";
-import { useLayout } from "@/layout/hooks/useLayout";
+import {debounce} from "@pureadmin/utils";
+import {useNav} from "@/layout/hooks/useNav";
+import {useEventListener} from "@vueuse/core";
+import type {FormInstance} from "element-plus";
+import {$t, transformI18n} from "@/plugins/i18n";
+import {operates, thirdParty} from "./utils/enums";
+import {useLayout} from "@/layout/hooks/useLayout";
 import LoginPhone from "./components/LoginPhone.vue";
 import LoginRegist from "./components/LoginRegist.vue";
 import LoginUpdate from "./components/LoginUpdate.vue";
 import LoginQrCode from "./components/LoginQrCode.vue";
-import { useUserStoreHook } from "@/store/modules/user";
-import { initRouter, getTopMenu } from "@/router/utils";
-import { bg, avatar, illustration } from "./utils/static";
-import { ReImageVerify } from "@/components/ReImageVerify";
-import { ref, toRaw, reactive, watch, computed } from "vue";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import { useTranslationLang } from "@/layout/hooks/useTranslationLang";
-import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
+import {useUserStoreHook} from "@/store/modules/user";
+import {initRouter, getTopMenu} from "@/router/utils";
+import {bg, avatar, illustration} from "./utils/static";
+import {ReImageVerify} from "@/components/ReImageVerify";
+import {ref, toRaw, reactive, watch, computed} from "vue";
+import {useRenderIcon} from "@/components/ReIcon/src/hooks";
+import {useTranslationLang} from "@/layout/hooks/useTranslationLang";
+import {useDataThemeChange} from "@/layout/hooks/useDataThemeChange";
 
 import dayIcon from "@/assets/svg/day.svg?component";
 import darkIcon from "@/assets/svg/dark.svg?component";
@@ -32,9 +32,9 @@ import Lock from "@iconify-icons/ri/lock-fill";
 import Check from "@iconify-icons/ep/check";
 import User from "@iconify-icons/ri/user-3-fill";
 import Info from "@iconify-icons/ri/information-line";
-import { getUserGraphCode, login } from "@/api/test";
-import { getToken, removeToken, setToken } from "@/utils/auth";
-import { v4 as uuidv4 } from "uuid";
+import {getUserGraphCode, login} from "@/api/test";
+import {getToken, removeToken, setToken} from "@/utils/auth";
+import {v4 as uuidv4} from "uuid";
 import {encryptCFB} from "@/utils/common";
 import {useSeal} from "@/store/useSeal";
 
@@ -57,13 +57,13 @@ const currentPage = computed(() => {
 
 // removeToken();
 
-const { t } = useI18n();
-const { initStorage } = useLayout();
+const {t} = useI18n();
+const {initStorage} = useLayout();
 initStorage();
-const { dataTheme, overallStyle, dataThemeChange } = useDataThemeChange();
+const {dataTheme, overallStyle, dataThemeChange} = useDataThemeChange();
 dataThemeChange(overallStyle.value);
-const { title, getDropdownItemStyle, getDropdownItemClass } = useNav();
-const { locale, translationCh, translationEn } = useTranslationLang();
+const {title, getDropdownItemStyle, getDropdownItemClass} = useNav();
+const {locale, translationCh, translationEn} = useTranslationLang();
 
 const ruleForm = reactive({
   username: "",
@@ -96,7 +96,7 @@ const onLogin = async (formEl: FormInstance | undefined) => {
             router
               .push("/SignManage")
               .then(() => {
-                message(t("login.pureLoginSuccess"), { type: "success" });
+                message(t("login.pureLoginSuccess"), {type: "success"});
               })
               .finally(() => (disabled.value = false));
           });
@@ -115,7 +115,7 @@ const immediateDebounce: any = debounce(
   true
 );
 
-useEventListener(document, "keypress", ({ code }) => {
+useEventListener(document, "keypress", ({code}) => {
   if (code === "Enter" && !disabled.value && !loading.value)
     immediateDebounce(ruleFormRef.value);
 });
@@ -140,59 +140,69 @@ const getImage = async () => {
   imageCode.value = URL.createObjectURL(result);
 };
 
+
 getImage();
 
 </script>
 
 <template>
   <div class="select-none">
-    <img :src="bg" class="wave" />
-    <div class="flex-c absolute right-5 top-3">
-      <!-- 主题 -->
-      <el-switch
-        v-model="dataTheme"
-        inline-prompt
-        :active-icon="dayIcon"
-        :inactive-icon="darkIcon"
-        @change="dataThemeChange"
-      />
-      <!-- 国际化 -->
-      <el-dropdown trigger="click">
-        <globalization
-          class="hover:text-primary hover:!bg-[transparent] w-[20px] h-[20px] ml-1.5 cursor-pointer outline-none duration-300"
-        />
-        <template #dropdown>
-          <el-dropdown-menu class="translation">
-            <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'zh')"
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'zh')]"
-              @click="translationCh"
-            >
-              <IconifyIconOffline
-                v-show="locale === 'zh'"
-                class="check-zh"
-                :icon="Check"
-              />
-              简体中文
-            </el-dropdown-item>
-            <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'en')"
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'en')]"
-              @click="translationEn"
-            >
-              <span v-show="locale === 'en'" class="check-en">
-                <IconifyIconOffline :icon="Check" />
-              </span>
-              English
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-    </div>
-    <div class="login-container">
-      <div class="img">
-        <component :is="toRaw(illustration)" />
+    <!--    <img :src="bg" class="wave"/>-->
+    <!--    <div class="flex-c absolute right-5 top-3">-->
+    <!--      &lt;!&ndash; 主题 &ndash;&gt;-->
+    <!--      <el-switch-->
+    <!--        v-model="dataTheme"-->
+    <!--        inline-prompt-->
+    <!--        :active-icon="dayIcon"-->
+    <!--        :inactive-icon="darkIcon"-->
+    <!--        @change="dataThemeChange"-->
+    <!--      />-->
+    <!--      &lt;!&ndash; 国际化 &ndash;&gt;-->
+    <!--      <el-dropdown trigger="click">-->
+    <!--        <globalization-->
+    <!--          class="hover:text-primary hover:!bg-[transparent] w-[20px] h-[20px] ml-1.5 cursor-pointer outline-none duration-300"-->
+    <!--        />-->
+    <!--        <template #dropdown>-->
+    <!--          <el-dropdown-menu class="translation">-->
+    <!--            <el-dropdown-item-->
+    <!--              :style="getDropdownItemStyle(locale, 'zh')"-->
+    <!--              :class="['dark:!text-white', getDropdownItemClass(locale, 'zh')]"-->
+    <!--              @click="translationCh"-->
+    <!--            >-->
+    <!--              <IconifyIconOffline-->
+    <!--                v-show="locale === 'zh'"-->
+    <!--                class="check-zh"-->
+    <!--                :icon="Check"-->
+    <!--              />-->
+    <!--              简体中文-->
+    <!--            </el-dropdown-item>-->
+    <!--            <el-dropdown-item-->
+    <!--              :style="getDropdownItemStyle(locale, 'en')"-->
+    <!--              :class="['dark:!text-white', getDropdownItemClass(locale, 'en')]"-->
+    <!--              @click="translationEn"-->
+    <!--            >-->
+    <!--              <span v-show="locale === 'en'" class="check-en">-->
+    <!--                <IconifyIconOffline :icon="Check"/>-->
+    <!--              </span>-->
+    <!--              English-->
+    <!--            </el-dropdown-item>-->
+    <!--          </el-dropdown-menu>-->
+    <!--        </template>-->
+    <!--      </el-dropdown>-->
+    <!--    </div>-->
+    <div class="outerH">
+      <div class="header">
+        <img style="height: 36px;width: 36px;" alt="icon" src="https://www.cic-gd.com/web/img/bigguohui.ac95d823.png"/>
+        <div>全国电子印章管理与服务平台</div>
       </div>
+    </div>
+
+    <div class="login-container"
+         style="background:url('https://www.cic-gd.com/web/img/login_bg.d96518de.jpg');background-size: cover;background-repeat: no-repeat">
+      <div class="img">
+        <!--        <component :is="toRaw(illustration)"/>-->
+      </div>
+
       <div class="login-box">
         <div class="login-form">
           <!--          <avatar class="avatar" />-->
@@ -264,7 +274,7 @@ getImage();
                   :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
                 >
                   <template v-slot:append>
-                    <el-image :src="imageCode" alt="code" @click="getImage" />
+                    <el-image :src="imageCode" alt="code" @click="getImage"/>
                   </template>
                 </el-input>
               </el-form-item>
@@ -315,22 +325,37 @@ getImage();
             </Motion>
           </el-form>
           <!-- 手机号登录 -->
-          <LoginPhone v-if="currentPage === 1" />
+          <LoginPhone v-if="currentPage === 1"/>
           <!-- 二维码登录 -->
           <!--          <LoginQrCode v-if="currentPage === 2" />-->
           <!-- 注册 -->
-          <LoginRegist v-if="currentPage === 2" />
+          <LoginRegist v-if="currentPage === 2"/>
           <!-- 忘记密码 -->
-          <LoginUpdate v-if="currentPage === 4" />
+          <LoginUpdate v-if="currentPage === 4"/>
         </div>
       </div>
     </div>
     <div
+      style="background-color:#1e1e1e; position: fixed;bottom: 0"
       class="w-full flex-c absolute bottom-3 text-sm text-[rgba(0,0,0,0.6)] dark:text-[rgba(220,220,242,0.8)]"
     >
-      <div style="display: flex; flex-direction: column; align-items: center">
-        <div>公安备案|全国互认|一键核验</div>
-        <div>copyright©2024全国电子印章管理与服务平台蜀ICP备 2023020519号</div>
+      <!--      <div style="display: flex; flex-direction: column; align-items: center">-->
+      <!--        <div>公安备案|全国互认|一键核验</div>-->
+      <!--        <div>copyright©2024全国电子印章管理与服务平台蜀ICP备 2023020519号</div>-->
+      <!--      </div>-->
+      <div class="footer">
+        <div class="item">技术支持：</div>
+        <div class="item">
+          <img alt="gh" src="https://www.cic-gd.com/web/img/bigguohui.ac95d823.png"/>
+          <div>全国电子印章管理与服务平台</div>
+        </div>
+        <div class="item">
+          <img alt="gh" src="https://www.cic-gd.com/web/img/bigguohui.ac95d823.png"/>
+          <div>公安部第三研究所</div>
+        </div>
+        <div class="item">
+          <div>蜀ICP备 2023020519号</div>
+        </div>
       </div>
     </div>
   </div>
@@ -358,6 +383,49 @@ getImage();
   .check-en {
     position: absolute;
     left: 20px;
+  }
+}
+
+.outerH {
+  width: 100vw;
+  background-color: #ffffff;
+  position: absolute;
+  .header {
+    margin: 0 auto;
+    max-width: 1200px;
+    height: 60px;
+    width: 100%;
+    //padding: 10px 100px;
+    background-color: #ffffff;
+    color: black;
+    display: flex;
+    align-items: center;
+    font-size: 22px;
+
+    img {
+      margin-right: 20px;
+    }
+  }
+}
+
+.footer {
+  width: 100%;
+  height: 64px;
+  margin: 0 auto;
+  max-width: 1200px;
+  display: flex;
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  .item {
+    display: flex;
+    margin-right: 60px;
+
+    img {
+      margin-right: 10px;
+      width: 20px;
+      height: 20px;
+    }
   }
 }
 </style>

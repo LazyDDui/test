@@ -11,6 +11,7 @@ import LaySidebarLogo from "../lay-sidebar/components/SidebarLogo.vue";
 import LaySidebarItem from "../lay-sidebar/components/SidebarItem.vue";
 import LaySidebarLeftCollapse from "../lay-sidebar/components/SidebarLeftCollapse.vue";
 import LaySidebarCenterCollapse from "../lay-sidebar/components/SidebarCenterCollapse.vue";
+import {fp} from "@/utils";
 
 const route = useRoute();
 const isShow = ref(false);
@@ -93,6 +94,9 @@ onBeforeUnmount(() => {
     @mouseenter.prevent="isShow = true"
     @mouseleave.prevent="isShow = false"
   >
+    <div style="padding: 10px">
+      <img alt="header" :src="fp('index/logo.png')"/>
+    </div>
 <!--    <LaySidebarLogo v-if="showLogo" :collapse="isCollapse" />-->
     <el-scrollbar
       wrap-class="scrollbar-wrapper"

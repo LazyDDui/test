@@ -38,6 +38,7 @@ import { ElMessage } from "element-plus";
 import { enIdNo } from "@/utils/common";
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
 import { message } from "@/utils/message";
+import SealFooter from "@/components/Common/SealFooter.vue";
 
 const router = useRouter();
 
@@ -238,7 +239,6 @@ const unCertGetSealRadioChange = (e: "1" | "0") => {
 };
 const { onReset } = useDataThemeChange();
 
-
 const apiCreate = () => {
   addDialog({
     title: "注意",
@@ -262,11 +262,15 @@ const apiCreate = () => {
   <div class="shContainer">
     <div class="shBox">
       <div
-        style="background-color: #fff; height: 40px; padding: 10px"
-        class="flex align-center justify-end mb-2"
+        style="background-color: #fff; height: 60px; padding: 10px"
+        class="flex align-center justify-between mb-2"
       >
-        <div class="mr-6">{{ userInfo.user_info.phone }}</div>
-        <el-button type="text" @click="onReset">退出登陆</el-button>
+        <img alt="icon" :src="fp('index/logo.png')"/>
+        <div class="flex align-center">
+          <div class="mr-6">{{ userInfo.user_info.phone }}</div>
+          <el-button type="text" @click="onReset">退出登陆</el-button>
+        </div>
+
       </div>
       <div class="header">
         <div class="w">
@@ -304,78 +308,81 @@ const apiCreate = () => {
         </div>
       </div>
       <div class="text">
-        <div class="left-side">
-          <div class="left1">
-            <div class="title">
-              <p class="more tip">
-                <img width="14" height="16" :src="fp('signSeal/u3029.png')" />
-                <span class="pdl-5">认证信息</span>
-              </p>
-              <p
-                v-if="userStatus"
-                class="more blue"
-                @click="changeAuthentication()"
-              >
+        <div class="innerText">
+          <div class="left-side">
+            <div class="left1">
+              <div class="title">
+                <p class="more tip">
+                  <img width="14" height="16" :src="fp('signSeal/u3029.png')" />
+                  <span class="pdl-5">认证信息</span>
+                </p>
+                <p
+                  v-if="userStatus"
+                  class="more blue"
+                  @click="changeAuthentication()"
+                >
                 <span class="pdr-5">切换认证</span
                 ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
-              </p>
-            </div>
-            <div v-if="userStatus" class="content">
-              <h2 class="h_2">
-                {{ auth?.authenticationName }}
-              </h2>
-              <p class="p-2">
-                {{
-                  auth?.type == "0"
-                    ? auth.unifiedCreditCode
-                    : enIdNo(auth?.idNo)
-                }}
-              </p>
-              <p>
-                <span class="black tag">{{ AuthTypeMap.get(auth.type) }}</span>
-                <span class="green tag">已认证</span>
-              </p>
-            </div>
-            <div v-else class="content">
-              <el-button type="danger" style="margin-bottom: 10px">
-                未认证
-              </el-button>
-              <el-button type="text" size="small" @click="goToCert"
+                </p>
+              </div>
+              <div v-if="userStatus" class="content">
+                <h2 class="h_2">
+                  {{ auth?.authenticationName }}
+                </h2>
+                <p class="p-2">
+                  {{
+                    auth?.type == "0"
+                      ? auth.unifiedCreditCode
+                      : enIdNo(auth?.idNo)
+                  }}
+                </p>
+                <p>
+                  <span class="black tag">{{ AuthTypeMap.get(auth.type) }}</span>
+                  <span class="green tag">已认证</span>
+                </p>
+              </div>
+              <div v-else class="content">
+                <el-button type="danger" style="margin-bottom: 10px">
+                  未认证
+                </el-button>
+                <el-button type="text" size="small" @click="goToCert"
                 >前往认证
-              </el-button>
+                </el-button>
+              </div>
+            </div>
+            <div class="left2">
+              <div class="title">
+                <p class="more tip">
+                  <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
+                  <span class="pdl-5">印章管理</span>
+                </p>
+                <p class="more blue">
+                <span class="pdr-5" @click="sealManageFn">管理</span
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
+                </p>
+              </div>
+              <div class="content">
+                <h2 class="h_2">{{ sealManage.total }}</h2>
+                <p class="p-2">总数量</p>
+              </div>
             </div>
           </div>
-          <div class="left2">
+          <div class="right-side">
             <div class="title">
               <p class="more tip">
                 <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
-                <span class="pdl-5">印章管理</span>
+                <span class="pdl-5">最近签章文档</span>
               </p>
               <p class="more blue">
-                <span class="pdr-5" @click="sealManageFn">管理</span
-                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
-              </p>
-            </div>
-            <div class="content">
-              <h2 class="h_2">{{ sealManage.total }}</h2>
-              <p class="p-2">总数量</p>
-            </div>
-          </div>
-        </div>
-        <div class="right-side">
-          <div class="title">
-            <p class="more tip">
-              <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
-              <span class="pdl-5">最近签章文档</span>
-            </p>
-            <p class="more blue">
               <span class="pdr-5" @click="signManageSeeMore">查看更多</span
               ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
-            </p>
+              </p>
+            </div>
+            <SignRecent />
           </div>
-          <SignRecent />
         </div>
       </div>
+      <SealFooter style="max-width: 1200px;margin: 0 auto"/>
     </div>
     <el-dialog v-model="unCertGetSealShow">
       <template #title>主体类型</template>
@@ -433,7 +440,7 @@ const apiCreate = () => {
     width: 100%;
     height: 100px;
     background-color: #fff;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 
     .w {
       display: flex;
@@ -460,59 +467,159 @@ const apiCreate = () => {
   }
 
   .text {
-    display: flex;
-    justify-content: space-between;
+    //display: flex;
+    //justify-content: space-between;
     width: 100%;
-    height: 75vh;
-
-    .left-side {
-      flex: 1;
+    height: 74vh;
+    overflow-y: scroll;
+    .innerText {
+      width: 100%;
       display: flex;
-      flex-direction: column;
-      margin-right: 20px;
-
-      .left1 {
+      justify-content: space-between;
+      height: calc(70vh + 60px);
+      .left-side {
         flex: 1;
-        background-color: #fff;
-        margin-bottom: 20px;
-        border: 1px solid #fff;
-        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        margin-right: 10px;
 
-        .content {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding: 40px 8px 0 8px;
+        .left1 {
+          flex: 1;
+          background-color: #fff;
+          margin-bottom: 10px;
+          border: 1px solid #fff;
+          border-radius: 10px;
 
-          .h_2 {
-            font-size: 16px;
+          .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 8px 0 8px;
+
+            .h_2 {
+              font-size: 16px;
+              font-weight: bold;
+            }
+
+            .p-2 {
+              font-weight: 400;
+              font-style: normal;
+              color: #7f7f7f;
+            }
+
+            .tag {
+              font-weight: 400;
+              font-style: normal;
+              font-size: 12px;
+              color: #ffffff;
+            }
+
+            .black {
+              background-color: #454545;
+              padding: 2px 5px;
+            }
+
+            .green {
+              background-color: #5bc6c0;
+              padding: 2px 5px;
+              margin-left: 5px;
+            }
+          }
+
+          .title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 8px;
+          }
+
+          .blue {
+            color: #3478f7;
+            font-weight: bold;
+            cursor: pointer;
+          }
+
+          .tip {
+            font-size: 18px;
             font-weight: bold;
           }
 
-          .p-2 {
-            font-weight: 400;
-            font-style: normal;
-            color: #7f7f7f;
-          }
+          .more {
+            display: flex;
+            align-items: center;
 
-          .tag {
-            font-weight: 400;
-            font-style: normal;
-            font-size: 12px;
-            color: #ffffff;
-          }
+            .pdl-5 {
+              padding-left: 5px;
+            }
 
-          .black {
-            background-color: #454545;
-            padding: 2px 5px;
-          }
-
-          .green {
-            background-color: #5bc6c0;
-            padding: 2px 5px;
-            margin-left: 5px;
+            .pdr-5 {
+              padding-right: 5px;
+            }
           }
         }
+
+        .left2 {
+          flex: 1;
+          background-color: #fff;
+          border: 1px solid #fff;
+          border-radius: 10px;
+
+          .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 40px;
+
+            .h_2 {
+              font-size: 22px;
+              font-weight: bold;
+            }
+
+            .p-2 {
+              font-weight: 400;
+              font-style: normal;
+              color: #7f7f7f;
+            }
+          }
+
+          .title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 8px;
+          }
+
+          .blue {
+            color: #3478f7;
+            font-weight: bold;
+            cursor: pointer;
+          }
+
+          .tip {
+            font-size: 18px;
+            font-weight: bold;
+          }
+
+          .more {
+            display: flex;
+            align-items: center;
+
+            .pdl-5 {
+              padding-left: 5px;
+            }
+
+            .pdr-5 {
+              padding-right: 5px;
+            }
+          }
+        }
+      }
+
+      .right-side {
+        flex: 4;
+        background-color: #fff;
+        border: 1px solid #fff;
+        border-radius: 10px;
 
         .title {
           display: flex;
@@ -543,100 +650,6 @@ const apiCreate = () => {
           .pdr-5 {
             padding-right: 5px;
           }
-        }
-      }
-
-      .left2 {
-        flex: 1;
-        background-color: #fff;
-        border: 1px solid #fff;
-        border-radius: 10px;
-
-        .content {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding-top: 40px;
-
-          .h_2 {
-            font-size: 22px;
-            font-weight: bold;
-          }
-
-          .p-2 {
-            font-weight: 400;
-            font-style: normal;
-            color: #7f7f7f;
-          }
-        }
-
-        .title {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 15px 8px;
-        }
-
-        .blue {
-          color: #3478f7;
-          font-weight: bold;
-          cursor: pointer;
-        }
-
-        .tip {
-          font-size: 18px;
-          font-weight: bold;
-        }
-
-        .more {
-          display: flex;
-          align-items: center;
-
-          .pdl-5 {
-            padding-left: 5px;
-          }
-
-          .pdr-5 {
-            padding-right: 5px;
-          }
-        }
-      }
-    }
-
-    .right-side {
-      flex: 4;
-      background-color: #fff;
-      border: 1px solid #fff;
-      border-radius: 10px;
-
-      .title {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 15px 8px;
-      }
-
-      .blue {
-        color: #3478f7;
-        font-weight: bold;
-        cursor: pointer;
-      }
-
-      .tip {
-        font-size: 18px;
-        font-weight: bold;
-      }
-
-      .more {
-        display: flex;
-        align-items: center;
-
-        .pdl-5 {
-          padding-left: 5px;
-        }
-
-        .pdr-5 {
-          padding-right: 5px;
         }
       }
     }

@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import { ref, onMounted, toRaw, reactive, onBeforeUnmount, watch } from "vue";
+import {ref, onMounted, toRaw, reactive, onBeforeUnmount, watch} from "vue";
 import * as pdfjsLib from "pdfjs-dist";
 import draggable from "vuedraggable";
-import { fabric } from "fabric";
+import {fabric} from "fabric";
 import File1 from "@iconify-icons/ri/file-chart-2-fill";
 import File2 from "@iconify-icons/ri/file-code-fill";
 import File3 from "@iconify-icons/ri/file-copy-2-fill";
-import { message } from "@/utils/message";
-import { Check, Delete, Back } from "@element-plus/icons-vue";
-import { useRouter } from "vue-router";
-import { v4 as uuidv4 } from "uuid";
-import { fp } from "@/utils";
+import {message} from "@/utils/message";
+import {Check, Delete, Back} from "@element-plus/icons-vue";
+import {useRouter} from "vue-router";
+import {v4 as uuidv4} from "uuid";
+import {fp} from "@/utils";
+
+const A4 = {
+  width: 210,
+  height: 297
+}
 
 defineOptions({
   name: "ShPdf"
@@ -68,15 +73,19 @@ const loadPdfToCanvas = async () => {
   try {
     //@ts-ignore
     pdfjsLib.GlobalWorkerOptions.workerSrc = fp("pdf/pdf.worker.js");
-    const loadingTask = pdfjsLib.getDocument({ url: props.pdfUrl });
+    const loadingTask = pdfjsLib.getDocument({url: props.pdfUrl});
     pdfInstance.value = await loadingTask.promise;
 
     const totalPages = pdfInstance.value.numPages;
-    previewPage.value = Array.from({ length: totalPages }, (_, i) => i + 1);
+    previewPage.value = Array.from({length: totalPages}, (_, i) => ({
+      sign: false,
+      page: i + 1
+    }));
+    console.log(previewPage.value)
 
-    pages.value = Array.from({ length: totalPages }, (_, i) => i + 1);
+    pages.value = Array.from({length: totalPages}, (_, i) => i + 1);
     for (const pageIndex of previewPage.value) {
-      await renderPageToCanvas(pageIndex);
+      await renderPageToCanvas(pageIndex.page);
     }
 
     for (const pageIndex of pages.value) {
@@ -96,7 +105,7 @@ const renderPageToCanvas = async (pageIndex: number, isSign?: boolean) => {
   if (!pdfInstance.value) return;
   const page = await toRaw(pdfInstance.value).getPage(pageIndex);
   if (isSign) {
-    const viewport = page.getViewport({ scale: 1 });
+    const viewport = page.getViewport({scale: 1});
     const canvas = document.querySelector(
       `canvas[data-index="sign_${pageIndex - 1}"]`
     ) as HTMLCanvasElement;
@@ -128,7 +137,7 @@ const renderPageToCanvas = async (pageIndex: number, isSign?: boolean) => {
     };
     await page.render(renderContext).promise;
   } else {
-    const viewport = page.getViewport({ scale: 0.3 });
+    const viewport = page.getViewport({scale: 0.3});
     const canvas = document.querySelector(
       `canvas[data-index="${pageIndex - 1}"]`
     ) as HTMLCanvasElement;
@@ -197,23 +206,30 @@ const sealChange = (index: number) => {
 };
 
 const end = (e: any) => {
-  const { newIndex } = e;
+  const {newIndex} = e;
   const targetId = e.originalEvent.target.parentElement.parentElement.id;
   const targetIndex = Number(targetId.split("_")[1]);
   if (!targetIndex && targetIndex != 0) {
     return;
   }
+
+
   if (sealKinds.value.find(item => item.select).label === "多页签章") {
+    previewPage.value.forEach((item, index) => {
+      item.select = true
+    })
     for (let i = 0; i < pages.value.length; i++) {
       const gaiCanvas = gaiFabric.value[i];
+      const a = Number((parseInt(gaiCanvas.width) / A4.width).toFixed(2))
+      const nw = sealPicList.value[newIndex].length * a
 
       const sealImageUrl = sealPicList.value[newIndex].url;
       fabric.Image.fromURL(sealImageUrl, (img: any) => {
         img.set({
           left: e.originalEvent.layerX,
           top: e.originalEvent.layerY,
-          scaleX: 0.35,
-          scaleY: 0.35,
+          scaleX: nw / img.width,
+          scaleY: nw / img.width,
           selectable: false,
           index: e.newDraggableIndex,
           borderColor: "transparent",
@@ -273,15 +289,21 @@ const end = (e: any) => {
       });
     }
   } else if (sealKinds.value.find(item => item.select).label === "单页签章") {
+    previewPage.value.forEach((item, index) => {
+      if (index == targetIndex) {
+        item.select = true
+      }
+    })
     const gaiCanvas = gaiFabric.value[targetIndex];
-
+    const a = Number((parseInt(gai.width) / A4.width).toFixed(2))
+    const nw = sealPicList.value[newIndex].length * a
     const sealImageUrl = sealPicList.value[newIndex].url;
     fabric.Image.fromURL(sealImageUrl, (img: any) => {
       img.set({
         left: e.originalEvent.layerX,
         top: e.originalEvent.layerY,
-        scaleX: 0.35,
-        scaleY: 0.35,
+        scaleX: nw / img.width,
+        scaleY: nw / img.width,
         selectable: false,
         index: e.newDraggableIndex,
         borderColor: "transparent", // 隐藏默认边框
@@ -350,6 +372,9 @@ const end = (e: any) => {
       });
     });
   } else {
+    previewPage.value.forEach((item, index) => {
+      item.select = true
+    })
     const uId = uuidv4();
     createPagingStamps(
       sealPicList.value[newIndex].url,
@@ -357,13 +382,15 @@ const end = (e: any) => {
     ).then(() => {
       for (let i = 0; i < pages.value.length; i++) {
         const gaiCanvas = gaiFabric.value[i];
+        const a = Number((parseInt(gaiCanvas.width) / A4.width).toFixed(2))
+        const nw = sealPicList.value[newIndex].length * a
 
         fabric.Image.fromURL(stamps.value[i], (img: any) => {
           img.set({
             left: gai.width - img.width! * 0.2,
             top: e.originalEvent.layerY,
-            scaleX: 0.35,
-            scaleY: 0.35,
+            scaleX: nw / img.width,
+            scaleY: nw / img.width,
             selectable: false,
             index: e.newDraggableIndex,
             borderColor: "transparent",
@@ -385,8 +412,8 @@ const end = (e: any) => {
 
           gaiCanvas.on("object:moving", options => {
             const obj = options.target;
-            obj.set("left", gai.width - img.width! * 0.35);
-            const halfHeight = (obj.height! / 2) * 0.35;
+            obj.set("left", gai.width - img.width! * nw / img.width);
+            const halfHeight = (obj.height! / 2) * nw / img.width;
 
             if (obj.top! < halfHeight) {
               obj.set("top", halfHeight);
@@ -423,23 +450,23 @@ const limitSpace = (gCanvas: any) => {
     }
     if (
       obj.getBoundingRect().top + obj.getBoundingRect().height >
-        obj.canvas.height ||
+      obj.canvas.height ||
       obj.getBoundingRect().left + obj.getBoundingRect().width >
-        obj.canvas.width
+      obj.canvas.width
     ) {
       obj.top = Math.min(
         obj.top,
         obj.canvas.height -
-          obj.getBoundingRect().height +
-          obj.top -
-          obj.getBoundingRect().top
+        obj.getBoundingRect().height +
+        obj.top -
+        obj.getBoundingRect().top
       );
       obj.left = Math.min(
         obj.left,
         obj.canvas.width -
-          obj.getBoundingRect().width +
-          obj.left -
-          obj.getBoundingRect().left
+        obj.getBoundingRect().width +
+        obj.left -
+        obj.getBoundingRect().left
       );
     }
   });
@@ -482,13 +509,13 @@ const createPagingStamps = (imageUrl: string, pageCount: number) => {
 
           canvas.add(clippedImage);
           canvas.renderAll();
-          const dataUrl = canvas.toDataURL({ format: "png" });
+          const dataUrl = canvas.toDataURL({format: "png"});
           stamps.value.push(dataUrl);
           canvas.dispose();
         }
         resolve();
       },
-      { crossOrigin: "anonymous" }
+      {crossOrigin: "anonymous"}
     );
   });
 };
@@ -529,6 +556,9 @@ const clearSignature = () => {
   gaiFabric.value.forEach(item => {
     item.remove(item.clear());
   });
+  previewPage.value.forEach((item) => {
+    item.select = false
+  })
 };
 const router = useRouter();
 
@@ -548,7 +578,7 @@ const gpBack = () => {
         type="info"
         class="back"
         @click="gpBack"
-        >返回
+      >返回
       </el-button>
       <div
         style="
@@ -569,7 +599,7 @@ const gpBack = () => {
           plain
           type="danger"
           @click="clearSignature"
-          >删除所有章
+        >删除所有章
         </el-button>
         <el-button
           round
@@ -578,7 +608,7 @@ const gpBack = () => {
           plain
           type="warning"
           @click="emit('sign')"
-          >签章
+        >签章
         </el-button>
       </el-row>
     </div>
@@ -586,7 +616,7 @@ const gpBack = () => {
       <div class="left">
         <div class="preview">缩略图预览</div>
         <div
-          v-for="(_page, index) in previewPage"
+          v-for="(page, index) in previewPage"
           :key="index"
           class="preCanvas"
           :style="{
@@ -597,9 +627,14 @@ const gpBack = () => {
           }"
           @click="toPos(index)"
         >
-          <div>
+          <div style="position:relative;">
             <h3>第{{ index + 1 }}页</h3>
-            <canvas ref="preCanvasRefs" :data-index="index" />
+            <canvas ref="preCanvasRefs" :data-index="index"/>
+            <div v-if="page.select" class="model">
+              <div class="signDone">
+                已签署
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -745,6 +780,29 @@ const gpBack = () => {
         background: rgba(169, 174, 185, 0.3);
         display: flex;
         flex-direction: column;
+
+        .model {
+          background-color: rgba(102, 153, 153, .1);
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          z-index: 10;
+          top: 0;
+          left: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          .signDone {
+            width: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px dashed red;
+            transform: rotate(25deg);
+            color: red;
+          }
+        }
 
         //&:hover {
         //  background: #a9aeb9;

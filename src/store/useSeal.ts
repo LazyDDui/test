@@ -26,7 +26,7 @@ export const useSeal = defineStore("seal", () => {
   const auth = ref<any>({});
   const fileId = ref(
     window.localStorage.getItem("fileId")
-      ? window.localStorage.getItem("fileId")
+      ? JSON.parse(window.localStorage.getItem("fileId"))
       : ""
   );
   const docName = ref(

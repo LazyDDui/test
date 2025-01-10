@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { fp } from "@/utils";
+import SealFooter from "@/components/Common/SealFooter.vue";
 
 type Part1Type = {
   title: string;
