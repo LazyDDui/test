@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import { emitter } from "@/utils/mitt";
 import { useNav } from "@/layout/hooks/useNav";
 import { responsiveStorageNameSpace } from "@/config";
@@ -81,6 +81,12 @@ onMounted(() => {
   });
 });
 
+const router = useRouter()
+
+const toHome = () => {
+  router.push('/')
+}
+
 onBeforeUnmount(() => {
   // 解绑`logoChange`公共事件，防止多次触发
   emitter.off("logoChange");
@@ -95,7 +101,7 @@ onBeforeUnmount(() => {
     @mouseleave.prevent="isShow = false"
   >
     <div style="padding: 10px">
-      <img alt="header" :src="fp('index/logo.png')"/>
+      <img @click="toHome" alt="header" :src="fp('index/logo.png')"/>
     </div>
 <!--    <LaySidebarLogo v-if="showLogo" :collapse="isCollapse" />-->
     <el-scrollbar

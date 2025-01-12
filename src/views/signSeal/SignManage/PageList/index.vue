@@ -7,6 +7,7 @@ import { message } from "@/utils/message";
 import { useSeal } from "@/store/useSeal";
 import { storeToRefs } from "pinia";
 import { downloadPdf } from "@/utils/common";
+import {addDialog} from "@/components/ReDialog/index";
 
 const { getList } = useSeal();
 const { fileList } = storeToRefs(useSeal());
@@ -42,12 +43,27 @@ const columns: TableColumnList = [
         },
         canDownload: data.row.status == "0",
         delClick: () => {
-          http.post(`/app/signRequestFile/remove/${data.row.id}`).then(() => {
-            message("删除成功", {
-              type: "success"
-            });
-            getList(1);
-            currentChange(state.value.current);
+          addDialog({
+            title: "注意",
+            contentRenderer() {
+              return h("div", `确认删除` + data.row.docName);
+            },
+            beforeSure(done) {
+              http
+                .post(`/app/signRequestFile/remove`, {
+                  data: {
+                    id: data.row.id
+                  }
+                })
+                .then(() => {
+                  message("删除成功", {
+                    type: "success"
+                  });
+                  getList(1);
+                  currentChange(state.value.current);
+                  done();
+                });
+            }
           });
         },
         data: data.row

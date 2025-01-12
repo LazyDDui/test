@@ -19,9 +19,9 @@ const submit = () => {
   http
     .post(`/app/userAuthentication/seal/changePin`, {
       data: {
-        oldPin: psd.oldPin,
-        newPin: psd.newPin,
-        id: props.data.id
+        oldPassword: psd.oldPin,
+        newPassword: psd.newPin,
+        sealId: props.data.id
       }
     })
     .then(() => {
@@ -30,22 +30,18 @@ const submit = () => {
       });
       closeAllDialog();
     })
-    .catch(() => {
-      message("修改失败", {
-        type: "error"
-      });
-    });
 };
 </script>
 
 <template>
   <el-row>
     <el-input
+      maxlength="6"
       v-model="psd.oldPin"
       style="margin-bottom: 20px"
       placeholder="请输入旧密码"
     />
-    <el-input v-model="psd.newPin" placeholder="请输入新密码" />
+    <el-input maxlength="6" v-model="psd.newPin" placeholder="请输入新密码" />
     <el-button @click="submit" style="margin-top: 20px">确认</el-button>
   </el-row>
 </template>

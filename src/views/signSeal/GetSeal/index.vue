@@ -116,14 +116,8 @@ const submit = async () => {
       toNext()
     }
   } else if (step.value === 2) {
-    if (props.type == "1") {
-      if (currentRightCom.value.length > 0) {
-        toNext()
-      }
-    } else {
-      if (currentRightCom.value.length > 0) {
-        toNext()
-      }
+    if (currentRightCom.value.length > 0) {
+      toNext()
     }
 
 
@@ -186,13 +180,13 @@ const currentChange = async (e: number) => {
   templatePage.value.current = e;
   const {data} = await stampTemplatePageApi(templatePage.value.current, currentType.value);
   templatePage.value = {
-    records: props.type == '1'?data.records.map((item) => ({
+    records: props.type == '1' ? data.records.map((item) => ({
       ...item,
       select: false,
-    })).filter((i)=>i.type == '99'):data.records.map((item) => ({
+    })).filter((i) => i.type == '99') : data.records.map((item) => ({
       ...item,
       select: false,
-    })).filter((i)=>i.type !== '99'),
+    })).filter((i) => i.type !== '99'),
     current: data.current,
     total: data.total
   };
@@ -217,8 +211,6 @@ const currentType = ref('')
 currentChange(1);
 
 
-const stampType = ref("")
-
 const toNext = () => {
   step.value++;
 };
@@ -230,16 +222,13 @@ const toBack = () => {
 const personPic = ref("")
 
 
-const previewStampCom = reactive({
-  cn: "",
-  fwm: ""
-})
-
 const selectStampTemplate = (item) => {
   if (props.type == '1') {
     templatePage.value.records.forEach((i) => {
       if (i.id == item.id) {
         i.select = true
+        currentType.value = item.type
+        form.value.type = item.type
         stampSealMakerApi({
           template: JSON.parse(item.template),
           param: {
@@ -249,12 +238,16 @@ const selectStampTemplate = (item) => {
           personPic.value = res.data
           form.value.stamp = res.data
         })
+      } else {
+        i.select = false
       }
     })
   } else {
     templatePage.value.records.forEach((i) => {
       if (i.id == item.id) {
         i.select = true
+        currentType.value = item.type
+        companyForm.value.type = item.type
         stampSealMakerApi({
           template: JSON.parse(item.template),
           param: {
@@ -266,6 +259,8 @@ const selectStampTemplate = (item) => {
           personPic.value = res.data
           companyForm.value.stamp = res.data
         })
+      } else {
+        i.select = false
       }
     })
   }
@@ -320,15 +315,15 @@ if (props.type == "1") {
 }
 
 
-watch(step, (value) => {
-  if (value === 2) {
-    // getCompanyRightsList()
-  } else if (value === 3) {
-    console.log(currentRightCom.value)
-  } else if (value == 4) {
-
-  }
-})
+// watch(step, (value) => {
+//   if (value === 2) {
+//     // getCompanyRightsList()
+//   } else if (value === 3) {
+//     console.log(currentRightCom.value)
+//   } else if (value == 4) {
+//
+//   }
+// })
 
 </script>
 
@@ -352,9 +347,10 @@ watch(step, (value) => {
             </el-form-item>
             <el-form-item v-if="createType == '1'" label="印章样式：" style="width: 100%">
               <el-row>
-                <el-col @click="selectStampTemplate(item)" class="stampTemp" :span="5"
+                <el-col @click="selectStampTemplate(item)" class="stampTemp" :span="8"
                         v-for="(item,index) in templatePage.records" :key="index">
-                  <el-image :src="getBase64(item.pic)" :alt="index"></el-image>
+                  <el-image style="width: 60px;height: 60px;object-fit: contain" :src="getBase64(item.pic)"
+                            :alt="index"></el-image>
                   <el-tag :type="item.select?`danger`:`info`">{{ item.description }}</el-tag>
                 </el-col>
               </el-row>
@@ -379,16 +375,16 @@ watch(step, (value) => {
             </div>
           </el-col>
         </el-row>
-        <h2 v-if="!ai" >个人信息</h2>
+        <h2 v-if="!ai">个人信息</h2>
         <el-row>
           <el-col :span="12">
             <el-form-item v-if="!ai" label="印章名称：">
 
               <el-input v-model="form.name" placeholder="请输入印章名称"/>
             </el-form-item>
-<!--            <el-form-item label="印章编码：">-->
-<!--              <el-input v-model="form.code" placeholder="请输入印章编码"/>-->
-<!--            </el-form-item>-->
+            <!--            <el-form-item label="印章编码：">-->
+            <!--              <el-input v-model="form.code" placeholder="请输入印章编码"/>-->
+            <!--            </el-form-item>-->
           </el-col>
           <el-col v-if="!ai" :span="12" style="display: flex">
             <el-form-item>
@@ -542,10 +538,11 @@ watch(step, (value) => {
             </el-form-item>
             <el-form-item v-if="createType == '1'" label="印章样式：" style="width: 100%">
               <el-row style="width: 100%;">
-                <el-col @click="selectStampTemplate(item)" class="stampTemp" :span="5"
+                <el-col @click="selectStampTemplate(item)" class="stampTemp" :span="8"
                         v-for="(item,index) in templatePage.records" :key="index">
-                  <el-image :src="getBase64(item.pic)" :alt="index"></el-image>
-                  <el-tag :type="item.select?`danger`:`info`">{{ item.description }}</el-tag>
+                  <el-image style="width: 60px;height: 60px;object-fit: contain" :src="getBase64(item.pic)"
+                            :alt="index"></el-image>
+                  <el-tag style="font-size: 12px;" :type="item.select?`danger`:`info`">{{ item.description }}</el-tag>
                 </el-col>
               </el-row>
             </el-form-item>
@@ -588,18 +585,18 @@ watch(step, (value) => {
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="!ai" label="印章宽度(mm)：">
-              <el-input
-                v-model="companyForm.stampWidth"
-                placeholder="请输入印章宽度(mm)"
-              />
-            </el-form-item>
-            <el-form-item v-if="!ai" label="印章长度(mm)：">
-              <el-input
-                v-model="companyForm.stampLength"
-                placeholder="请输入印章长度(mm)"
-              />
-            </el-form-item>
+<!--            <el-form-item v-if="!ai" label="印章宽度(mm)：">-->
+<!--              <el-input-->
+<!--                v-model="companyForm.stampWidth"-->
+<!--                placeholder="请输入印章宽度(mm)"-->
+<!--              />-->
+<!--            </el-form-item>-->
+<!--            <el-form-item v-if="!ai" label="印章长度(mm)：">-->
+<!--              <el-input-->
+<!--                v-model="companyForm.stampLength"-->
+<!--                placeholder="请输入印章长度(mm)"-->
+<!--              />-->
+<!--            </el-form-item>-->
           </el-col>
           <el-col v-if="!ai" :span="12" style="display: flex">
             <el-form-item>
@@ -712,12 +709,14 @@ watch(step, (value) => {
   </div>
   <el-row style="width: 100%; justify-content: center">
     <el-button style="width: 200px" type="primary" @click="toBack" :disabled="step == 1">上一步</el-button>
-<!--    <el-button @click="toNext" :disabled="step == 4">下一步</el-button>-->
-    <el-button style="width: 200px" type="primary" @click="submit" :disabled="step == 4">{{ step == 1 ? "确认申领" : "下一步" }}</el-button>
+    <!--    <el-button @click="toNext" :disabled="step == 4">下一步</el-button>-->
+    <el-button style="width: 200px" type="primary" @click="submit" :disabled="step == 4">
+      {{ step == 1 ? "确认申领" : "下一步" }}
+    </el-button>
   </el-row>
   <el-dialog v-model="loading" width="300" align-center>
     <div style="text-align: center;display: flex;flex-direction: column;align-items: center">
-      <img alt="loading" :src="fp('verify/loading.96e04459.gif')" />
+      <img alt="loading" :src="fp('verify/loading.96e04459.gif')"/>
       <div>申领中，请耐心等待～</div>
     </div>
   </el-dialog>

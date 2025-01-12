@@ -1,47 +1,62 @@
 <script setup lang="ts">
-import { http } from "@/utils/http";
-import { h, reactive, ref } from "vue";
+import {http} from "@/utils/http";
+import {h, reactive, ref} from "vue";
 import Btn from "@/views/signSeal/SignManage/btn/index.vue";
-import { getUserAuthentication } from "@/api/test";
+import {getUserAuthentication} from "@/api/test";
 import Image from "@/views/signSeal/SignManage/Image/index.vue";
 import SealBtn from "@/views/signSeal/SignManage/SealBtn/index.vue";
-import { addDialog } from "@/components/ReDialog/index";
-import { message } from "@/utils/message";
-import { downloadByData } from "@pureadmin/utils";
-import { SealTypeMap } from "@/utils/map";
+import {addDialog} from "@/components/ReDialog/index";
+import {message} from "@/utils/message";
+import {downloadByData} from "@pureadmin/utils";
+import {SealTypeMap} from "@/utils/map";
 import {useSeal} from "@/store/useSeal";
+import Loading from "@/components/Common/Loading.vue";
+import Renew from "@/views/signSeal/SignManage/renew/index.vue";
+
+const loading = ref(false)
 
 const columns: TableColumnList = [
   {
     label: "印章编码",
     prop: "id",
-    width: 200,
+    width: 180,
     align: "center"
   },
   {
     label: "印章名称",
     prop: "name",
-    width: 200,
+    width: 160,
     align: "center"
   },
   {
+    width: 140,
     label: "印章类型",
     prop: "status",
     align: "center",
     cellRenderer(data) {
-      return SealTypeMap.get(data.row.status);
+      console.log(data)
+      return SealTypeMap.get(data.row.type);
     }
   },
   {
-    label: "制发时间",
-    prop: "makeTime",
+    label: "过期时间",
+    prop: "expireTime",
     align: "center"
+  },
+  {
+    label: "剩余份数",
+    prop: "expireTime",
+    align: "center",
+    cellRenderer(data) {
+        return h("div",null,`${data.row.maxNum - data.row.useNum}份`)
+    },
   },
   // {
   //   label: "权益有效期",
   //   prop: "address"
   // },
   {
+    width: 200,
     label: "印章图片",
     align: "center",
     // props: "pic",
@@ -53,12 +68,34 @@ const columns: TableColumnList = [
   },
   {
     label: "操作",
-    width: 240,
+    width: 280,
     cellRenderer(data) {
+      const getTitle = () => {
+        if (data.row.status == "1") {
+          return data.row.name + "印章续费"
+        }
+        if (data.row.status == "0") {
+          return data.row.name + "印章申领"
+        }
+        return  ""
+      }
       return h(SealBtn, {
         data: data.row,
         getList,
+        addClick: () => {
+          addDialog({
+            hideFooter:true,
+            width:'80vw',
+            title: getTitle(),
+            contentRenderer({ options, index }) {
+                return h(Renew,{
+                  data:data.row
+                })
+            },
+          })
+        },
         detailClick: () => {
+          loading.value = true
           http
             .get(
               `/app/userAuthentication/seal/recordDownload`,
@@ -89,12 +126,15 @@ const columns: TableColumnList = [
               // 下载完成后移除<a>元素并释放对象URL
               document.body.removeChild(a);
               URL.revokeObjectURL(blobUrl);
+              loading.value = false
             })
-            .catch(error =>
-              console.error(
-                "There was a problem with the fetch operation:",
-                error
-              )
+            .catch(error => {
+                loading.value = false
+                console.error(
+                  "There was a problem with the fetch operation:",
+                  error
+                )
+              }
             );
         }
       });
@@ -149,7 +189,7 @@ const tableData = ref({
 const {getSealManageInfo} = useSeal()
 
 const getList = async () => {
-  const { data } = await getUserAuthentication(
+  const {data} = await getUserAuthentication(
     tableData.value.current,
     form.name
   );
@@ -186,6 +226,9 @@ getList();
       />
     </el-row>
   </el-row>
+  <teleport to="body">
+    <Loading :loading="loading" text="备案下载中，请稍等~"/>
+  </teleport>
 </template>
 
 <style scoped lang="scss"></style>

@@ -31,7 +31,7 @@ console.log(props.data);
 <template>
   <el-row>
     <el-button
-      v-if="data.status == '2'"
+      v-if="data.status == '-1'"
       size="small"
       type="primary"
       plain
@@ -40,7 +40,6 @@ console.log(props.data);
       重新签署
     </el-button>
     <el-button
-      v-else
       :disabled="!canDownload"
       size="small"
       type="text"

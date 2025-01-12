@@ -122,7 +122,7 @@ const sealManageFn = () => {
     title: "印章管理",
     contentRenderer: () => h(SignManage),
     hideFooter: true,
-    width: "70vw"
+    width: "80vw"
   });
 };
 //sh

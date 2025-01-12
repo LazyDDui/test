@@ -69,7 +69,7 @@ const columns: TableColumnList = [
                 });
             }
           });
-        }
+        },
       });
     },
     align: "center"
