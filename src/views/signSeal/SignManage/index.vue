@@ -15,6 +15,27 @@ import Renew from "@/views/signSeal/SignManage/renew/index.vue";
 
 const loading = ref(false)
 
+type SignManageProps = {
+  sealManageFn: () => void;
+}
+
+const props = defineProps<SignManageProps>()
+const StatusMap = new Map([
+  ["0", "初次激活"],
+  ["1", "激活"],
+  ["2", "注销"],
+  ["3", "激活失败"]
+])
+
+
+const getStatus = (item: any) => {
+  if (item.status == "3") {
+    return StatusMap.get(item.status) + "原因：" + item.activeFailedMsg
+  } else {
+    return StatusMap.get(item.status)
+  }
+}
+
 const columns: TableColumnList = [
   {
     label: "印章编码",
@@ -34,7 +55,6 @@ const columns: TableColumnList = [
     prop: "status",
     align: "center",
     cellRenderer(data) {
-      console.log(data)
       return SealTypeMap.get(data.row.type);
     }
   },
@@ -48,13 +68,16 @@ const columns: TableColumnList = [
     prop: "expireTime",
     align: "center",
     cellRenderer(data) {
-        return h("div",null,`${data.row.maxNum - data.row.useNum}份`)
+      return h("div", null, data.row.maxNum == -1 ? `无限份` : `${data.row.maxNum - data.row.useNum}份`)
     },
   },
-  // {
-  //   label: "权益有效期",
-  //   prop: "address"
-  // },
+  {
+    label: "状态",
+    prop: "status",
+    cellRenderer(data) {
+      return h("div", null, getStatus(data.row))
+    }
+  },
   {
     width: 200,
     label: "印章图片",
@@ -77,20 +100,23 @@ const columns: TableColumnList = [
         if (data.row.status == "0") {
           return data.row.name + "印章申领"
         }
-        return  ""
+        return ""
       }
       return h(SealBtn, {
         data: data.row,
         getList,
         addClick: () => {
           addDialog({
-            hideFooter:true,
-            width:'80vw',
+            hideFooter: true,
+            width: '80vw',
             title: getTitle(),
-            contentRenderer({ options, index }) {
-                return h(Renew,{
-                  data:data.row
-                })
+            contentRenderer({options, index}) {
+              return h(Renew, {
+                data: data.row,
+                seeOrder: () => {
+                  props.sealManageFn()
+                }
+              })
             },
           })
         },

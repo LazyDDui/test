@@ -25,7 +25,7 @@
             align-items: center;
           "
         >
-          <Camera style="width: 60px; height: 60px" />
+          <Camera style="width: 60px; height: 60px"/>
           <div style="font-size: 18px; font-weight: 600">上传</div>
         </div>
       </el-upload>
@@ -111,13 +111,13 @@
     <!--      </template>-->
     <!--    </el-upload>-->
     <el-dialog v-model="dialogVisible">
-      <img w-full class="full_img" :src="dialogImageUrl" alt="Preview Image" />
+      <img w-full class="full_img" :src="dialogImageUrl" alt="Preview Image"/>
     </el-dialog>
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
-import { Delete, Plus, ZoomIn, Camera, Close } from "@element-plus/icons-vue";
+import {ref} from "vue";
+import {Delete, Plus, ZoomIn, Camera, Close} from "@element-plus/icons-vue";
 import Add from "@iconify-icons/ri/add-box-fill";
 import {
   genFileId,
@@ -125,12 +125,13 @@ import {
   UploadProps,
   UploadRawFile
 } from "element-plus";
-import { http } from "@/utils/http";
-import { fileToBase64 } from "@/utils/common";
-import { v4 as uuidv4 } from "uuid";
+import {http} from "@/utils/http";
+import {fileToBase64} from "@/utils/common";
+import {v4 as uuidv4} from "uuid";
 
 type ShUploadProps = {
   limit?: number;
+  uploadUrl?: string;
 };
 
 defineOptions({
@@ -185,10 +186,8 @@ const fileChange = async (_file, resfileList) => {
 
   // formData.append(file.name, file);
   // console.log(formData)
-  http
-    .post(
-      `/app/file/upload`,
-      {
+  if (props.uploadUrl) {
+    http.post(props.uploadUrl, {
         data: {
           file: file.raw
         }
@@ -197,12 +196,30 @@ const fileChange = async (_file, resfileList) => {
         headers: {
           "Content-Type": "multipart/form-data"
         }
-      }
-    )
-    .then(({ data }) => {
-      emit("change", data.fileId);
-    });
-  updateUploadShown();
+      }).then(({data}) => {
+      emit("change", data.fileId)
+    })
+  } else {
+    http
+      .post(
+        `/app/file/upload`,
+        {
+          data: {
+            file: file.raw
+          }
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        }
+      )
+      .then(({data}) => {
+        emit("change", data.fileId);
+      });
+    updateUploadShown();
+  }
+
 };
 
 // 移除图片

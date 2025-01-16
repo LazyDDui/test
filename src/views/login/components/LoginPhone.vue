@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-import { ref, reactive } from "vue";
+import {useI18n} from "vue-i18n";
+import {ref, reactive, watch, watchEffect} from "vue";
 import Motion from "../utils/motion";
-import { message } from "@/utils/message";
-import { phoneRules } from "../utils/rule";
-import type { FormInstance } from "element-plus";
-import { $t, transformI18n } from "@/plugins/i18n";
-import { useVerifyCode } from "../utils/verifyCode";
-import { useUserStoreHook } from "@/store/modules/user";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import {message} from "@/utils/message";
+import {phoneRules} from "../utils/rule";
+import type {FormInstance} from "element-plus";
+import {$t, transformI18n} from "@/plugins/i18n";
+import {useVerifyCode} from "../utils/verifyCode";
+import {useUserStoreHook} from "@/store/modules/user";
+import {useRenderIcon} from "@/components/ReIcon/src/hooks";
 import Iphone from "@iconify-icons/ep/iphone";
-import { getUserGraphCode, getUserSmsCodeApi, phoneLoginApi } from "@/api/test";
-import { v4 as uuidv4 } from "uuid";
-import { setToken } from "@/utils/auth";
-import { initRouter } from "@/router/utils";
-import { useRouter } from "vue-router";
+import {getUserGraphCode, getUserSmsCodeApi, phoneLoginApi} from "@/api/test";
+import {v4 as uuidv4} from "uuid";
+import {setToken} from "@/utils/auth";
+import {initRouter} from "@/router/utils";
+import {useRouter} from "vue-router";
 import {useSeal} from "@/store/useSeal";
 
-const { t } = useI18n();
+const {t} = useI18n();
 const loading = ref(false);
 const ruleForm = reactive({
   username: "",
@@ -26,9 +26,11 @@ const ruleForm = reactive({
 });
 const {setUserInfo} = useSeal()
 const ruleFormRef = ref<FormInstance>();
-const { isDisabled, text } = useVerifyCode();
+const {isDisabled, text} = useVerifyCode();
 const router = useRouter();
 const disabled = ref(false);
+
+const isDis = ref(true)
 
 const onLogin = async (formEl: FormInstance | undefined) => {
   loading.value = true;
@@ -50,7 +52,7 @@ const onLogin = async (formEl: FormInstance | undefined) => {
             router
               .push("/SignManage")
               .then(() => {
-                message(t("login.pureLoginSuccess"), { type: "success" });
+                message(t("login.pureLoginSuccess"), {type: "success"});
                 onBack();
               })
               .finally(() => (disabled.value = false));
@@ -90,6 +92,12 @@ const getImage = async () => {
   imageCode.value = URL.createObjectURL(result);
 };
 
+watchEffect(() => {
+  if (ruleForm.username.length == 11 && graphCode.value) {
+    isDis.value = false
+  }
+})
+
 getImage();
 
 function onBack() {
@@ -119,7 +127,7 @@ function onBack() {
           :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
         >
           <template v-slot:append>
-            <el-image :src="imageCode" alt="code" @click="getImage" />
+            <el-image :src="imageCode" alt="code" @click="getImage"/>
           </template>
         </el-input>
       </el-form-item>
@@ -134,7 +142,7 @@ function onBack() {
             :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
           />
           <el-button
-            :disabled="isDisabled"
+            :disabled="isDis"
             class="ml-2"
             @click="
               async () => {

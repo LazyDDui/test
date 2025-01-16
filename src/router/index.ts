@@ -5,6 +5,7 @@ import NProgress from "@/utils/progress";
 import { transformI18n } from "@/plugins/i18n";
 import { buildHierarchyTree } from "@/utils/tree";
 import remainingRouter from "./modules/remaining";
+import home from "./modules/home"
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 import { isUrl, openLink, storageLocal, isAllEmpty } from "@pureadmin/utils";
@@ -78,6 +79,7 @@ export const remainingPaths = Object.keys(remainingRouter).map(v => {
   return remainingRouter[v].path;
 });
 
+
 /** 创建路由实例 */
 export const router: Router = createRouter({
   history: getHistoryMode(import.meta.env.VITE_ROUTER_HISTORY),
@@ -128,7 +130,8 @@ const whiteList = [
   "/SignManage",
   "/welcome",
   "/shApi",
-  "/test"
+  "/test",
+  "/mPdf"
 ];
 
 const { VITE_HIDE_HOME } = import.meta.env;

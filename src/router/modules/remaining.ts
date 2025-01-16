@@ -5,6 +5,16 @@ const mhLayout = () => import("@/mhLayout/index.vue");
 
 export default [
   {
+    path: "/SignManage",
+    name: "SignManage",
+    meta: {
+      title: "签章首页",
+      icon: "mdi-cube-scan",
+      showLink: false,
+    },
+    component: () => import("@/views/signSeal/index.vue")
+  },
+  {
     path: "/pdf",
     name: "pdf",
     meta: {
@@ -114,16 +124,7 @@ export default [
       }
     ]
   },
-  {
-    path: "/SignManage",
-    name: "SignManage",
-    meta: {
-      title: "签章首页",
-      icon: "mdi-cube-scan",
-      showLink: false,
-    },
-    component: () => import("@/views/signSeal/index.vue")
-  },
+
   {
     path: "/personPrincipal",
     name: "personPrincipal",
@@ -154,7 +155,16 @@ export default [
     },
     component: () => import("@/views/verify/index.vue")
   },
-
+  {
+    path: "/mPdf",
+    name: "mPdf",
+    meta: {
+      title: "签章",
+      icon: "mdi-cube-scan",
+      showLink: false,
+    },
+    component: () => import("@/views/mPdf/index.vue")
+  },
   {
     path: "/login",
     name: "Login",

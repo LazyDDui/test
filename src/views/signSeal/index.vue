@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { fp } from "@/utils";
-import { addDialog } from "@/components/ReDialog/index";
+import {addDialog, closeAllDialog} from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
 import { h } from "vue";
 import { useRouter } from "vue-router";
@@ -120,7 +120,9 @@ const changeAuthentication = () => {
 const sealManageFn = () => {
   addDialog({
     title: "印章管理",
-    contentRenderer: () => h(SignManage),
+    contentRenderer: () => h(SignManage,{
+      sealManageFn
+    }),
     hideFooter: true,
     width: "80vw"
   });
@@ -232,7 +234,11 @@ const unCertGetSealRadioChange = (e: "1" | "0") => {
     title: e == "1" ? "个人私章申领" : "企业公章申领",
     contentRenderer: () => {
       return h(GetSeal, {
-        type: e
+        type: e,
+        seeOrder:()=>{
+          closeAllDialog()
+          sealManageFn()
+        }
       });
     }
   });
@@ -267,7 +273,7 @@ const apiCreate = () => {
       >
         <img style="height: 40px" alt="icon" :src="fp('index/logo.png')"/>
         <div class="flex align-center">
-          <div class="mr-6">{{ userInfo.user_info.phone }}</div>
+          <div class="mr-6" v-if="userInfo">{{ userInfo.user_info.phone }}</div>
           <el-button type="text" @click="onReset">退出登陆</el-button>
         </div>
 

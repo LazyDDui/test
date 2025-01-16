@@ -25,7 +25,6 @@ const reSign = () => {
   });
 };
 
-console.log(props.data);
 </script>
 
 <template>

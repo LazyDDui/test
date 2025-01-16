@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from "vue";
-import { useRouter } from "vue-router";
-import { SealTypeMap } from "@/utils/map";
+import {onMounted, reactive, ref} from "vue";
+import {useRouter} from "vue-router";
+import {SealTypeMap} from "@/utils/map";
 import Header from "@/components/Common/Header.vue";
 import ShImageUpload from "@/views/components/shImageUpload/index.vue";
-import { FormRules } from "element-plus";
+import {FormRules} from "element-plus";
+import {useRenderIcon} from "@/components/ReIcon/src/hooks";
+import {message} from "@/utils/message";
+import {useVerifyCode} from "@/views/login/utils/verifyCode";
+import {useI18n} from "vue-i18n";
+import {v4 as uuidv4} from "uuid";
+import {getUserGraphCode, getUserSmsCodeApi} from "@/api/test";
+import {storeToRefs} from "pinia";
+import {useSeal} from "@/store/useSeal";
 
 type PrinciType = {
   change: (form: any) => void;
@@ -12,8 +20,18 @@ type PrinciType = {
   isPerson: boolean;
 };
 
+const {auth} = storeToRefs(useSeal())
+const {t} = useI18n();
 const staticValue = ref("1");
 const companyStaticValue = ref("0");
+const {isDisabled, text} = useVerifyCode();
+const graphCode = ref("")
+const graphCodeCompany = ref("")
+const imageCodeComPany = ref("")
+const imageCode = ref("")
+const personRef = ref()
+const companyRef = ref()
+
 
 const props = defineProps<PrinciType>();
 
@@ -28,7 +46,8 @@ const initialPersonForm = {
   //住址
   address: "",
   facePath: "",
-  backPath: ""
+  backPath: "",
+  smsCode: ""
 };
 
 // const initialCompanyForm = {
@@ -94,8 +113,30 @@ const initialCompanyForm = {
   operatorTel: "",
   //经办人证件号码
   operatorIdNo: "",
-  juriIdType: "0"
+  juriIdType: "0",
+  smsCode: ""
 };
+
+const randomStr = ref("");
+const randomStrCompany = ref("")
+
+const getImage = async () => {
+  randomStr.value = uuidv4();
+  const result = await getUserGraphCode(randomStr.value);
+  //@ts-ignore
+  imageCode.value = URL.createObjectURL(result);
+};
+
+getImage();
+
+const getCompanyImage = async () => {
+  randomStrCompany.value = uuidv4()
+  const result = await getUserGraphCode(randomStrCompany.value);
+  //@ts-ignore
+  imageCodeComPany.value = URL.createObjectURL(result);
+}
+
+getCompanyImage()
 
 const companyForm = ref(initialCompanyForm);
 const form = ref(initialPersonForm);
@@ -110,6 +151,32 @@ const clear = (isPerson: boolean) => {
   }
 };
 
+const getPersonPhoneCode = async () => {
+  const res: any = await getUserSmsCodeApi(
+    randomStr.value,
+    graphCode.value,
+    form.value.tel
+  );
+  if (res.code == "1") {
+    message(res.msg, {
+      type: "error"
+    });
+  }
+};
+
+const getCompanyPhoneCode = async () => {
+  const res: any = await getUserSmsCodeApi(
+    randomStrCompany.value,
+    graphCodeCompany.value,
+    auth.value.juriTel
+  );
+  if (res.code == "1") {
+    message(res.msg, {
+      type: "error"
+    });
+  }
+}
+
 defineExpose({
   clear
 });
@@ -117,8 +184,10 @@ defineExpose({
 const tabChange = e => {
   if (e === "company") {
     props.change(companyForm.value);
+    getCompanyImage()
   } else {
     props.change(form.value);
+    getImage()
   }
 };
 
@@ -146,7 +215,9 @@ const personRule = reactive<FormRules>({
   ]
 });
 
+
 const companyRule = reactive<FormRules>({});
+
 </script>
 
 <template>
@@ -158,7 +229,7 @@ const companyRule = reactive<FormRules>({});
       @tab-click="tabClick"
     >
       <el-tab-pane class="content" label="个人认证" name="person">
-        <el-form :rules="personRule" :model="form" label-width="auto">
+        <el-form ref="personRef" :rules="personRule" :model="form" label-width="auto">
           <h2>信息录入</h2>
           <el-form-item label="办理人员：">
             <el-radio-group v-model="staticValue">
@@ -188,6 +259,47 @@ const companyRule = reactive<FormRules>({});
                   placeholder="请输入实名手机号码"
                   @change="change(form)"
                 />
+              </el-form-item>
+              <el-form-item label="图形验证码" prop="code">
+                <el-input
+                  v-model="graphCode"
+                  clearable
+                  :placeholder="t('login.pureVerifyCode')"
+                >
+                  <template v-slot:append>
+                    <el-image style="width: 100%;" :src="imageCode" alt="code" @click="getImage"/>
+                  </template>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="验证码" prop="smsCode">
+                <div class="w-full flex">
+                  <el-input
+                    v-model="form.smsCode"
+                    clearable
+                    :placeholder="t('login.pureSmsVerifyCode')"
+                  />
+                  <el-button
+                    :disabled="!form.tel && !graphCode"
+                    class="ml-2"
+                    @click="
+              async () => {
+                if (!graphCode) {
+                  message('请输入验证码', {
+                    type: 'error'
+                  });
+                }
+                await useVerifyCode().start(personRef, 'phone');
+                await getPersonPhoneCode();
+              }
+            "
+                  >
+                    {{
+                      text.length > 0
+                        ? text + t("login.pureInfo")
+                        : t("login.pureGetVerifyCode")
+                    }}
+                  </el-button>
+                </div>
               </el-form-item>
               <el-form-item label="住址：">
                 <el-input
@@ -241,7 +353,7 @@ const companyRule = reactive<FormRules>({});
         </el-form>
       </el-tab-pane>
       <el-tab-pane class="content" label="企业认证" name="company">
-        <el-form :model="companyForm" label-width="auto">
+        <el-form ref="companyRef" :model="companyForm" label-width="auto">
           <h2>信息录入</h2>
           <el-form-item label="企业类型：">
             <el-radio-group
@@ -293,6 +405,7 @@ const companyRule = reactive<FormRules>({});
                   "
                 >
                   <ShImageUpload
+                    upload-url="/app/func/ocr/businessPicture"
                     @change="
                       id => {
                         companyForm.businessPicture = id;
@@ -320,6 +433,47 @@ const companyRule = reactive<FormRules>({});
                   placeholder="请输入法定代表人手机号"
                   @change="change(companyForm)"
                 />
+              </el-form-item>
+              <el-form-item label="图形验证码" prop="code">
+                <el-input
+                  v-model="graphCodeCompany"
+                  clearable
+                  :placeholder="t('login.pureVerifyCode')"
+                >
+                  <template v-slot:append>
+                    <el-image style="width: 100%;" :src="imageCodeComPany" alt="code" @click="getCompanyImage"/>
+                  </template>
+                </el-input>
+              </el-form-item>
+              <el-form-item label="验证码" prop="smsCode">
+                <div class="w-full flex">
+                  <el-input
+                    v-model="companyForm.smsCode"
+                    clearable
+                    :placeholder="t('login.pureSmsVerifyCode')"
+                  />
+                  <el-button
+                    :disabled="!companyForm.juriTel && !graphCodeCompany"
+                    class="ml-2"
+                    @click="
+              async () => {
+                if (!graphCodeCompany) {
+                  message('请输入验证码', {
+                    type: 'error'
+                  });
+                }
+                await useVerifyCode().start(companyRef, 'phone');
+                await getCompanyPhoneCode();
+              }
+            "
+                  >
+                    {{
+                      text.length > 0
+                        ? text + t("login.pureInfo")
+                        : t("login.pureGetVerifyCode")
+                    }}
+                  </el-button>
+                </div>
               </el-form-item>
               <el-form-item label="法定代表人身份证号：">
                 <el-input
@@ -445,10 +599,12 @@ const companyRule = reactive<FormRules>({});
   height: calc(100vh - 200px);
   overflow-y: scroll;
 }
+
 .el-form-item {
   align-items: center;
   margin-bottom: 20px !important;
 }
+
 h2 {
   width: 100%;
   font-weight: 600;
@@ -456,7 +612,12 @@ h2 {
   margin-bottom: 4px;
   color: black;
 }
+
 .el-input {
   width: 200px;
+}
+
+:deep(.el-input-group__append, .el-input-group__prepend) {
+  padding: 0 !important;
 }
 </style>

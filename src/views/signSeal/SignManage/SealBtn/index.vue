@@ -54,18 +54,20 @@ const remove = () => {
 </script>
 
 <template>
-  <el-row>
-    <el-button :disabled="data.status == '2'" size="small" type="primary" plain round @click="showCpwDialog"
+  <el-row style="display: flex;justify-content: center;">
+    <el-button v-if="data.isExpire !== '1'" :disabled="data.status == '2'" size="small" type="primary" plain round
+               @click="showCpwDialog"
     >修改密码
     </el-button>
-    <el-button :disabled="data.status == '2'" size="small" type="primary" plain round @click="detailClick"
+    <el-button v-if="data.isExpire !== '1'" :disabled="data.status == '2'" size="small" type="primary" plain round
+               @click="detailClick"
     >备案下载
     </el-button>
     <el-button :disabled="data.status == '2'" v-if="data.status == '1'" size="small" type="success" plain round
                @click="addClick">续费
     </el-button>
     <el-button :disabled="data.status == '2'" v-if="data.status == '0'" size="small" type="success" plain round
-               @click="addClick">申领
+               @click="addClick">缴费
     </el-button>
     <!--    <el-button size="small" type="danger" plain round @click="remove">删除</el-button>-->
   </el-row>

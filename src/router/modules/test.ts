@@ -4,15 +4,14 @@ const { VITE_HIDE_HOME } = import.meta.env;
 const Layout = () => import("@/layout/index.vue");
 
 export default {
-  path: "/test",
-  name: "test",
-  // component: Layout,
+  path: "/t",
+  name: "t",
   meta: {
-    icon: "ep:home-filled",
-    title: $t("menus.pureHome"),
-    rank: 3,
-    showLink: false
+    title: "签章首页",
+    icon: "mdi-cube-scan",
+    showLink: false,
   },
+  component: () => import("@/views/signSeal/index.vue"),
   children: [
     {
       path: "/test",

@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import {getBase64, stripBase64Prefix} from "@/utils/common";
-import {SealTypeMap, StampShapeMap} from "@/utils/map";
+import {OrderStatusMap, SealTypeMap, StampShapeMap} from "@/utils/map";
 import ReQrcode from "@/components/ReQrcode";
 import Motion from "@/views/login/utils/motion";
 import ShImageUpload from "@/views/components/shImageUpload/index.vue";
-import {reactive, ref} from "vue";
+import {onBeforeUnmount, reactive, ref} from "vue";
 import {useSeal} from "@/store/useSeal";
 import {storeToRefs} from "pinia";
-import {createSealOrderApi, getRightsDefinitionApi, orderPayApi} from "@/api/test";
+import {createSealOrderApi, getOderQueryApi, getRightsDefinitionApi, orderPayApi} from "@/api/test";
 
 type RenewProps = {
   data: any;
+  seeOrder: () => void;
 }
 
 defineOptions({
@@ -19,6 +20,7 @@ defineOptions({
 
 const props = defineProps<RenewProps>()
 const {auth} = storeToRefs(useSeal())
+const orderStatus = ref("")
 
 const step = ref(1)
 
@@ -29,6 +31,8 @@ const rights = ref({
   current: 1,
   total: 0
 })
+
+let timer
 
 const currentRight = ref([])
 
@@ -82,6 +86,16 @@ const submit = async () => {
       const orderRes = await orderPayApi(orderInfo.value.orderNo)
       qrCode.value = orderRes.data.billQRCode
       toNext()
+      if (!timer) {
+        timer = setInterval(() => {
+          getOderQueryApi(orderInfo.value.orderNo).then((res) => {
+            orderStatus.value = res.data
+            if (res.data === "1") {
+              props.seeOrder()
+            }
+          })
+        }, 2000)
+      }
     }
   }
 }
@@ -117,6 +131,27 @@ const toBack = () => {
   step.value--
 }
 
+const reGetQrcode = async () => {
+  const {data} = await orderPayApi(orderInfo.value.orderNo)
+  if (timer) {
+    clearInterval(timer)
+  }
+  qrCode.value = data.billQRCode
+  timer = setInterval(() => {
+    getOderQueryApi(orderInfo.value.orderNo).then((res) => {
+      orderStatus.value = res.data
+      if (res.data === "1") {
+        props.seeOrder()
+      }
+    })
+  }, 2000)
+}
+
+onBeforeUnmount(() => {
+  if (timer) {
+    clearInterval(timer)
+  }
+})
 
 </script>
 
@@ -159,15 +194,15 @@ const toBack = () => {
         </el-col>
       </el-row>
       <h2>联系地址</h2>
-      <el-form v-model="companyInfo" style="margin-top: 10px;">
+      <el-form v-model="info" style="margin-top: 10px;">
         <el-form-item label="联系人">
-          <el-input v-model="companyInfo.contact" style="width: 200px"/>
+          <el-input v-model="info.contact" style="width: 200px"/>
         </el-form-item>
         <el-form-item label="联系电话">
-          <el-input v-model="companyInfo.contactPhone" style="width: 200px"/>
+          <el-input v-model="info.contactPhone" style="width: 200px"/>
         </el-form-item>
         <el-form-item label="联系地址">
-          <el-input v-model="companyInfo.address" style="width: 600px"/>
+          <el-input v-model="info.address" style="width: 600px"/>
         </el-form-item>
       </el-form>
     </Motion>
@@ -176,10 +211,14 @@ const toBack = () => {
         <el-col :xl="6" :lg="6" :md="12" :sm="24" :xs="24">
           <el-card shadow="hover" class="mb-[10px] text-center">
             <div class="font-bold">请扫码支付</div>
+            <div class="font-bold">{{ OrderStatusMap.get(orderStatus) }}</div>
             <ReQrcode :text="qrCode"/>
           </el-card>
         </el-col>
       </el-row>
+      <div style="display: flex;justify-content: center;">
+        <el-button @click="reGetQrcode">重新获取二维码</el-button>
+      </div>
 
     </Motion>
   </div>
@@ -238,17 +277,20 @@ const toBack = () => {
         <el-col :xl="6" :lg="6" :md="12" :sm="24" :xs="24">
           <el-card shadow="hover" class="mb-[10px] text-center">
             <div class="font-bold">请扫码支付</div>
+            <div class="font-bold">{{ OrderStatusMap.get(orderStatus) }}</div>
             <ReQrcode :text="qrCode"/>
           </el-card>
         </el-col>
       </el-row>
-
+      <div style="display: flex;justify-content: center;">
+        <el-button @click="reGetQrcode">重新获取二维码</el-button>
+      </div>
     </Motion>
   </div>
   <el-row style="width: 100%; justify-content: center">
     <el-button style="width: 200px" type="primary" @click="toBack" :disabled="step == 1">上一步</el-button>
     <!--    <el-button @click="toNext" :disabled="step == 4">下一步</el-button>-->
-    <el-button style="width: 200px" type="primary" @click="submit" :disabled="step == 4">
+    <el-button style="width: 200px" type="primary" @click="submit" :disabled="step == 3">
       {{ "下一步" }}
     </el-button>
   </el-row>

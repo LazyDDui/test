@@ -63,6 +63,8 @@ const gai = reactive({
 const loadPdf = ref(true);
 const loadStampList = ref(true);
 
+const qfStamp = ref([])
+
 const currentPage = ref(0);
 
 const signBoxEle = ref<HTMLDivElement>();
@@ -379,18 +381,20 @@ const end = (e: any) => {
     createPagingStamps(
       sealPicList.value[newIndex].url,
       pages.value.length
-    ).then(() => {
+    ).then((originImg: {
+      width: number
+    }) => {
       for (let i = 0; i < pages.value.length; i++) {
-        const gaiCanvas = gaiFabric.value[i];
-        const a = Number((parseInt(gaiCanvas.width) / A4.width).toFixed(2))
-        const nw = sealPicList.value[newIndex].length * a
 
         fabric.Image.fromURL(stamps.value[i], (img: any) => {
+          const gaiCanvas = gaiFabric.value[i];
+          const a = Number((parseInt(gaiCanvas.width) / A4.width).toFixed(2))
+          const nw = sealPicList.value[newIndex].length * a
           img.set({
-            left: gai.width - img.width! * 0.2,
+            left: gai.width - originImg.width! / 2 * nw / originImg.width / 2,
             top: e.originalEvent.layerY,
-            scaleX: nw / img.width,
-            scaleY: nw / img.width,
+            scaleX: nw / originImg.width,
+            scaleY: nw / originImg.width,
             selectable: false,
             index: e.newDraggableIndex,
             borderColor: "transparent",
@@ -412,8 +416,8 @@ const end = (e: any) => {
 
           gaiCanvas.on("object:moving", options => {
             const obj = options.target;
-            obj.set("left", gai.width - img.width! * nw / img.width);
-            const halfHeight = (obj.height! / 2) * nw / img.width;
+            obj.set("left", gai.width - img.width! / 2 * nw / img.width / 2);
+            const halfHeight = (obj.height! / 2) / img.width;
 
             if (obj.top! < halfHeight) {
               obj.set("top", halfHeight);
@@ -423,8 +427,14 @@ const end = (e: any) => {
             if (obj.top! > maxTop) {
               obj.set("top", maxTop);
             }
+            // 同步所有其他物体的位置
+            toRaw(qfStamp.value).forEach((otherObj) => {
+              otherObj.set("top", obj.top)
+            });
+            obj.setCoords();
           });
           gaiCanvas.add(group);
+          qfStamp.value.push(group)
         });
       }
     });
@@ -513,7 +523,7 @@ const createPagingStamps = (imageUrl: string, pageCount: number) => {
           stamps.value.push(dataUrl);
           canvas.dispose();
         }
-        resolve();
+        resolve(img);
       },
       {crossOrigin: "anonymous"}
     );

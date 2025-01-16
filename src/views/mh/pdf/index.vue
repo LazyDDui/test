@@ -161,7 +161,7 @@ const getFile = () => {
           timer = null;
           // loadingPdf.value.close();
           loading.value = false
-          message("签署失败", {
+          message(res.data[0].stateMsg, {
             type: "error"
           });
           return;
@@ -215,6 +215,7 @@ const shSign = () => {
 
 onBeforeUnmount(() => {
   if (timer) {
+    loading.value = false
     loadingPdf.value.close();
     clearInterval(timer);
   }

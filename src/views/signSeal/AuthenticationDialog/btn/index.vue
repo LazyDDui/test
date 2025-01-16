@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { http } from "@/utils/http";
-import { message } from "@/utils/message";
-import { removeUserAuthenticationApi } from "@/api/test";
-import { addDialog } from "@/components/ReDialog/index";
-import { h } from "vue";
+import {http} from "@/utils/http";
+import {message} from "@/utils/message";
+import {removeUserAuthenticationApi} from "@/api/test";
+import {addDialog} from "@/components/ReDialog/index";
+import {h} from "vue";
+import {useRouter} from "vue-router";
 
 type BtnProps = {
   cgClick: () => void;
@@ -11,6 +12,7 @@ type BtnProps = {
 };
 
 const props = defineProps<BtnProps>();
+const router = useRouter()
 
 const emit = defineEmits(["updateList"]);
 const apiClick = () => {
@@ -25,6 +27,9 @@ const apiClick = () => {
         message(props.data.row.id + "已开通", {
           type: "success"
         });
+        setTimeout(() => {
+          router.push("/welcome")
+        }, 1000)
       });
   }
 };
@@ -32,7 +37,7 @@ const apiClick = () => {
 const remove = async () => {
   addDialog({
     title: "注意",
-    contentRenderer({ options, index }) {
+    contentRenderer({options, index}) {
       return h("div", null, "确认删除" + props.data.authenticationName + "?");
     },
     async beforeSure(done) {
@@ -52,7 +57,8 @@ const remove = async () => {
       size="small"
       type="text"
       @click="apiClick"
-      >api开通</el-button
+    >api开通
+    </el-button
     >
     <el-tag v-else type="success" style="margin-right: 10px">已开通api</el-tag>
     <el-button size="small" type="danger" @click="remove">删除</el-button>

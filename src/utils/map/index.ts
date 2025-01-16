@@ -23,3 +23,23 @@ export const StampShapeMap = new Map([
   ["1", "椭圆"],
   ["2", "方形"]
 ]);
+
+export const StampShapeTypeCompanyMap = new Map([
+  ["42*42", "42_42"],
+  ["40*40", "40_40"],
+  ["40*30", "40_30"],
+])
+
+export const StampShapeTypePersonalMap = new Map([
+  ["20*10", "20_10"],
+  ["20*20", "20_20"],
+])
+
+export const OrderStatusMap = new Map([
+  ["-1","未支付"],
+  ["0","待支付"],
+  ["1","支付成功"],
+  ["2","支付失败"],
+  ["3","支付超期"],
+  ["4","已扫码，待支付"]
+])

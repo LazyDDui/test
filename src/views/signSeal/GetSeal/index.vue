@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, h, reactive, ref, watch} from "vue";
+import {computed, h, onBeforeMount, onBeforeUnmount, reactive, ref, watch} from "vue";
 import ShImageUpload from "@/views/components/shImageUpload/index.vue";
 import {downloadPdf, getBase64, stripBase64Prefix} from "@/utils/common";
 import {
@@ -11,7 +11,13 @@ import {
   getOderQueryApi,
   orderPayApi
 } from "@/api/test";
-import {SealTypeMap, StampShapeMap} from "@/utils/map";
+import {
+  OrderStatusMap,
+  SealTypeMap,
+  StampShapeMap,
+  StampShapeTypeCompanyMap,
+  StampShapeTypePersonalMap
+} from "@/utils/map";
 import {useSeal} from "@/store/useSeal";
 import {closeAllDialog} from "@/components/ReDialog/index";
 import {message} from "@/utils/message";
@@ -24,15 +30,23 @@ import {fp} from "@/utils";
 
 type GetSealProps = {
   type?: "0" | "1";
+  seeOrder: () => void;
 };
 const staticValue = ref("1");
 const {getSealManageInfo} = useSeal();
 const {auth} = storeToRefs(useSeal())
 const props = defineProps<GetSealProps>();
-const qrCode = ref("")
+const qrCode = ref("http://182.151.13.73:9999/pay/open/getQrCode/667726500140683264")
+
+const personStamp = ref("")
+
+const companyStamp = ref("")
+
+const isForPerson = ref("0")
+const isForCompany = ref("0")
 
 const form = ref({
-  type: "99",
+  type: "",
   //印章编码
   code: "",
   //印章名称
@@ -41,7 +55,7 @@ const form = ref({
   // shape: "",
   // //印章图片
   stamp: "",
-  // //印章长度mm
+  // // //印章长度mm
   stampLength: "",
   // //印章宽度mm
   stampWidth: "",
@@ -56,7 +70,7 @@ const companyForm = ref({
   //印章名称
   name: "",
   //印章形状
-  shape: "",
+  // shape: "",
   //印章图片
   stamp: "",
   //印章长度mm
@@ -68,6 +82,7 @@ const companyForm = ref({
 });
 
 const pin = ref("");
+const orderStatus = ref("")
 
 const radio = ref(3);
 const sealId = ref()
@@ -76,10 +91,39 @@ const orderInfo = ref()
 const loading = ref(false)
 const submit = async () => {
   if (step.value === 1) {
-    loading.value = true
     //第一步
     if (props.type == "1") {
-      const res: any = await sealAddApi(form.value);
+      if (!form.value.pin) {
+        message("请输入pin码")
+        return
+      }
+      loading.value = true
+      const finalForm = isForPerson.value == "1" ? {
+        pin: form.value.pin,
+        seals: templatePage.value.records.map((item) => {
+          return {
+            type: item.type,
+            code: form.value.code,
+            name: form.value.name,
+            stamp: item.pic,
+            stampLength: form.value.stampLength,
+            stampWidth: form.value.stampWidth
+          }
+        })
+      } : {
+        pin: form.value.pin,
+        seals: [
+          {
+            type: form.value.type,
+            code: form.value.code,
+            name: form.value.name,
+            stamp: form.value.stamp,
+            stampLength: form.value.stampLength,
+            stampWidth: form.value.stampWidth
+          }
+        ]
+      }
+      const res: any = await sealAddApi(finalForm);
       if (res.msg && !res.data) {
         message(res.msg, {
           type: "error"
@@ -96,7 +140,37 @@ const submit = async () => {
         toNext()
       }
     } else {
-      const res: any = await sealAddApi(companyForm.value);
+      if (!form.value.pin) {
+        message("请输入pin码")
+        return
+      }
+      const finalForm = isForPerson.value == "1" ? {
+        pin: companyForm.value.pin,
+        seals: templatePage.value.records.map((item) => {
+          return {
+            type: item.type,
+            code: companyForm.value.code,
+            name: companyForm.value.name,
+            stamp: item.pic,
+            stampLength: companyForm.value.stampLength,
+            stampWidth: companyForm.value.stampWidth
+          }
+        })
+      } : {
+        pin: companyForm.value.pin,
+        seals: [
+          {
+            type: companyForm.value.type,
+            code: companyForm.value.code,
+            name: companyForm.value.name,
+            stamp: companyForm.value.stamp,
+            stampLength: companyForm.value.stampLength,
+            stampWidth: companyForm.value.stampWidth
+          }
+        ]
+      }
+
+      const res: any = await sealAddApi(finalForm);
       if (res.msg && !res.data) {
         message(res.msg, {
           type: "error"
@@ -122,6 +196,8 @@ const submit = async () => {
 
 
   } else if (step.value === 3) {
+    const res = await getOderQueryApi("1879782312031350785")
+    orderStatus.value = res.data
     if (props.type == "1") {
       const {data} = await createSealOrderApi({
         contact: companyInfo.contact,
@@ -138,6 +214,16 @@ const submit = async () => {
       const orderRes = await orderPayApi(orderInfo.value.orderNo)
       qrCode.value = orderRes.data.billQRCode
       toNext()
+      if (!timer) {
+        timer = setInterval(() => {
+          getOderQueryApi(orderInfo.value.orderNo).then((res) => {
+            orderStatus.value = res.data
+            if (res.data === "1") {
+              props.seeOrder()
+            }
+          })
+        }, 2000)
+      }
     } else {
       const {data} = await createSealOrderApi({
         contact: companyInfo.contact,
@@ -154,6 +240,18 @@ const submit = async () => {
       const orderRes = await orderPayApi(orderInfo.value.orderNo)
       qrCode.value = orderRes.data.billQRCode
       toNext()
+
+      if (!timer) {
+        timer = setInterval(() => {
+          getOderQueryApi(orderInfo.value.orderNo).then((res) => {
+            orderStatus.value = res.data
+            if (res.data === "1") {
+              props.seeOrder()
+            }
+          })
+        }, 2000)
+      }
+
     }
   }
 
@@ -268,6 +366,12 @@ const selectStampTemplate = (item) => {
 }
 
 const companyStampChange = async (e) => {
+  if (e) {
+    companyForm.value.name = SealTypeMap.get(e)
+  } else {
+    companyForm.value.name = ""
+  }
+
   currentType.value = e
   await currentChange(1)
 }
@@ -314,16 +418,52 @@ if (props.type == "1") {
   getRightsList("1")
 }
 
+let timer
 
-// watch(step, (value) => {
-//   if (value === 2) {
-//     // getCompanyRightsList()
-//   } else if (value === 3) {
-//     console.log(currentRightCom.value)
-//   } else if (value == 4) {
+// watch([step, orderStatus], ([value1, value2]) => {
+//   // if (value === 2) {
+//   //   // getCompanyRightsList()
+//   // } else if (value === 3) {
+//   //   console.log(currentRightCom.value)
+//   // } else if (value == 4) {
+//   //   // getOderQueryApi("1879782312031350785")
+//   // }
 //
+//   if (value1 == 4) {
+//     if (!timer) {
+//       timer = setInterval(() => {
+//         getOderQueryApi("1879782312031350785").then((res) => {
+//           orderStatus.value = res.data
+//           if (res.data === "1") {
+//             props.seeOrder()
+//           }
+//         })
+//       }, 2000)
+//     }
 //   }
 // })
+
+const reGetQrcode = async () => {
+  const {data} = await orderPayApi(orderInfo.value.orderNo)
+  if (timer) {
+    clearInterval(timer)
+  }
+  qrCode.value = data.billQRCode
+  timer = setInterval(() => {
+    getOderQueryApi(orderInfo.value.orderNo).then((res) => {
+      orderStatus.value = res.data
+      if (res.data === "1") {
+        props.seeOrder()
+      }
+    })
+  }, 2000)
+}
+
+onBeforeUnmount(() => {
+  if (timer) {
+    clearInterval(timer)
+  }
+})
 
 </script>
 
@@ -345,6 +485,12 @@ if (props.type == "1") {
                 <el-radio value="1" size="large">个人私章</el-radio>
               </el-radio-group>
             </el-form-item>
+            <el-form-item label="是否批量：">
+              <el-radio-group v-model="isForPerson">
+                <el-radio value="1" size="large">是</el-radio>
+                <el-radio value="0" size="large">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
             <el-form-item v-if="createType == '1'" label="印章样式：" style="width: 100%">
               <el-row>
                 <el-col @click="selectStampTemplate(item)" class="stampTemp" :span="8"
@@ -355,12 +501,37 @@ if (props.type == "1") {
                 </el-col>
               </el-row>
             </el-form-item>
-            <el-form-item label="印章宽度：" style="width: 100%">
-              <el-input type="number" v-model="form.stampWidth" placeholder="请输入印章宽度"/>
+            <el-form-item label="印章规格：">
+              <el-select
+                clearable
+                @change="(e)=>{
+                  if(e){
+                     form.stampLength = e.split('_')[0]
+                     form.stampWidth = e.split('_')[1]
+                  }else {
+                     form.stampLength = ''
+                     form.stampWidth = ''
+                  }
+                }"
+                v-model="personStamp"
+                placeholder="请选择印章规格"
+                size="default"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="(item, index) in Array.from(StampShapeTypePersonalMap)"
+                  :key="index"
+                  :label="item[0]"
+                  :value="item[1]"
+                />
+              </el-select>
             </el-form-item>
-            <el-form-item label="印章长度：" style="width: 100%">
-              <el-input type="number" v-model="form.stampLength" placeholder="请输入印章长度"/>
-            </el-form-item>
+            <!--            <el-form-item label="印章宽度：" style="width: 100%">-->
+            <!--              <el-input type="number" v-model="form.stampWidth" placeholder="请输入印章宽度"/>-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="印章长度：" style="width: 100%">-->
+            <!--              <el-input type="number" v-model="form.stampLength" placeholder="请输入印章长度"/>-->
+            <!--            </el-form-item>-->
           </el-col>
           <el-col :span="12" v-if="createType == '1'">
             <div style="display: flex;flex-direction: column;align-items: center;">
@@ -488,11 +659,14 @@ if (props.type == "1") {
         <el-col :xl="6" :lg="6" :md="12" :sm="24" :xs="24">
           <el-card shadow="hover" class="mb-[10px] text-center">
             <div class="font-bold">请扫码支付</div>
+            <div class="font-bold">{{ OrderStatusMap.get(orderStatus) }}</div>
             <ReQrcode :text="qrCode"/>
           </el-card>
         </el-col>
       </el-row>
-
+      <div style="display: flex;justify-content: center;">
+        <el-button @click="reGetQrcode">重新获取二维码</el-button>
+      </div>
     </Motion>
   </div>
   <div v-else class="sealBox">
@@ -505,6 +679,12 @@ if (props.type == "1") {
               <el-radio-group v-model="createType">
                 <el-radio value="1" size="large">智能生成</el-radio>
                 <el-radio value="2" size="large">上传实物印迹</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="是否批量：">
+              <el-radio-group v-model="isForCompany">
+                <el-radio value="1" size="large">是</el-radio>
+                <el-radio value="0" size="large">否</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="印章类型：">
@@ -524,12 +704,38 @@ if (props.type == "1") {
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="印章宽度：" style="width: 100%">
-              <el-input type="number" v-model="companyForm.stampWidth" placeholder="请输入印章宽度"/>
+            <el-form-item label="印章规格：">
+              <el-select
+                clearable
+                @change="(e)=>{
+                  console.log(e)
+                  if(e){
+                     companyForm.stampLength = e.split('_')[0]
+                     companyForm.stampWidth = e.split('_')[1]
+                  }else {
+                     companyForm.stampLength = ''
+                     companyForm.stampWidth = ''
+                  }
+                }"
+                v-model="companyStamp"
+                placeholder="请选择印章规格"
+                size="default"
+                style="width: 200px"
+              >
+                <el-option
+                  v-for="(item, index) in Array.from(StampShapeTypeCompanyMap)"
+                  :key="index"
+                  :label="item[0]"
+                  :value="item[1]"
+                />
+              </el-select>
             </el-form-item>
-            <el-form-item label="印章长度：" style="width: 100%">
-              <el-input type="number" v-model="companyForm.stampLength" placeholder="请输入印章长度"/>
-            </el-form-item>
+            <!--            <el-form-item label="印章宽度：" style="width: 100%">-->
+            <!--              <el-input type="number" v-model="companyForm.stampWidth" placeholder="请输入印章宽度"/>-->
+            <!--            </el-form-item>-->
+            <!--            <el-form-item label="印章长度：" style="width: 100%">-->
+            <!--              <el-input type="number" v-model="companyForm.stampLength" placeholder="请输入印章长度"/>-->
+            <!--            </el-form-item>-->
             <el-form-item label="印章编码：">
               <el-input
                 v-model="companyForm.code"
@@ -560,44 +766,44 @@ if (props.type == "1") {
             </div>
           </el-col>
         </el-row>
-        <h2 v-if="!ai">个人信息</h2>
+        <h2 v-if="!ai">印章图片</h2>
         <el-row>
-          <el-col :span="12">
-            <el-form-item v-if="!ai" label="印章名称：">
-              <el-input
-                v-model="companyForm.name"
-                placeholder="请输入印章名称"
-              />
-            </el-form-item>
+          <!--          <el-col :span="12">-->
+          <!--            <el-form-item v-if="!ai" label="印章名称：">-->
+          <!--              <el-input-->
+          <!--                v-model="companyForm.name"-->
+          <!--                placeholder="请输入印章名称"-->
+          <!--              />-->
+          <!--            </el-form-item>-->
 
-            <el-form-item v-if="!ai" label="印章形状：">
-              <el-select
-                v-model="companyForm.shape"
-                placeholder="请输入印章形状"
-                size="default"
-                style="width: 200px"
-              >
-                <el-option
-                  v-for="(item, index) in Array.from(StampShapeMap)"
-                  :key="index"
-                  :label="item[1]"
-                  :value="item[0]"
-                />
-              </el-select>
-            </el-form-item>
-<!--            <el-form-item v-if="!ai" label="印章宽度(mm)：">-->
-<!--              <el-input-->
-<!--                v-model="companyForm.stampWidth"-->
-<!--                placeholder="请输入印章宽度(mm)"-->
-<!--              />-->
-<!--            </el-form-item>-->
-<!--            <el-form-item v-if="!ai" label="印章长度(mm)：">-->
-<!--              <el-input-->
-<!--                v-model="companyForm.stampLength"-->
-<!--                placeholder="请输入印章长度(mm)"-->
-<!--              />-->
-<!--            </el-form-item>-->
-          </el-col>
+          <!--            <el-form-item v-if="!ai" label="印章形状：">-->
+          <!--              <el-select-->
+          <!--                v-model="companyForm.shape"-->
+          <!--                placeholder="请输入印章形状"-->
+          <!--                size="default"-->
+          <!--                style="width: 200px"-->
+          <!--              >-->
+          <!--                <el-option-->
+          <!--                  v-for="(item, index) in Array.from(StampShapeMap)"-->
+          <!--                  :key="index"-->
+          <!--                  :label="item[1]"-->
+          <!--                  :value="item[0]"-->
+          <!--                />-->
+          <!--              </el-select>-->
+          <!--            </el-form-item>-->
+          <!--            &lt;!&ndash;            <el-form-item v-if="!ai" label="印章宽度(mm)：">&ndash;&gt;-->
+          <!--            &lt;!&ndash;              <el-input&ndash;&gt;-->
+          <!--            &lt;!&ndash;                v-model="companyForm.stampWidth"&ndash;&gt;-->
+          <!--            &lt;!&ndash;                placeholder="请输入印章宽度(mm)"&ndash;&gt;-->
+          <!--            &lt;!&ndash;              />&ndash;&gt;-->
+          <!--            &lt;!&ndash;            </el-form-item>&ndash;&gt;-->
+          <!--            &lt;!&ndash;            <el-form-item v-if="!ai" label="印章长度(mm)：">&ndash;&gt;-->
+          <!--            &lt;!&ndash;              <el-input&ndash;&gt;-->
+          <!--            &lt;!&ndash;                v-model="companyForm.stampLength"&ndash;&gt;-->
+          <!--            &lt;!&ndash;                placeholder="请输入印章长度(mm)"&ndash;&gt;-->
+          <!--            &lt;!&ndash;              />&ndash;&gt;-->
+          <!--            &lt;!&ndash;            </el-form-item>&ndash;&gt;-->
+          <!--          </el-col>-->
           <el-col v-if="!ai" :span="12" style="display: flex">
             <el-form-item>
               <div
@@ -700,10 +906,14 @@ if (props.type == "1") {
         <el-col :xl="6" :lg="6" :md="12" :sm="24" :xs="24">
           <el-card shadow="hover" class="mb-[10px] text-center">
             <div class="font-bold">请扫码支付</div>
+            <div class="font-bold">{{ OrderStatusMap.get(orderStatus) }}</div>
             <ReQrcode :text="qrCode"/>
           </el-card>
         </el-col>
       </el-row>
+      <div style="display: flex;justify-content: center;">
+        <el-button @click="reGetQrcode">重新获取二维码</el-button>
+      </div>
 
     </Motion>
   </div>
