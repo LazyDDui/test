@@ -19,7 +19,7 @@ defineOptions({
       </div>
     </div>
 
-    <a class="wc" href="https://work.weixin.qq.com/nl/act/p/4030a5b69149404d" >
+    <a class="wc" href="https://work.weixin.qq.com/kfid/kfc6893a2f278a1396a" >
       <div class="item">
         <span class="iconfont">&#xe600;</span>
       </div>
