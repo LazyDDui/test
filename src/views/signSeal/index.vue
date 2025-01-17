@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { fp } from "@/utils";
+import {fp} from "@/utils";
 import {addDialog, closeAllDialog} from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
-import { h } from "vue";
-import { useRouter } from "vue-router";
+import {h} from "vue";
+import {useRouter} from "vue-router";
 import {
   changeAuthenticationApi,
   companySign,
@@ -16,11 +16,11 @@ import SignManage from "@/views/signSeal/SignManage/index.vue";
 import SignRecent from "@/views/signSeal/SignRecent/index.vue";
 import SignManagePageList from "@/views/signSeal/SignManage/PageList/index.vue";
 import GetSeal from "@/views/signSeal/GetSeal/index.vue";
-import { useSeal } from "@/store/useSeal";
-import { storeToRefs } from "pinia";
+import {useSeal} from "@/store/useSeal";
+import {storeToRefs} from "pinia";
 
-const { setAuth, setUserStatus, getSealManageInfo } = useSeal();
-const { auth, list, userStatus, sealManage, userInfo } = storeToRefs(useSeal());
+const {setAuth, setUserStatus, getSealManageInfo} = useSeal();
+const {auth, list, userStatus, sealManage, userInfo} = storeToRefs(useSeal());
 
 const useSealFn = () => {
   addDialog({
@@ -30,23 +30,23 @@ const useSealFn = () => {
     hideFooter: true
   });
 };
-import { h, ref } from "vue";
-import { http } from "@/utils/http";
-import { AuthTypeMap } from "../../utils/map";
+import {h, ref} from "vue";
+import {http} from "@/utils/http";
+import {AuthTypeMap} from "../../utils/map";
 import PrincipalType from "@/views/signSeal/PrincipalType/index.vue";
-import { ElMessage } from "element-plus";
-import { enIdNo } from "@/utils/common";
-import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
-import { message } from "@/utils/message";
+import {ElMessage} from "element-plus";
+import {enIdNo} from "@/utils/common";
+import {useDataThemeChange} from "@/layout/hooks/useDataThemeChange";
+import {message} from "@/utils/message";
 import SealFooter from "@/components/Common/SealFooter.vue";
 
 const router = useRouter();
 
 const total = ref(0);
-const { getList } = useSeal();
+const {getList} = useSeal();
 
 const toGoPage = () => {
-  router.push({ name: "verify" });
+  router.push({name: "verify"});
 };
 const userAuthenlicationInfo = ref<any[]>([{}]);
 const getUserAuthenlication = async () => {
@@ -120,7 +120,7 @@ const changeAuthentication = () => {
 const sealManageFn = () => {
   addDialog({
     title: "印章管理",
-    contentRenderer: () => h(SignManage,{
+    contentRenderer: () => h(SignManage, {
       sealManageFn
     }),
     hideFooter: true,
@@ -228,14 +228,15 @@ const unCertGetSealRadioChange = (e: "1" | "0") => {
   unCertGetSealShow.value = false;
 
   addDialog({
-    width: 1200,
     alignCenter: true,
     hideFooter: true,
+    width: '90vw',
+    // fullscreen: true,
     title: e == "1" ? "个人私章申领" : "企业公章申领",
     contentRenderer: () => {
       return h(GetSeal, {
         type: e,
-        seeOrder:()=>{
+        seeOrder: () => {
           closeAllDialog()
           sealManageFn()
         }
@@ -243,7 +244,7 @@ const unCertGetSealRadioChange = (e: "1" | "0") => {
     }
   });
 };
-const { onReset } = useDataThemeChange();
+const {onReset} = useDataThemeChange();
 
 const apiCreate = () => {
   addDialog({
@@ -309,7 +310,7 @@ const apiCreate = () => {
             "
           >
             <h2>{{ item.name }}</h2>
-            <img :src="fp(item.src)" width="70" height="70" />
+            <img :src="fp(item.src)" width="70" height="70"/>
           </div>
         </div>
       </div>
@@ -319,7 +320,7 @@ const apiCreate = () => {
             <div class="left1">
               <div class="title">
                 <p class="more tip">
-                  <img width="14" height="16" :src="fp('signSeal/u3029.png')" />
+                  <img width="14" height="16" :src="fp('signSeal/u3029.png')"/>
                   <span class="pdl-5">认证信息</span>
                 </p>
                 <p
@@ -328,7 +329,7 @@ const apiCreate = () => {
                   @click="changeAuthentication()"
                 >
                 <span class="pdr-5">切换认证</span
-                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
                 </p>
               </div>
               <div v-if="userStatus" class="content">
@@ -359,12 +360,12 @@ const apiCreate = () => {
             <div class="left2">
               <div class="title">
                 <p class="more tip">
-                  <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
+                  <img width="14" height="16" :src="fp('signSeal/u3075.png')"/>
                   <span class="pdl-5">印章管理</span>
                 </p>
                 <p class="more blue">
                 <span class="pdr-5" @click="sealManageFn">管理</span
-                ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
+                ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
                 </p>
               </div>
               <div class="content">
@@ -376,15 +377,15 @@ const apiCreate = () => {
           <div class="right-side">
             <div class="title">
               <p class="more tip">
-                <img width="14" height="16" :src="fp('signSeal/u3075.png')" />
+                <img width="14" height="16" :src="fp('signSeal/u3075.png')"/>
                 <span class="pdl-5">最近签章文档</span>
               </p>
               <p class="more blue">
               <span class="pdr-5" @click="signManageSeeMore">查看更多</span
-              ><img width="16" height="20" :src="fp('signSeal/u3032.png')" />
+              ><img width="16" height="20" :src="fp('signSeal/u3032.png')"/>
               </p>
             </div>
-            <SignRecent />
+            <SignRecent/>
           </div>
         </div>
       </div>
@@ -410,7 +411,8 @@ const apiCreate = () => {
                 goToCert();
               }
             "
-            >个人认证</el-radio
+          >个人认证
+          </el-radio
           >
           <el-radio
             value="0"
@@ -421,7 +423,8 @@ const apiCreate = () => {
                 goToCert();
               }
             "
-            >企业认证</el-radio
+          >企业认证
+          </el-radio
           >
         </el-radio-group>
       </div>
@@ -483,6 +486,7 @@ const apiCreate = () => {
       display: flex;
       justify-content: space-between;
       height: calc(70vh);
+
       .left-side {
         flex: 1;
         display: flex;

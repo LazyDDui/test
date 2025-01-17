@@ -32,7 +32,7 @@ export const useMainStore = defineStore("main", () => {
     // 获取当前垂直方向上的滚动位置
 
     const scrollPosition = window.scrollY || window.pageYOffset;
-    if (noScroll.includes(route.path)) {
+    if (noScroll.includes(route.fullPath)) {
       scroll.value = scrollPosition > 10;
       toTopShow.value = scrollPosition > 10;
     }

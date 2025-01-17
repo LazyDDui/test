@@ -1,0 +1,119 @@
+<script setup lang="ts">
+
+defineOptions({
+  name: "ContactUs"
+})
+
+
+</script>
+
+<template>
+  <div class="us-box">
+    <div class="phone">
+      <div class="item">
+        <span class="iconfont">&#xe7ca;</span>
+      </div>
+      <div class="number">
+        <span class="iconfont">&#xe7ca;</span>
+        <span>4001618811</span>
+      </div>
+    </div>
+
+    <a class="wc" href="https://work.weixin.qq.com/nl/act/p/4030a5b69149404d" >
+      <div class="item">
+        <span class="iconfont">&#xe600;</span>
+      </div>
+    </a>
+
+  </div>
+</template>
+
+<style scoped lang="scss">
+.us-box {
+  position: fixed;
+  right: 20px;
+  top: 30vh;
+
+  .wc {
+    margin-top: 2vh;
+    cursor: pointer;
+    display: inline-block;
+    span {
+      color: #255ca5;
+      transition: 0.5s;
+    }
+
+    &:hover {
+      .item {
+        background: #255ca5;
+      }
+
+      span {
+        color: #ffffff;
+      }
+    }
+
+    .item {
+      display: flex;
+      width: 5vh;
+      height: 5vh;
+      background-color: #fff;
+      border-radius: 50%;
+      justify-content: center;
+      align-items: center;
+      transition: 0.5s;
+    }
+  }
+
+  .phone {
+    position: relative;
+    cursor: pointer;
+
+    &:hover .number {
+      opacity: 1;
+      z-index: 1;
+      width: 18vh;
+      transform: translateX(-13vh);
+      font-size: 2vh;
+    }
+
+    .number {
+      position: absolute;
+      opacity: 0;
+      transition: .5s;
+      background-color: #255ca5;
+      color: #ffffff;
+      height: 5vh;
+      width: 5vh;
+      top: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 2.5vh;
+      z-index: -1;
+      transform-origin: 100% 100%;
+      font-size: 1vh;
+
+      span {
+        color: #fff;
+        margin-right: 0.5vh;
+      }
+    }
+
+    .item {
+      display: flex;
+      width: 5vh;
+      height: 5vh;
+      background-color: #fff;
+      border-radius: 50%;
+      justify-content: center;
+      align-items: center;
+
+      span {
+        color: #255ca5;
+      }
+    }
+  }
+
+}
+</style>

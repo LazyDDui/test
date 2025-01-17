@@ -116,7 +116,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {Delete, Plus, ZoomIn, Camera, Close} from "@element-plus/icons-vue";
 import Add from "@iconify-icons/ri/add-box-fill";
 import {
@@ -126,12 +126,13 @@ import {
   UploadRawFile
 } from "element-plus";
 import {http} from "@/utils/http";
-import {fileToBase64} from "@/utils/common";
+import {fileToBase64, getBase64} from "@/utils/common";
 import {v4 as uuidv4} from "uuid";
 
 type ShUploadProps = {
   limit?: number;
   uploadUrl?: string;
+  imgs?: string[];
 };
 
 defineOptions({
@@ -142,13 +143,21 @@ const props = defineProps<ShUploadProps>();
 
 const emit = defineEmits(["change", "getBase64"]);
 
-const fileList = ref([]); // 图片列表
+const fileList = ref((props.imgs && props.imgs[0]) ? props.imgs.map((i)=>getBase64(i)) : []); // 图片列表
 const dialogImageUrl = ref(""); // 预览图url
 const dialogVisible = ref(false); // 预览弹窗
 const hideUpload = ref(false); // 是否隐藏上传按钮
 const upload = ref<UploadInstance>();
 
-const previewFileList = ref([]);
+const previewFileList = ref((props.imgs && props.imgs[0]) ? props.imgs.map((i)=>getBase64(i)) : []);
+
+
+watch(() => props.imgs, (value) => {
+  if (value && value[0]) {
+    previewFileList.value = value.map((item)=>getBase64(item))
+    fileList.value = value.map((item)=>getBase64(item))
+  }
+})
 
 const removeImage = () => {
   fileList.value = [];

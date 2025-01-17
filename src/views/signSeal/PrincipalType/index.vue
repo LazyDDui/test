@@ -113,8 +113,11 @@ const initialCompanyForm = {
   operatorTel: "",
   //经办人证件号码
   operatorIdNo: "",
+  operatorFacePath:"",
+  operatorBackPath:"",
   juriIdType: "0",
-  smsCode: ""
+  smsCode: "",
+  operatorLetterOfAuthorizationPath: ""
 };
 
 const randomStr = ref("");
@@ -560,7 +563,7 @@ const companyRule = reactive<FormRules>({});
                     <ShImageUpload
                       @change="
                         id => {
-                          form.backPath = id;
+                          companyForm.operatorFacePath = id;
                         }
                       "
                     />
@@ -578,13 +581,33 @@ const companyRule = reactive<FormRules>({});
                     <ShImageUpload
                       @change="
                         id => {
-                          form.backPath = id;
+                          companyForm.operatorBackPath = id;
                         }
                       "
                     />
                     <div>经办人身份证国徽面</div>
                   </div>
                 </el-form-item>
+                <el-form-item>
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      flex-direction: column;
+                      margin-left: 20px;
+                    "
+                  >
+                    <ShImageUpload
+                      @change="
+                        id => {
+                          companyForm.operatorLetterOfAuthorizationPath = id;
+                        }
+                      "
+                    />
+                    <div> 经办人授权书照片存储标识</div>
+                  </div>
+                </el-form-item>
+
               </el-col>
             </el-row>
           </template>

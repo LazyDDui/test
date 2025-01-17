@@ -7,6 +7,15 @@ export const SealTypeMap = new Map([
   ["05", "法定代表人名章"]
 ]);
 
+export const SealTypeReverseMap = new Map([
+  ["个人印章", "99"],
+  ["法定名称章", "01"],
+  ["财务专用章", "02"],
+  ["发票专用章", "03"],
+  ["合同专用章", "04"],
+  ["法定代表人名章", "05"]
+])
+
 export const CertStatusMap = new Map([
   ["00", "正常"],
   ["01", "待审核"],
@@ -36,10 +45,10 @@ export const StampShapeTypePersonalMap = new Map([
 ])
 
 export const OrderStatusMap = new Map([
-  ["-1","未支付"],
-  ["0","待支付"],
-  ["1","支付成功"],
-  ["2","支付失败"],
-  ["3","支付超期"],
-  ["4","已扫码，待支付"]
+  ["-1", "未支付"],
+  ["0", "待支付"],
+  ["1", "支付成功"],
+  ["2", "支付失败"],
+  ["3", "支付超期"],
+  ["4", "已扫码，待支付"]
 ])

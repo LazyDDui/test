@@ -27,6 +27,7 @@ import {http} from "@/utils/http";
 import {storeToRefs} from "pinia";
 import ReQrcode from "@/components/ReQrcode";
 import {fp} from "@/utils";
+import SealMaker from "@/components/SealMaker/index.vue";
 
 type GetSealProps = {
   type?: "0" | "1";
@@ -81,7 +82,10 @@ const companyForm = ref({
   pin: ""
 });
 
-const pin = ref("");
+const pin = ref({
+  first: "",
+  last: ""
+});
 const orderStatus = ref("")
 
 const radio = ref(3);
@@ -89,17 +93,19 @@ const sealId = ref()
 
 const orderInfo = ref()
 const loading = ref(false)
+
+const companySeal = ref([])
 const submit = async () => {
   if (step.value === 1) {
     //第一步
     if (props.type == "1") {
-      if (!form.value.pin) {
+      if (!pin.value.last || pin.value.last != pin.value.first) {
         message("请输入pin码")
         return
       }
       loading.value = true
       const finalForm = isForPerson.value == "1" ? {
-        pin: form.value.pin,
+        pin: pin.value.last,
         seals: templatePage.value.records.map((item) => {
           return {
             type: item.type,
@@ -111,7 +117,7 @@ const submit = async () => {
           }
         })
       } : {
-        pin: form.value.pin,
+        pin: pin.value.last,
         seals: [
           {
             type: form.value.type,
@@ -140,34 +146,21 @@ const submit = async () => {
         toNext()
       }
     } else {
-      if (!form.value.pin) {
+      if (!pin.value.last || (pin.value.last != pin.value.first)) {
         message("请输入pin码")
         return
       }
-      const finalForm = isForPerson.value == "1" ? {
-        pin: companyForm.value.pin,
-        seals: templatePage.value.records.map((item) => {
-          return {
-            type: item.type,
-            code: companyForm.value.code,
-            name: companyForm.value.name,
-            stamp: item.pic,
-            stampLength: companyForm.value.stampLength,
-            stampWidth: companyForm.value.stampWidth
-          }
-        })
-      } : {
-        pin: companyForm.value.pin,
-        seals: [
-          {
-            type: companyForm.value.type,
-            code: companyForm.value.code,
-            name: companyForm.value.name,
-            stamp: companyForm.value.stamp,
-            stampLength: companyForm.value.stampLength,
-            stampWidth: companyForm.value.stampWidth
-          }
-        ]
+
+      const finalForm = {
+        pin: pin.value.last,
+        seals: companySeal.value.map((item) => ({
+          type: item.type,
+          code: item.code,
+          name: item.name,
+          stamp: item.stamp,
+          stampLength: item.stampLength,
+          stampWidth: item.stampWidth
+        }))
       }
 
       const res: any = await sealAddApi(finalForm);
@@ -587,7 +580,7 @@ onBeforeUnmount(() => {
         <el-row>
           <el-form-item label="密码：">
             <el-input
-              v-model="pin"
+              v-model="pin.first"
               :maxlength="6"
               placeholder="请输入6位纯数字"
               type="password"
@@ -595,9 +588,9 @@ onBeforeUnmount(() => {
           </el-form-item>
           <el-form-item label="密码：">
             <el-input
-              v-model="form.pin"
+              v-model="pin.last"
               :maxlength="6"
-              :disabled="!pin"
+              :disabled="!pin.first"
               placeholder="请输入再次输入密码"
               type="password"
             />
@@ -671,186 +664,29 @@ onBeforeUnmount(() => {
   </div>
   <div v-else class="sealBox">
     <Motion v-if="step === 1">
-      <el-form :model="companyForm" label-width="auto">
-        <h2>第1步，印章制作</h2>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="申领方式：">
-              <el-radio-group v-model="createType">
-                <el-radio value="1" size="large">智能生成</el-radio>
-                <el-radio value="2" size="large">上传实物印迹</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="是否批量：">
-              <el-radio-group v-model="isForCompany">
-                <el-radio value="1" size="large">是</el-radio>
-                <el-radio value="0" size="large">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="印章类型：">
-              <el-select
-                clearable
-                @change="companyStampChange"
-                v-model="companyForm.type"
-                placeholder="请选择印章类型"
-                size="default"
-                style="width: 200px"
-              >
-                <el-option
-                  v-for="(item, index) in Array.from(SealTypeMap).slice(1)"
-                  :key="index"
-                  :label="item[1]"
-                  :value="item[0]"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="印章规格：">
-              <el-select
-                clearable
-                @change="(e)=>{
-                  console.log(e)
-                  if(e){
-                     companyForm.stampLength = e.split('_')[0]
-                     companyForm.stampWidth = e.split('_')[1]
-                  }else {
-                     companyForm.stampLength = ''
-                     companyForm.stampWidth = ''
-                  }
-                }"
-                v-model="companyStamp"
-                placeholder="请选择印章规格"
-                size="default"
-                style="width: 200px"
-              >
-                <el-option
-                  v-for="(item, index) in Array.from(StampShapeTypeCompanyMap)"
-                  :key="index"
-                  :label="item[0]"
-                  :value="item[1]"
-                />
-              </el-select>
-            </el-form-item>
-            <!--            <el-form-item label="印章宽度：" style="width: 100%">-->
-            <!--              <el-input type="number" v-model="companyForm.stampWidth" placeholder="请输入印章宽度"/>-->
-            <!--            </el-form-item>-->
-            <!--            <el-form-item label="印章长度：" style="width: 100%">-->
-            <!--              <el-input type="number" v-model="companyForm.stampLength" placeholder="请输入印章长度"/>-->
-            <!--            </el-form-item>-->
-            <el-form-item label="印章编码：">
-              <el-input
-                v-model="companyForm.code"
-                placeholder="请输入印章编码"
-              />
-            </el-form-item>
-            <el-form-item v-if="createType == '1'" label="印章样式：" style="width: 100%">
-              <el-row style="width: 100%;">
-                <el-col @click="selectStampTemplate(item)" class="stampTemp" :span="8"
-                        v-for="(item,index) in templatePage.records" :key="index">
-                  <el-image style="width: 60px;height: 60px;object-fit: contain" :src="getBase64(item.pic)"
-                            :alt="index"></el-image>
-                  <el-tag style="font-size: 12px;" :type="item.select?`danger`:`info`">{{ item.description }}</el-tag>
-                </el-col>
-              </el-row>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" v-if="createType == '1'">
-            <div style="display: flex;flex-direction: column;align-items: center;">
-              <el-image style="width: 300px;height: 300px;" alt="personPic" v-if="personPic"
-                        :src="getBase64(personPic)"></el-image>
-              <div
-                style="font-size: 40px;display: flex;justify-content: center;align-items: center;width: 300px;height: 300px;border: 1px dashed black;"
-                v-else>
-                👁‍🗨
-              </div>
-              <div style="font-weight: 600;">章预览</div>
-            </div>
-          </el-col>
-        </el-row>
-        <h2 v-if="!ai">印章图片</h2>
-        <el-row>
-          <!--          <el-col :span="12">-->
-          <!--            <el-form-item v-if="!ai" label="印章名称：">-->
-          <!--              <el-input-->
-          <!--                v-model="companyForm.name"-->
-          <!--                placeholder="请输入印章名称"-->
-          <!--              />-->
-          <!--            </el-form-item>-->
-
-          <!--            <el-form-item v-if="!ai" label="印章形状：">-->
-          <!--              <el-select-->
-          <!--                v-model="companyForm.shape"-->
-          <!--                placeholder="请输入印章形状"-->
-          <!--                size="default"-->
-          <!--                style="width: 200px"-->
-          <!--              >-->
-          <!--                <el-option-->
-          <!--                  v-for="(item, index) in Array.from(StampShapeMap)"-->
-          <!--                  :key="index"-->
-          <!--                  :label="item[1]"-->
-          <!--                  :value="item[0]"-->
-          <!--                />-->
-          <!--              </el-select>-->
-          <!--            </el-form-item>-->
-          <!--            &lt;!&ndash;            <el-form-item v-if="!ai" label="印章宽度(mm)：">&ndash;&gt;-->
-          <!--            &lt;!&ndash;              <el-input&ndash;&gt;-->
-          <!--            &lt;!&ndash;                v-model="companyForm.stampWidth"&ndash;&gt;-->
-          <!--            &lt;!&ndash;                placeholder="请输入印章宽度(mm)"&ndash;&gt;-->
-          <!--            &lt;!&ndash;              />&ndash;&gt;-->
-          <!--            &lt;!&ndash;            </el-form-item>&ndash;&gt;-->
-          <!--            &lt;!&ndash;            <el-form-item v-if="!ai" label="印章长度(mm)：">&ndash;&gt;-->
-          <!--            &lt;!&ndash;              <el-input&ndash;&gt;-->
-          <!--            &lt;!&ndash;                v-model="companyForm.stampLength"&ndash;&gt;-->
-          <!--            &lt;!&ndash;                placeholder="请输入印章长度(mm)"&ndash;&gt;-->
-          <!--            &lt;!&ndash;              />&ndash;&gt;-->
-          <!--            &lt;!&ndash;            </el-form-item>&ndash;&gt;-->
-          <!--          </el-col>-->
-          <el-col v-if="!ai" :span="12" style="display: flex">
-            <el-form-item>
-              <div
-                style="
-                  display: flex;
-                  align-items: center;
-                  flex-direction: column;
-                  margin-right: 20px;
-                "
-              >
-                <ShImageUpload
-                  @getBase64="
-                    (base64: string) => {
-                      if (base64) {
-                        companyForm.stamp = stripBase64Prefix(base64);
-                      } else {
-                        companyForm.stamp = ``;
-                      }
-                    }
-                  "
-                />
-                <div>印章图片</div>
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <h2>确认密码</h2>
-        <el-row>
-          <el-form-item label="密码：">
-            <el-input
-              v-model="pin"
-              :maxlength="6"
-              placeholder="请输入6位纯数字"
-              type="password"
-            />
-          </el-form-item>
-          <el-form-item label="密码：">
-            <el-input
-              v-model="companyForm.pin"
-              :maxlength="6"
-              :disabled="!pin"
-              placeholder="请输入再次输入密码"
-              type="password"
-            />
-          </el-form-item>
-        </el-row>
-      </el-form>
+      <SealMaker @change="(e)=>{
+        companySeal = e
+      }"/>
+      <h2>确认密码</h2>
+      <el-row>
+        <el-form-item label="密码：">
+          <el-input
+            v-model="pin.first"
+            :maxlength="6"
+            placeholder="请输入6位纯数字"
+            type="password"
+          />
+        </el-form-item>
+        <el-form-item label="密码：">
+          <el-input
+            v-model="pin.last"
+            :maxlength="6"
+            :disabled="!pin.first"
+            placeholder="请输入再次输入密码"
+            type="password"
+          />
+        </el-form-item>
+      </el-row>
     </Motion>
     <Motion v-if="step === 2">
       <h2>第2步，选择权益</h2>

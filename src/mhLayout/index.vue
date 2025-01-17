@@ -14,15 +14,17 @@
       </div>
     </main>
     <Settings/>
+    <ContactUs/>
   </v-layout>
 </template>
 <script setup lang="ts">
-import {RouterView} from 'vue-router'
+import {RouterView,useRouter} from 'vue-router'
 import Settings from '@/components/Settings/index.vue'
 import Header from './wigets/Header.vue'
 import {reactive, computed, watch} from 'vue'
 import {useMainStore} from '@/store/useMainStore'
 import Footer from "@/components/views/Footer/index.vue"
+import ContactUs from "@/components/ContactUs/index.vue";
 
 
 

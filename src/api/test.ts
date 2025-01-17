@@ -1,4 +1,4 @@
-import { http } from "@/utils/http";
+import {http} from "@/utils/http";
 
 export const login = (data: object) =>
   http.post(
@@ -26,7 +26,7 @@ export const signInit = () => http.post("/app/sign/init");
 export const checkFile = file =>
   http.post(
     "/app/sign/verify",
-    { data: file },
+    {data: file},
     {
       headers: {
         "Content-Type": "multipart/form-data"
@@ -35,14 +35,14 @@ export const checkFile = file =>
   );
 
 export const personSign = data =>
-  http.post("/app/userAuthentication/addPer", { data }, {});
+  http.post("/app/userAuthentication/addPer", {data}, {});
 export const companySign = data =>
-  http.post("/app/userAuthentication/addUni", { data }, {});
+  http.post("/app/userAuthentication/addUni", {data}, {});
 export const preSign = (url: string, file: FormData) =>
   http.request(
     "put",
     url,
-    { data: file },
+    {data: file},
     {
       headers: {
         "Content-Type": "multipart/form-data"
@@ -115,14 +115,14 @@ export const changeAuthenticationApi = (id: string) =>
 export const getCurrentAuthentication = (data?: object) =>
   http.post<{ data: any }>(
     "/app/session/userAuthentication",
-    { data },
+    {data},
     {},
     true
   );
 
 //api接口调用记录
 export const getRequestPage = (page?: object) =>
-  http.post<{ data: any }>("/app/app/pageRequest", { data: page }, {});
+  http.post<{ data: any }>("/app/app/pageRequest", {data: page}, {});
 ///userAuthentication/remove
 export const removeUserAuthenticationApi = (id: string) =>
   http.post<{ data: any }>("/app/userAuthentication/remove", {
@@ -150,7 +150,7 @@ export const uploadFileApi = (file: File) =>
   http.post(
     "/app/file/upload",
     {
-      data: { file }
+      data: {file}
     },
     {
       headers: {
@@ -210,47 +210,58 @@ export const resetPasswordApi = (data: object) =>
 export const userLogoutApi = () => http.post(`/app/user/logout`);
 
 //获取章分页
-export const stampTemplatePageApi = (current:number,type?:string) =>
-  http.post(`/app/sealMaker/template/page`,{
-    data:{
+export const stampTemplatePageApi = (current: number, type?: string) =>
+  http.post(`/app/sealMaker/template/page`, {
+    data: {
       current,
       type,
-      size:10000
+      size: 10000
     }
   })
 
 //章预览
-export const stampSealMakerApi = (data:object) =>
-  http.post(`/app/sealMaker/make`,{
+export const stampSealMakerApi = (data: object) =>
+  http.post(`/app/sealMaker/make`, {
     data
   })
 //获取权益列表/order/seal/rightsDefinition
-export const getRightsDefinitionApi = (current:number,rightsSealType:"1" | "2") =>
-  http.post(`/app/order/seal/rightsDefinition`,{
-    data:{
+export const getRightsDefinitionApi = (current: number, rightsSealType: "1" | "2") =>
+  http.post(`/app/order/seal/rightsDefinition`, {
+    data: {
       current,
-      size:10000,
+      size: 10000,
       rightsSealType
     }
   })
 //创建订单
-export const createSealOrderApi = (data:object) =>
-  http.post(`/app/order/seal`,{
+export const createSealOrderApi = (data: object) =>
+  http.post(`/app/order/seal`, {
     data
   })
 
 //支付
-export const orderPayApi = (orderNo:string) =>
-  http.post(`/app/order/seal/pay`,{
-    data:{
+export const orderPayApi = (orderNo: string) =>
+  http.post(`/app/order/seal/pay`, {
+    data: {
       orderNo
     }
   })
 //获取订单
-export const getOderQueryApi = (orderNo:string) =>
-  http.post(`/app/order/seal/query`,{
-    data:{
+export const getOderQueryApi = (orderNo: string) =>
+  http.post(`/app/order/seal/query`, {
+    data: {
       orderNo
+    }
+  })
+
+//按类型获取印章模板
+export const getSealMakerTypeTemplateApi = (sealType: string, cn?: string) =>
+  http.post(`/app/sealMaker/make/type`, {
+    data: {
+      sealType,
+      param: {
+        cn
+      }
     }
   })
 
