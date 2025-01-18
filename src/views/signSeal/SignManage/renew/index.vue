@@ -8,6 +8,7 @@ import {onBeforeUnmount, reactive, ref} from "vue";
 import {useSeal} from "@/store/useSeal";
 import {storeToRefs} from "pinia";
 import {createSealOrderApi, getOderQueryApi, getRightsDefinitionApi, orderPayApi} from "@/api/test";
+import {message} from "@/utils/message";
 
 type RenewProps = {
   data: any;
@@ -67,9 +68,19 @@ const submit = async () => {
         ]
       })
       orderInfo.value = data
+      if(!data){
+        return
+      }
       const orderRes = await orderPayApi(orderInfo.value.orderNo)
-      qrCode.value = orderRes.data.billQRCode
-      toNext()
+      if (orderRes.data) {
+        qrCode.value = orderRes.data.billQRCode
+        toNext()
+      } else {
+        message(orderRes.msg, {
+          type: "error"
+        })
+        return
+      }
     } else {
       const {data} = await createSealOrderApi({
         contact: info.contact,
@@ -83,16 +94,33 @@ const submit = async () => {
         ]
       })
       orderInfo.value = data
+      if(!data){
+        return
+      }
       const orderRes = await orderPayApi(orderInfo.value.orderNo)
-      qrCode.value = orderRes.data.billQRCode
-      toNext()
+      if (orderRes.data) {
+        qrCode.value = orderRes.data.billQRCode
+        toNext()
+      } else {
+        message(orderRes.msg, {
+          type: "error"
+        })
+        return
+      }
+
+
       if (!timer) {
         timer = setInterval(() => {
           getOderQueryApi(orderInfo.value.orderNo).then((res) => {
             orderStatus.value = res.data
             if (res.data === "1") {
               clearInterval(timer)
-              props.seeOrder()
+              message("已支付", {
+                type: "success"
+              })
+              setTimeout(() => {
+                props.seeOrder()
+              }, 1000)
             }
           })
         }, 2000)
@@ -143,7 +171,12 @@ const reGetQrcode = async () => {
       orderStatus.value = res.data
       if (res.data === "1") {
         clearInterval(timer)
-        props.seeOrder()
+        message("已支付", {
+          type: "success"
+        })
+        setTimeout(() => {
+          props.seeOrder()
+        }, 1000)
       }
     })
   }, 2000)

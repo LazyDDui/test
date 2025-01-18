@@ -192,16 +192,33 @@ const submit = async () => {
         // ]
       })
       orderInfo.value = data
+      if(!data){
+        return
+      }
       const orderRes = await orderPayApi(orderInfo.value.orderNo)
-      qrCode.value = orderRes.data.billQRCode
-      toNext()
+      if (orderRes.data) {
+        qrCode.value = orderRes.data.billQRCode
+        toNext()
+      } else {
+        message(orderRes.msg, {
+          type: "error"
+        })
+        return
+      }
+
       if (!timer) {
         timer = setInterval(() => {
           getOderQueryApi(orderInfo.value.orderNo).then((res) => {
             orderStatus.value = res.data
             if (res.data === "1") {
               clearInterval(timer)
-              props.seeOrder()
+              message("已支付", {
+                type: "success"
+              })
+              setTimeout(() => {
+                props.seeOrder()
+              }, 1000)
+
             }
           })
         }, 2000)
@@ -217,9 +234,20 @@ const submit = async () => {
         }))
       })
       orderInfo.value = data
+      if(!data){
+        return
+      }
       const orderRes = await orderPayApi(orderInfo.value.orderNo)
-      qrCode.value = orderRes.data.billQRCode
-      toNext()
+      if (orderRes.data) {
+        qrCode.value = orderRes.data.billQRCode
+        toNext()
+      } else {
+        message(orderRes.msg, {
+          type: "error"
+        })
+        return
+      }
+
 
       if (!timer) {
         timer = setInterval(() => {
@@ -227,7 +255,12 @@ const submit = async () => {
             orderStatus.value = res.data
             if (res.data === "1") {
               props.seeOrder()
-              clearInterval(timer)
+              message("已支付", {
+                type: "success"
+              })
+              setTimeout(() => {
+                clearInterval(timer)
+              }, 1000)
             }
           })
         }, 2000)
@@ -435,7 +468,13 @@ const reGetQrcode = async () => {
       orderStatus.value = res.data
       if (res.data === "1") {
         clearInterval(timer)
-        props.seeOrder()
+        message("已支付", {
+          type: "success"
+        })
+        setTimeout(() => {
+          props.seeOrder()
+        }, 1000)
+
       }
     })
   }, 2000)
