@@ -484,7 +484,6 @@ const signSeal = () => {
     }
   }
   signData.value = signArr;
-  console.log(signData.value);
 };
 
 const clearSignature = () => {

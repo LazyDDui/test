@@ -24,7 +24,7 @@ const { isMobile } = storeToRefs(useMainStore());
               <strong>渠道合作</strong>
             </div>
             <div class="desc">咨询商务、媒体、渠道、活动等市场合作</div>
-            <div class="no">19308027881</div>
+            <div class="no">400-161-8811</div>
           </div>
         </li>
         <li>
@@ -34,7 +34,7 @@ const { isMobile } = storeToRefs(useMainStore());
               <strong>产品服务</strong>
             </div>
             <div class="desc">专业客户支持，极速解决技术难题</div>
-            <div class="no">4001618811</div>
+            <div class="no">400-161-8811</div>
           </div>
         </li>
       </ul>

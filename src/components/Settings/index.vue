@@ -1,14 +1,14 @@
 <template>
   <div style="position: fixed; right: 20px; top: 60vh; z-index: 99">
     <div style="display: flex;flex-direction: column;">
-      <div class="feedback"
-           :style="{width:isMobile?`72px`:`90px`,height:isMobile?`72px`:`90px`}"
-           @click="()=> router.push(`/feedback`)">
-        <div style="display: flex;flex-direction: column;align-items: center">
-          <v-img :width="isMobile?26:32" :height="isMobile?26:32" :src="fp('index/icofeedback.png')"></v-img>
-          <div class="mt-1" :style="{fontSize:isMobile?`12px`:`16px`}">意见反馈</div>
-        </div>
-      </div>
+<!--      <div class="feedback"-->
+<!--           :style="{width:isMobile?`72px`:`90px`,height:isMobile?`72px`:`90px`}"-->
+<!--           @click="()=> router.push(`/feedback`)">-->
+<!--        <div style="display: flex;flex-direction: column;align-items: center">-->
+<!--          <v-img :width="isMobile?26:32" :height="isMobile?26:32" :src="fp('index/icofeedback.png')"></v-img>-->
+<!--          <div class="mt-1" :style="{fontSize:isMobile?`12px`:`16px`}">意见反馈</div>-->
+<!--        </div>-->
+<!--      </div>-->
       <div v-if="toTopShow" class="feedback mt-10"
            :style="{width:isMobile?`72px`:`90px`,height:isMobile?`72px`:`90px`}"
            @click="toTop">

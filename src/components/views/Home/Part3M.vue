@@ -1,14 +1,17 @@
 <script setup lang="ts">
 
-import { fp } from "@/utils";
+import {fp} from "@/utils";
 </script>
 
 <template>
   <div style="display: flex;width: 100%;flex-direction: column">
     <div class="item">
       <img class="img" alt="1" :src="fp('index/scene1.png')"/>
+      <!--      <div class="title">-->
+      <!--        App/H5/小程序-->
+      <!--      </div>-->
       <div class="title">
-        App/H5/小程序
+        H5/小程序
       </div>
       <div class="subtitle">
         移动端
@@ -16,10 +19,13 @@ import { fp } from "@/utils";
     </div>
     <div class="item">
       <img class="img" alt="1" :src="fp('index/scene2.png')"/>
+      <!--      <div class="title">-->
+      <!--        服务门户/本地签章客户端-->
+      <!--      </div>-->
       <div class="title">
-        服务门户/本地签章客户端
+        服务门户
       </div>
-      <img style="margin-bottom:17px;" alt="desc" :src="fp('index/icoukeyimg.png')"/>
+      <!--      <img style="margin-bottom:17px;" alt="desc" :src="fp('index/icoukeyimg.png')"/>-->
       <div class="subtitle">
         PC端
       </div>
@@ -44,6 +50,7 @@ import { fp } from "@/utils";
   flex-direction: column;
   align-items: center;
   margin-bottom: 15px;
+
   &:hover .img {
     transform: scale(1.15);
   }

@@ -156,7 +156,7 @@ const getFile = () => {
         }
       })
       .then(res => {
-        if (res.data[0].state == "2" || res.data[0].state == "-1") {
+        if (res.data[0].state == "2") {
           clearInterval(timer);
           timer = null;
           // loadingPdf.value.close();

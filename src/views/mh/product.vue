@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useMainStore } from "@/store/useMainStore";
-import { fp } from "@/utils";
+import {useMainStore} from "@/store/useMainStore";
+import {fp} from "@/utils";
 
 const mainStore = useMainStore();
 
@@ -49,7 +49,7 @@ const icon3 = fp("product/iconote.png");
       <div class="w">
         <div class="flex">
           <div class="left">
-            <v-img :src="area1" max-width="338px" />
+            <v-img :src="area1" max-width="338px"/>
           </div>
           <div class="right">
             <h2>国信公链电子印章小程序</h2>
@@ -57,7 +57,7 @@ const icon3 = fp("product/iconote.png");
               小程序移动端极简应用，支持申领单位电子公章、个人电子私章申领、应用和管理。
             </p>
             <div class="qrcode">
-              <v-img :src="qrcode" width="180px" height="180px" />
+              <v-img :src="qrcode" width="180px" height="180px"/>
               <p>微信扫一扫</p>
             </div>
           </div>
@@ -72,19 +72,19 @@ const icon3 = fp("product/iconote.png");
             <p class="desc">
               APP移动端极简应用，支持申领单位电子公章、个人电子私章申领、应用和管理。
             </p>
-            <div class="qrcode">
-              <a
-                class="btn"
-                href="https://www.ciceseal.com/app/"
-                target="_blank"
-              >
-                <span><v-img width="16px" height="20px" :src="icon1" /></span>
-                <span>Android下载</span>
-              </a>
-            </div>
+            <!--            <div class="qrcode">-->
+            <!--              <a-->
+            <!--                class="btn"-->
+            <!--                href="https://www.ciceseal.com/app/"-->
+            <!--                target="_blank"-->
+            <!--              >-->
+            <!--                <span><v-img width="16px" height="20px" :src="icon1" /></span>-->
+            <!--                <span>Android下载</span>-->
+            <!--              </a>-->
+            <!--            </div>-->
           </div>
           <div class="right">
-            <v-img :src="area2" max-width="338px" />
+            <v-img :src="area2" max-width="338px"/>
           </div>
         </div>
       </div>
@@ -93,23 +93,23 @@ const icon3 = fp("product/iconote.png");
       <div class="w">
         <div class="flex">
           <div class="left">
-            <v-img :src="area3" max-width="338px" />
+            <v-img :src="area3" max-width="338px"/>
           </div>
           <div class="right">
             <h2>国信公链电子印章签章客户端</h2>
             <p class="desc">
               本地化签章客户端，实现本地文件签章、骑缝章、多页签章、大文件签章、文档查验等功能。
             </p>
-            <div class="qrcode">
-              <a
-                class="btn"
-                href="https://www.ciceseal.com/app/"
-                target="_blank"
-              >
-                <span><v-img width="16px" height="20px" :src="icon2" /></span>
-                <span>立即下载</span>
-              </a>
-            </div>
+            <!--            <div class="qrcode">-->
+            <!--              <a-->
+            <!--                class="btn"-->
+            <!--                href="https://www.ciceseal.com/app/"-->
+            <!--                target="_blank"-->
+            <!--              >-->
+            <!--                <span><v-img width="16px" height="20px" :src="icon2" /></span>-->
+            <!--                <span>立即下载</span>-->
+            <!--              </a>-->
+            <!--            </div>-->
           </div>
         </div>
       </div>
@@ -124,18 +124,18 @@ const icon3 = fp("product/iconote.png");
               用户线下办理电子印章业务。
             </p>
             <div class="qrcode">
-              <a
-                class="btn"
-                href="https://www.ciceseal.com/app/"
-                target="_blank"
-              >
-                <span><v-img width="16px" height="20px" :src="icon2" /></span>
-                <span>立即下载</span>
-              </a>
+              <!--              <a-->
+              <!--                class="btn"-->
+              <!--                href="https://www.ciceseal.com/app/"-->
+              <!--                target="_blank"-->
+              <!--              >-->
+              <!--                <span><v-img width="16px" height="20px" :src="icon2" /></span>-->
+              <!--                <span>立即下载</span>-->
+              <!--              </a>-->
             </div>
           </div>
           <div class="right">
-            <v-img :src="area4" max-width="338px" />
+            <v-img :src="area4" max-width="338px"/>
           </div>
         </div>
       </div>
@@ -144,7 +144,7 @@ const icon3 = fp("product/iconote.png");
       <div class="w">
         <div class="flex">
           <div class="left">
-            <v-img :src="area5" max-width="338px" />
+            <v-img :src="area5" max-width="338px"/>
           </div>
           <div class="right">
             <h2>SaaS API 服务能力</h2>
@@ -152,16 +152,16 @@ const icon3 = fp("product/iconote.png");
               开发者可以借助“全国电子印章管理与服务平台”的开放能力，在自身业务
               系统中无缝集成电子印章申领、签章、核验等功能。
             </p>
-            <div class="qrcode">
-              <a
-                class="btn"
-                href="https://www.ciceseal.com/app/"
-                target="_blank"
-              >
-                <span><v-img width="16px" height="20px" :src="icon3" /></span>
-                <span>申请试用</span>
-              </a>
-            </div>
+            <!--            <div class="qrcode">-->
+            <!--              <a-->
+            <!--                class="btn"-->
+            <!--                href="https://www.ciceseal.com/app/"-->
+            <!--                target="_blank"-->
+            <!--              >-->
+            <!--                <span><v-img width="16px" height="20px" :src="icon3"/></span>-->
+            <!--                <span>申请试用</span>-->
+            <!--              </a>-->
+            <!--            </div>-->
           </div>
         </div>
       </div>
