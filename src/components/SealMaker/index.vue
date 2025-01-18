@@ -8,6 +8,7 @@ import {stampSealMakerApi, stampTemplatePageApi} from "@/api/test";
 import {useSeal} from "@/store/useSeal";
 import {storeToRefs} from "pinia";
 import {v4 as uuidv4} from "uuid";
+import {message} from "@/utils/message";
 
 defineOptions({
   name: "SealMaker"
@@ -73,6 +74,9 @@ const companyStampChange = async (e) => {
     length: 0
   }
 
+  currentChoose.value.id = ""
+  companyForm.value.stamp = '';
+  currentChoose.value.stamp = ''
   // currentType.value = e
   await currentChange(1, e)
 }
@@ -102,6 +106,12 @@ const templatePage = ref({
   total: 0
 });
 
+const find = computed(() => {
+  return chooseList.value.find((item) => {
+    return companyForm.value.type == item.type
+  })
+})
+
 const add = async (isPic?: boolean) => {
   if (isPic) {
     if (currentChoose.value.id) {
@@ -119,6 +129,25 @@ const add = async (isPic?: boolean) => {
         }
       })
     } else {
+
+      if (find.value) {
+        message(`已添加${SealTypeMap.get(find.value.type)}类型章`, {
+          type: "error"
+        })
+        return
+      }
+      const uni = uuidv4()
+      currentChoose.value = {
+        type: companyForm.value.type,
+        name: SealTypeMap.get(companyForm.value.type),
+        stamp: companyForm.value.stamp,
+        stampLength: companyForm.value.stampLength,
+        stampWidth: companyForm.value.stampWidth,
+        stampInfo: companyForm.value.stampInfo,
+        id: uni,
+        code: companyForm.value.code,
+        isTemp: createType.value
+      }
       chooseList.value.push({
         type: companyForm.value.type,
         name: SealTypeMap.get(companyForm.value.type),
@@ -126,10 +155,12 @@ const add = async (isPic?: boolean) => {
         stampLength: companyForm.value.stampLength,
         stampWidth: companyForm.value.stampWidth,
         stampInfo: companyForm.value.stampInfo,
-        id: uuidv4(),
+        id: uni,
         code: companyForm.value.code,
         isTemp: createType.value
       })
+
+
     }
   } else {
     const {data} = await stampSealMakerApi({
@@ -156,6 +187,23 @@ const add = async (isPic?: boolean) => {
         }
       })
     } else {
+      if (find.value) {
+        message(`已添加${SealTypeMap.get(find.value.type)}类型章`, {
+          type: "error"
+        })
+        return
+      }
+      currentChoose.value = {
+        type: companyForm.value.type,
+        name: SealTypeMap.get(companyForm.value.type),
+        stamp: companyForm.value.stamp,
+        stampLength: currentTemplatePage.value.length,
+        stampWidth: currentTemplatePage.value.width,
+        id: currentTemplatePage.value.id,
+        template: currentTemplatePage.value.template,
+        code: companyForm.value.code,
+        isTemp: createType.value
+      }
       chooseList.value.push({
         type: companyForm.value.type,
         name: SealTypeMap.get(companyForm.value.type),
@@ -167,9 +215,11 @@ const add = async (isPic?: boolean) => {
         code: companyForm.value.code,
         isTemp: createType.value
       })
+
+
     }
   }
-  emit("change",chooseList.value)
+  emit("change", chooseList.value)
 }
 
 const clear = () => {
@@ -197,7 +247,6 @@ const clear = () => {
 const chooseChange = async (item: any) => {
   //@ts-ignore
   currentChoose.value = item
-  console.log(currentChoose.value)
   //@ts-ignore
   companyForm.value = item
   await currentChange(1, item.type)
@@ -219,13 +268,14 @@ const removeChoose = (item: any) => {
     stampWidth: "",
     id: ""
   }
-  emit("change",chooseList.value)
+  emit("change", chooseList.value)
 }
 
 
 </script>
 <template>
   <el-form :model="companyForm" label-width="auto">
+    <h2>第1步，印章制作</h2>
     <el-form-item label="印章类型：">
       <el-select
         clearable
@@ -242,14 +292,9 @@ const removeChoose = (item: any) => {
           :value="item[0]"
         />
       </el-select>
-      <el-button style="margin-left: 20px;" @click="()=>{
-        clear()
-        createType = '1'
-      }">添加印章
-      </el-button>
     </el-form-item>
 
-    <h2>第1步，印章制作</h2>
+
     <el-row>
       <el-col :span="12">
         <el-form-item label="申领方式：">
@@ -261,6 +306,7 @@ const removeChoose = (item: any) => {
 
         <el-form-item label="印章编码：">
           <el-input
+            clearable
             style="width: 200px;"
             v-model="companyForm.code"
             placeholder="请输入印章编码"
@@ -317,16 +363,17 @@ const removeChoose = (item: any) => {
                 "
           >
             <ShImageUpload
-              :imgs="[currentChoose.stamp]"
+              :imgs="currentChoose.stamp"
               @getBase64="
                     (base64: string) => {
                       if (base64) {
                         companyForm.stamp = stripBase64Prefix(base64);
                       } else {
                         companyForm.stamp = ``;
-                        chooseList.splice(chooseList.findIndex((item)=>{
-                          return item.id == currentChoose.id
-                        }),1)
+                        currentChoose.stamp = ``
+                        // chooseList.splice(chooseList.findIndex((item)=>{
+                        //   return item.id == currentChoose.id
+                        // }),1)
                       }
                     }
                   "
@@ -335,10 +382,10 @@ const removeChoose = (item: any) => {
           </div>
         </el-form-item>
         <el-button v-if="createType == '2' && companyForm.stamp" type="primary" @click="add(true)">
-          {{ currentChoose.id ? `确认修改` : `确认添加` }}
+          {{ find ? `确认修改` : `确认添加` }}
         </el-button>
         <el-button v-if="currentTemplatePage.id && createType == '1'" type="primary" @click="add(false)">{{
-            currentChoose.id ? `确认修改` : `确认添加`
+            find ? `确认修改` : `确认添加`
           }}
         </el-button>
       </el-col>

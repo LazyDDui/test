@@ -41,10 +41,6 @@ const qrCode = ref("http://182.151.13.73:9999/pay/open/getQrCode/667726500140683
 
 const personStamp = ref("")
 
-const companyStamp = ref("")
-
-const isForPerson = ref("0")
-const isForCompany = ref("0")
 
 const form = ref({
   type: "",
@@ -89,7 +85,7 @@ const pin = ref({
 const orderStatus = ref("")
 
 const radio = ref(3);
-const sealId = ref()
+const sealId = ref([])
 
 const orderInfo = ref()
 const loading = ref(false)
@@ -104,19 +100,7 @@ const submit = async () => {
         return
       }
       loading.value = true
-      const finalForm = isForPerson.value == "1" ? {
-        pin: pin.value.last,
-        seals: templatePage.value.records.map((item) => {
-          return {
-            type: item.type,
-            code: form.value.code,
-            name: form.value.name,
-            stamp: item.pic,
-            stampLength: form.value.stampLength,
-            stampWidth: form.value.stampWidth
-          }
-        })
-      } : {
+      const finalForm = {
         pin: pin.value.last,
         seals: [
           {
@@ -139,7 +123,7 @@ const submit = async () => {
         message("申领成功", {
           type: "success"
         });
-        sealId.value = res.data.id
+        sealId.value = res.data.map((item) => item.id)
         loading.value = false
         // closeAllDialog();
         await getSealManageInfo();
@@ -175,7 +159,7 @@ const submit = async () => {
         });
 
       }
-      sealId.value = res.data.id
+      sealId.value = res.data.map((item) => item.id)
       loading.value = false
       // closeAllDialog();
       await getSealManageInfo();
@@ -196,12 +180,16 @@ const submit = async () => {
         contact: companyInfo.contact,
         contactPhone: companyInfo.contactPhone,
         address: companyInfo.address,
-        items: [
-          {
-            sealId: sealId.value,
-            rightsDefinitionId: currentRightCom.value[0].id
-          }
-        ]
+        item: sealId.value.map((item) => ({
+          id: item,
+          rightsDefinitionId: currentRightCom.value[0].id
+        }))
+        // items: [
+        //   {
+        //     sealId: sealId.value,
+        //     rightsDefinitionId: currentRightCom.value[0].id
+        //   }
+        // ]
       })
       orderInfo.value = data
       const orderRes = await orderPayApi(orderInfo.value.orderNo)
@@ -212,6 +200,7 @@ const submit = async () => {
           getOderQueryApi(orderInfo.value.orderNo).then((res) => {
             orderStatus.value = res.data
             if (res.data === "1") {
+              clearInterval(timer)
               props.seeOrder()
             }
           })
@@ -222,12 +211,10 @@ const submit = async () => {
         contact: companyInfo.contact,
         contactPhone: companyInfo.contactPhone,
         address: companyInfo.address,
-        items: [
-          {
-            sealId: sealId.value,
-            rightsDefinitionId: currentRightCom.value[0].id
-          }
-        ]
+        item: sealId.value.map((item) => ({
+          id: item,
+          rightsDefinitionId: currentRightCom.value[0].id
+        }))
       })
       orderInfo.value = data
       const orderRes = await orderPayApi(orderInfo.value.orderNo)
@@ -240,6 +227,7 @@ const submit = async () => {
             orderStatus.value = res.data
             if (res.data === "1") {
               props.seeOrder()
+              clearInterval(timer)
             }
           })
         }, 2000)
@@ -446,6 +434,7 @@ const reGetQrcode = async () => {
     getOderQueryApi(orderInfo.value.orderNo).then((res) => {
       orderStatus.value = res.data
       if (res.data === "1") {
+        clearInterval(timer)
         props.seeOrder()
       }
     })
@@ -478,12 +467,12 @@ onBeforeUnmount(() => {
                 <el-radio value="1" size="large">个人私章</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="是否批量：">
-              <el-radio-group v-model="isForPerson">
-                <el-radio value="1" size="large">是</el-radio>
-                <el-radio value="0" size="large">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
+            <!--            <el-form-item label="是否批量：">-->
+            <!--              <el-radio-group v-model="isForPerson">-->
+            <!--                <el-radio value="1" size="large">是</el-radio>-->
+            <!--                <el-radio value="0" size="large">否</el-radio>-->
+            <!--              </el-radio-group>-->
+            <!--            </el-form-item>-->
             <el-form-item v-if="createType == '1'" label="印章样式：" style="width: 100%">
               <el-row>
                 <el-col @click="selectStampTemplate(item)" class="stampTemp" :span="8"
@@ -754,7 +743,7 @@ onBeforeUnmount(() => {
     </Motion>
   </div>
   <el-row style="width: 100%; justify-content: center">
-    <el-button style="width: 200px" type="primary" @click="toBack" :disabled="step == 1">上一步</el-button>
+    <el-button style="width: 200px" type="primary" @click="toBack" :disabled="step == 1 || step == 2">上一步</el-button>
     <!--    <el-button @click="toNext" :disabled="step == 4">下一步</el-button>-->
     <el-button style="width: 200px" type="primary" @click="submit" :disabled="step == 4">
       {{ step == 1 ? "确认申领" : "下一步" }}

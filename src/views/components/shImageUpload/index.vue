@@ -132,7 +132,7 @@ import {v4 as uuidv4} from "uuid";
 type ShUploadProps = {
   limit?: number;
   uploadUrl?: string;
-  imgs?: string[];
+  imgs?: string;
 };
 
 defineOptions({
@@ -143,19 +143,24 @@ const props = defineProps<ShUploadProps>();
 
 const emit = defineEmits(["change", "getBase64"]);
 
-const fileList = ref((props.imgs && props.imgs[0]) ? props.imgs.map((i)=>getBase64(i)) : []); // 图片列表
+const fileList = ref((props.imgs) ? [getBase64(props.imgs)] : []); // 图片列表
 const dialogImageUrl = ref(""); // 预览图url
 const dialogVisible = ref(false); // 预览弹窗
 const hideUpload = ref(false); // 是否隐藏上传按钮
 const upload = ref<UploadInstance>();
 
-const previewFileList = ref((props.imgs && props.imgs[0]) ? props.imgs.map((i)=>getBase64(i)) : []);
+const previewFileList = ref((props.imgs) ? [getBase64(props.imgs)] : []);
 
 
 watch(() => props.imgs, (value) => {
-  if (value && value[0]) {
-    previewFileList.value = value.map((item)=>getBase64(item))
-    fileList.value = value.map((item)=>getBase64(item))
+  if (value) {
+    previewFileList.value = [getBase64(value)]
+    fileList.value = [getBase64(value)]
+  }
+  console.log(value)
+  if (value == '') {
+    previewFileList.value = []
+    fileList.value = []
   }
 })
 

@@ -91,6 +91,7 @@ const submit = async () => {
           getOderQueryApi(orderInfo.value.orderNo).then((res) => {
             orderStatus.value = res.data
             if (res.data === "1") {
+              clearInterval(timer)
               props.seeOrder()
             }
           })
@@ -141,6 +142,7 @@ const reGetQrcode = async () => {
     getOderQueryApi(orderInfo.value.orderNo).then((res) => {
       orderStatus.value = res.data
       if (res.data === "1") {
+        clearInterval(timer)
         props.seeOrder()
       }
     })
