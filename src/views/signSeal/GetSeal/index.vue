@@ -180,8 +180,8 @@ const submit = async () => {
         contact: companyInfo.contact,
         contactPhone: companyInfo.contactPhone,
         address: companyInfo.address,
-        item: sealId.value.map((item) => ({
-          id: item,
+        items: sealId.value.map((item) => ({
+          sealId: item,
           rightsDefinitionId: currentRightCom.value[0].id
         }))
         // items: [
@@ -211,8 +211,8 @@ const submit = async () => {
         contact: companyInfo.contact,
         contactPhone: companyInfo.contactPhone,
         address: companyInfo.address,
-        item: sealId.value.map((item) => ({
-          id: item,
+        items: sealId.value.map((item) => ({
+          sealId: item,
           rightsDefinitionId: currentRightCom.value[0].id
         }))
       })
@@ -619,7 +619,7 @@ onBeforeUnmount(() => {
         </el-col>
         <el-col class="priceContent" :span="12">
           <div class="price">
-            ¥{{ item.price }}
+            ¥{{ Number(item.price) * sealId.length }}
           </div>
         </el-col>
       </el-row>
@@ -709,7 +709,7 @@ onBeforeUnmount(() => {
         </el-col>
         <el-col class="priceContent" :span="12">
           <div class="price">
-            ¥{{ item.price }}
+            ¥{{ Number(item.price) * sealId.length }}
           </div>
         </el-col>
       </el-row>
