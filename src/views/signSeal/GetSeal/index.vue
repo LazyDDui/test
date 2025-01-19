@@ -291,6 +291,11 @@ const templateSearch = ref({});
 const currentChange = async (e: number) => {
   templatePage.value.current = e;
   const {data} = await stampTemplatePageApi(templatePage.value.current, currentType.value);
+  if (props.type == "1") {
+    const f = data.records.find((item) => item.type == '99')
+    form.value.stampWidth = f.width
+    form.value.stampLength = f.length
+  }
   templatePage.value = {
     records: props.type == '1' ? data.records.map((item) => ({
       ...item,
@@ -522,7 +527,7 @@ onBeforeUnmount(() => {
                 </el-col>
               </el-row>
             </el-form-item>
-            <el-form-item label="印章规格：">
+            <el-form-item v-if="!ai" label="印章规格：">
               <el-select
                 clearable
                 @change="(e)=>{
