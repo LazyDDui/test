@@ -398,7 +398,7 @@ const companyRights = ref({
   total: 0
 })
 const getRightsList = async (type: "1" | "2") => {
-  const {data} = await getRightsDefinitionApi(1, type)
+  const {data} = await getRightsDefinitionApi(1, type, "1")
   companyRights.value = {
     ...data,
     records: data.records.map((item) => ({

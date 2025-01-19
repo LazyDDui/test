@@ -105,7 +105,7 @@ const columns: TableColumnList = [
       return h(SealBtn, {
         data: data.row,
         getList,
-        addClick: () => {
+        addClick: (type) => {
           addDialog({
             hideFooter: true,
             width: '80vw',
@@ -113,6 +113,7 @@ const columns: TableColumnList = [
             contentRenderer({options, index}) {
               return h(Renew, {
                 data: data.row,
+                type,
                 seeOrder: () => {
                   props.sealManageFn()
                 }

@@ -8,7 +8,7 @@ import Loading from "@/components/Common/Loading.vue";
 
 type BtnProps = {
   detailClick: () => void;
-  addClick: () => void;
+  addClick: (type:"1" | "2") => void;
   data: any;
   getList: () => void;
 };
@@ -64,10 +64,10 @@ const remove = () => {
     >备案下载
     </el-button>
     <el-button :disabled="data.status == '2'" v-if="data.status == '1'" size="small" type="success" plain round
-               @click="addClick">续费
+               @click="addClick('2')">续费
     </el-button>
     <el-button :disabled="data.status == '2'" v-if="data.status == '0'" size="small" type="success" plain round
-               @click="addClick">缴费
+               @click="addClick('1')">缴费
     </el-button>
     <el-button size="small" type="danger" plain round @click="remove">注销</el-button>
   </el-row>

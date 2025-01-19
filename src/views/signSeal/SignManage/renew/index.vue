@@ -13,6 +13,7 @@ import {message} from "@/utils/message";
 type RenewProps = {
   data: any;
   seeOrder: () => void;
+  type: "1" | "2";
 }
 
 defineOptions({
@@ -68,7 +69,7 @@ const submit = async () => {
         ]
       })
       orderInfo.value = data
-      if(!data){
+      if (!data) {
         return
       }
       const orderRes = await orderPayApi(orderInfo.value.orderNo)
@@ -94,7 +95,7 @@ const submit = async () => {
         ]
       })
       orderInfo.value = data
-      if(!data){
+      if (!data) {
         return
       }
       const orderRes = await orderPayApi(orderInfo.value.orderNo)
@@ -140,7 +141,7 @@ const chooseRights = (item) => {
 }
 
 const getRightsList = async (type: "1" | "2") => {
-  const {data} = await getRightsDefinitionApi(1, type)
+  const {data} = await getRightsDefinitionApi(1, type, props.type)
   rights.value = {
     ...data,
     records: data.records.map((item) => ({

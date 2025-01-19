@@ -225,12 +225,13 @@ export const stampSealMakerApi = (data: object) =>
     data
   })
 //获取权益列表/order/seal/rightsDefinition
-export const getRightsDefinitionApi = (current: number, rightsSealType: "1" | "2") =>
+export const getRightsDefinitionApi = (current: number, rightsSealType: "1" | "2",rightsType:"1" | "2") =>
   http.post(`/app/order/seal/rightsDefinition`, {
     data: {
       current,
       size: 10000,
-      rightsSealType
+      rightsSealType,
+      rightsType
     }
   })
 //创建订单
