@@ -21,10 +21,10 @@ type SignManageProps = {
 
 const props = defineProps<SignManageProps>()
 const StatusMap = new Map([
-  ["0", "初次激活"],
-  ["1", "激活"],
-  ["2", "注销"],
-  ["3", "激活失败"]
+  ["0", "无效（未支付）"],
+  ["1", "有效"],
+  ["2", "无效（注销）"],
+  ["3", "无效（申领失败）"]
 ])
 
 
@@ -59,12 +59,12 @@ const columns: TableColumnList = [
     }
   },
   {
-    label: "过期时间",
+    label: "权益到期时间",
     prop: "expireTime",
     align: "center"
   },
   {
-    label: "剩余份数",
+    label: "签署额度",
     prop: "expireTime",
     align: "center",
     cellRenderer(data) {

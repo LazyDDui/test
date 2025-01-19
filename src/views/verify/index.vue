@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { ref, toRaw } from "vue";
-import { genFileId } from "element-plus";
+import {ref, toRaw} from "vue";
+import {genFileId} from "element-plus";
 import type {
   UploadInstance,
   UploadProps,
   UploadRawFile,
   UploadUserFile
 } from "element-plus";
-import { ElMessage } from "element-plus";
-import { storeToRefs } from "pinia";
-import { useMainStore } from "@/store/useMainStore";
-import { checkFile } from "@/api/test";
-import { fp } from "@/utils";
+import {ElMessage} from "element-plus";
+import {storeToRefs} from "pinia";
+import {useMainStore} from "@/store/useMainStore";
+import {checkFile} from "@/api/test";
+import {fp} from "@/utils";
 import SealFooter from "@/components/Common/SealFooter.vue";
+import {c} from "vite/dist/node/types.d-aGj9QkWt";
 
 const isDisabled = ref<boolean>(false);
 const centerDialogVisible = ref<boolean>(false);
@@ -25,7 +26,49 @@ const name = ref<string>("上传PDF、OFD格式文档");
 const chkFile = ref<object>(null);
 const isShow = ref<boolean>(false);
 
-const { screen } = storeToRefs(useMainStore());
+const showDetail = ref(false)
+
+const {screen} = storeToRefs(useMainStore());
+
+const currentList = ref([])
+
+
+const d = [
+  {id: "zz", name: 'pppp', desc: "wwwwww"},
+  {id: "zz", name: 'pppp', desc: "wwwwww"},
+  {id: "pp", name: 'zz', desc: "wwwwww"}
+];
+
+const finalList = ref([])
+
+
+const filterList = (data: any[]) => {
+  const resultMap = new Map();
+
+  data.forEach((item: any) => {
+    // 使用id和name作为唯一键
+    const key = `${item.signSub}-${item.signSubType}`;
+
+    if (!resultMap.has(key)) {
+      // 如果还没有这样的key，初始化entry
+      resultMap.set(key, {
+        ...item,
+        list: [item],
+        count: 1
+      });
+    } else {
+      // 如果已经存在，那么更新list和count
+      const existingItem = resultMap.get(key);
+      existingItem.list.push(item);
+      existingItem.count++;
+    }
+  });
+
+// 将Map转换为期望的数组格式
+  return Array.from(resultMap.values());
+}
+
+
 const submitUpload = async () => {
   if (!chkFile.value) {
     centerDialogVisible.value = true;
@@ -35,11 +78,13 @@ const submitUpload = async () => {
       const formData = new FormData();
       formData.append("file", chkFile.value);
       const res = await checkFile(formData);
-      console.log(res);
       if (res.code == "00") {
         if (res.data && res.data.length > 0) {
           isShow.value = false;
           list.value = res.data;
+          finalList.value = filterList(res.data)
+          console.log(finalList.value)
+          console.log(list.value)
           flag.value = true;
           isDisabled.value = true;
           btnFlag.value = false;
@@ -47,6 +92,8 @@ const submitUpload = async () => {
         } else {
           isShow.value = true;
           list.value = res.data;
+          finalList.value = filterList(res.data)
+          console.log(finalList.value)
           flag.value = true;
           isDisabled.value = true;
           btnFlag.value = false;
@@ -85,6 +132,8 @@ const handleExceed: UploadProps["onExceed"] = async files => {
 const handleProgress = (ev, file, files) => {
   console.log("pro", ev, file, files);
 };
+
+
 </script>
 
 <template>
@@ -140,7 +189,7 @@ const handleProgress = (ev, file, files) => {
       </div>
       <div class="table-bg">
         <div v-if="!isShow">
-          <div class="title"><span class="dot" />验证结果</div>
+          <div class="title"><span class="dot"/>验证结果</div>
           <div class="table">
             <div class="row">
               <div class="col">
@@ -160,7 +209,7 @@ const handleProgress = (ev, file, files) => {
           </div>
         </div>
         <div v-if="isShow">
-          <div class="title"><span class="dot" />基本信息</div>
+          <div class="title"><span class="dot"/>基本信息</div>
           <div class="table">
             <div class="row">
               <div class="col">
@@ -174,11 +223,11 @@ const handleProgress = (ev, file, files) => {
         </div>
         <div v-if="!isShow">
           <div class="title">
-            <span class="dot" />签署信息<span style="font-size: 14px"
-              >（文档中共有
+            <span class="dot"/>签署信息<span style="font-size: 14px"
+          >（文档中共有
               <span style="color: #5080f7">{{ list.length }}</span>
               个签章）</span
-            >
+          >
           </div>
           <div
             class="bt-table-content"
@@ -188,8 +237,8 @@ const handleProgress = (ev, file, files) => {
               flex-wrap: wrap;
             "
           >
-            <div v-for="(item, index) in list" :key="index" class="tb-table">
-              <div class="tb-row">
+            <div v-for="(item, index) in finalList" :key="index" class="tb-table">
+              <div class="tb-row" style="position: relative">
                 <div class="tb-col seal-sign">
                   <label>印章图像：</label>
                   <span style="line-height: 190px">
@@ -198,6 +247,12 @@ const handleProgress = (ev, file, files) => {
                       :src="'data:image/png;base64,' + item.sealPerPic"
                     />
                   </span>
+                  <div style="position:absolute;right: 20px;top: 10px;">×{{ item.count }}</div>
+                  <el-button @click="()=>{
+                    currentList = item.list
+                    showDetail = true
+                  }" type="text" style="position:absolute;right: 20px;bottom: 20px;">查看明细
+                  </el-button>
                 </div>
               </div>
               <div class="tb-row">
@@ -224,11 +279,11 @@ const handleProgress = (ev, file, files) => {
                 <div class="tb-col">
                   <label>制作服务平台：</label>
                   <span
-                    ><img
-                      :src="fp('verify/hui.png')"
-                      width="25px"
-                      height="25px"
-                    />&nbsp;&nbsp;全国电子印章管理与服务平台江西省平台
+                  ><img
+                    :src="fp('verify/hui.png')"
+                    width="25px"
+                    height="25px"
+                  />&nbsp;&nbsp;全国电子印章管理与服务平台江西省平台
                   </span>
                 </div>
               </div>
@@ -236,11 +291,11 @@ const handleProgress = (ev, file, files) => {
                 <div class="tb-col">
                   <label>备案服务单位：</label>
                   <span
-                    ><img
-                      :src="fp('verify/hui.png')"
-                      width="25px"
-                      height="25px"
-                    />&nbsp;&nbsp;公安部第三研究所</span
+                  ><img
+                    :src="fp('verify/hui.png')"
+                    width="25px"
+                    height="25px"
+                  />&nbsp;&nbsp;公安部第三研究所</span
                   >
                 </div>
               </div>
@@ -249,9 +304,74 @@ const handleProgress = (ev, file, files) => {
         </div>
       </div>
     </div>
+    <el-dialog title="印章列表" v-model="showDetail" style="width: 90vw" @close="()=>{
+          currentList = [];
+          showDetail = false
+        }">
+      <div style="display: flex;justify-content: space-between;flex-wrap: wrap;height: 80vh;overflow-y: scroll">
+        <div v-for="(item, index) in currentList" :key="index" class="tb-table" style="padding: 10px;border: 1px dashed red;margin-bottom: 20px;border-radius: 10px;">
+          <div class="tb-row">
+            <div class="tb-col seal-sign">
+              <label>印章图像：</label>
+              <span style="line-height: 190px">
+                    <img
+                      style="width: 142px"
+                      :src="'data:image/png;base64,' + item.sealPerPic"
+                    />
+                  </span>
+            </div>
+          </div>
+          <div class="tb-row">
+            <div class="tb-col">
+              <label>签署主体：</label>
+              <span>{{ item.signSub }}</span>
+            </div>
+          </div>
+          <div class="tb-row">
+            <div class="tb-col">
+              <label>签章时间：</label>
+              <span>{{ item.signTime }}</span>
+            </div>
+          </div>
+          <!--              <div class="tb-row">-->
+          <!--                <div class="tb-col">-->
+          <!--                  <label>印章有效期 ：</label>-->
+          <!--                  <span><img src="/verify/guo.png" width="25px" height="25px">&nbsp;&nbsp;{{-->
+          <!--                      item.expDate-->
+          <!--                    }}</span>-->
+          <!--                </div>-->
+          <!--              </div>-->
+          <div class="tb-row">
+            <div class="tb-col">
+              <label>制作服务平台：</label>
+              <span
+              ><img
+                :src="fp('verify/hui.png')"
+                width="25px"
+                height="25px"
+              />&nbsp;&nbsp;全国电子印章管理与服务平台江西省平台
+                  </span>
+            </div>
+          </div>
+          <div class="tb-row">
+            <div class="tb-col">
+              <label>备案服务单位：</label>
+              <span
+              ><img
+                :src="fp('verify/hui.png')"
+                width="25px"
+                height="25px"
+              />&nbsp;&nbsp;公安部第三研究所</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </el-dialog>
     <el-dialog v-model="dialogVisible" width="300" align-center>
       <div style="text-align: center">
-        <img alt="loading" :src="fp('verify/loading.96e04459.gif')" />
+        <img alt="loading" :src="fp('verify/loading.96e04459.gif')"/>
       </div>
     </el-dialog>
     <el-dialog

@@ -124,7 +124,7 @@ const sealManageFn = () => {
       sealManageFn
     }),
     hideFooter: true,
-    width: "80vw"
+    width: "90vw"
   });
 };
 //sh

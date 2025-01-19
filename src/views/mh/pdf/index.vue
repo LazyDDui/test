@@ -175,6 +175,9 @@ const getFile = () => {
               ? docName.value
               : docName.value + ".pdf"
           );
+          message("签署成功", {
+            type: "success"
+          })
           // loadingPdf.value.close();
           loading.value = false
           return;
@@ -224,6 +227,12 @@ const normalArr = ref([]);
 const qfArr = ref([]);
 
 const submitStampListUi = ref([]);
+
+const close = () => {
+  if (timer) {
+    clearInterval(timer)
+  }
+}
 </script>
 
 <template>
@@ -246,7 +255,7 @@ const submitStampListUi = ref([]);
             style="width: 100px"
             placeholder="请输入密码"
             maxlength="6"
-            type="text"
+            type="password"
           />
         </template>
       </el-table-column>
@@ -263,9 +272,9 @@ const submitStampListUi = ref([]);
     :stamp-list="stampList"
     @sign="shSign"
   />
-  <el-dialog v-model="loading" width="300" align-center>
+  <el-dialog @close="close" v-model="loading" width="300" align-center>
     <div style="text-align: center;display: flex;flex-direction: column;align-items: center">
-      <img alt="loading" :src="fp('verify/loading.96e04459.gif')" />
+      <img alt="loading" :src="fp('verify/loading.96e04459.gif')"/>
       <div>签署中，请耐心等待～</div>
     </div>
   </el-dialog>
