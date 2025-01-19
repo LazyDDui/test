@@ -69,7 +69,7 @@ const remove = () => {
     <el-button :disabled="data.status == '2'" v-if="data.status == '0'" size="small" type="success" plain round
                @click="addClick">缴费
     </el-button>
-    <!--    <el-button size="small" type="danger" plain round @click="remove">删除</el-button>-->
+    <el-button size="small" type="danger" plain round @click="remove">注销</el-button>
   </el-row>
 </template>
 
