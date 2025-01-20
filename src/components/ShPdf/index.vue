@@ -391,7 +391,7 @@ const end = (e: any) => {
           const a = Number((parseInt(gaiCanvas.width) / A4.width).toFixed(2))
           const nw = sealPicList.value[newIndex].length * a
           img.set({
-            left: gai.width - originImg.width! / 2 * nw / originImg.width / 2,
+            left: gai.width - originImg.width! / 2 * nw / 2 / originImg.width / 2,
             top: e.originalEvent.layerY,
             scaleX: nw / originImg.width,
             scaleY: nw / originImg.width,
@@ -413,10 +413,9 @@ const end = (e: any) => {
             type: sealKinds.value.find(item => item.select).type,
             uId: uId
           };
-
           gaiCanvas.on("object:moving", options => {
             const obj = options.target;
-            obj.set("left", gai.width - img.width! / 2 * nw / img.width / 2);
+            obj.set("left", gai.width - img.width! / 2 * nw / 2 / img.width / 2);
             const halfHeight = (obj.height! / 2) / img.width;
 
             if (obj.top! < halfHeight) {
@@ -427,12 +426,19 @@ const end = (e: any) => {
             if (obj.top! > maxTop) {
               obj.set("top", maxTop);
             }
+
             // 同步所有其他物体的位置
-            toRaw(qfStamp.value).forEach((otherObj) => {
-              otherObj.set("top", obj.top)
+            toRaw(qfStamp.value).forEach((otherObj, index) => {
+              otherObj.set({
+                top: obj.top
+              })
+              gaiFabric.value[index].renderAll()
             });
+
             obj.setCoords();
+
           });
+
           gaiCanvas.add(group);
           qfStamp.value.push(group)
         });

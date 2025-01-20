@@ -644,7 +644,7 @@ onBeforeUnmount(() => {
         </el-col>
         <el-col class="priceContent" :span="12">
           <div class="price">
-            ¥{{ item.price }}
+            ¥{{ Number(item.price) }}
           </div>
         </el-col>
         <h3>价格明细</h3>
@@ -663,7 +663,7 @@ onBeforeUnmount(() => {
         </el-col>
         <el-col class="priceContent" :span="12">
           <div class="price">
-            ¥{{ Number(item.price) * sealId.length }}
+            ¥{{ Number(item.price) / 100 * sealId.length }}
           </div>
         </el-col>
       </el-row>
@@ -734,7 +734,7 @@ onBeforeUnmount(() => {
         </el-col>
         <el-col class="priceContent" :span="12">
           <div class="price">
-            ¥{{ item.price }}
+            ¥{{ Number(item.price) / 100 }}
           </div>
         </el-col>
         <h3>价格明细</h3>
@@ -753,7 +753,7 @@ onBeforeUnmount(() => {
         </el-col>
         <el-col class="priceContent" :span="12">
           <div class="price">
-            ¥{{ Number(item.price) * sealId.length }}
+            ¥{{ Number(item.price) / 100 * sealId.length }}
           </div>
         </el-col>
       </el-row>

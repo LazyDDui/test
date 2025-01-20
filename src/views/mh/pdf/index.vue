@@ -56,7 +56,9 @@ const getSeal = async () => {
     ...item,
     id: item.id,
     url: "data:image/jpeg;base64," + item.pic
-  }));
+  })).filter((i) => {
+    return i.status == '1'
+  });
 };
 
 getSeal();

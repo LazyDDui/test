@@ -20,7 +20,7 @@ type PrinciType = {
   isPerson: boolean;
 };
 
-const {auth} = storeToRefs(useSeal())
+const {auth, userInfo} = storeToRefs(useSeal())
 const {t} = useI18n();
 const staticValue = ref("1");
 const companyStaticValue = ref("0");
@@ -40,15 +40,17 @@ const initialPersonForm = {
   //姓名
   name: "",
   //手机
-  tel: "",
+  tel: userInfo.value.user_info.phone,
   //身份证号
   idCard: "",
   //住址
   address: "",
   facePath: "",
   backPath: "",
-  smsCode: ""
+  // smsCode: ""
 };
+
+console.log(initialPersonForm)
 
 // const initialCompanyForm = {
 //   responsibilityIdType: "0",
@@ -113,8 +115,8 @@ const initialCompanyForm = {
   operatorTel: "",
   //经办人证件号码
   operatorIdNo: "",
-  operatorFacePath:"",
-  operatorBackPath:"",
+  operatorFacePath: "",
+  operatorBackPath: "",
   juriIdType: "0",
   smsCode: "",
   operatorLetterOfAuthorizationPath: ""
@@ -242,14 +244,14 @@ const companyRule = reactive<FormRules>({});
           <h2>个人信息</h2>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="姓名：" prop="name">
+              <el-form-item label="姓名：" prop="name" required>
                 <el-input
                   v-model="form.name"
                   placeholder="请输入姓名"
                   @change="change(form)"
                 />
               </el-form-item>
-              <el-form-item label="身份证号码：" prop="idCard">
+              <el-form-item label="身份证号码：" prop="idCard" required>
                 <el-input
                   v-model="form.idCard"
                   placeholder="请输入身份证号"
@@ -258,52 +260,53 @@ const companyRule = reactive<FormRules>({});
               </el-form-item>
               <el-form-item label="实名手机号码：" prop="tel">
                 <el-input
+                  disabled
                   v-model="form.tel"
                   placeholder="请输入实名手机号码"
                   @change="change(form)"
                 />
               </el-form-item>
-              <el-form-item label="图形验证码" prop="code">
-                <el-input
-                  v-model="graphCode"
-                  clearable
-                  :placeholder="t('login.pureVerifyCode')"
-                >
-                  <template v-slot:append>
-                    <el-image style="width: 100%;" :src="imageCode" alt="code" @click="getImage"/>
-                  </template>
-                </el-input>
-              </el-form-item>
-              <el-form-item label="验证码" prop="smsCode">
-                <div class="w-full flex">
-                  <el-input
-                    v-model="form.smsCode"
-                    clearable
-                    :placeholder="t('login.pureSmsVerifyCode')"
-                  />
-                  <el-button
-                    :disabled="!form.tel && !graphCode"
-                    class="ml-2"
-                    @click="
-              async () => {
-                if (!graphCode) {
-                  message('请输入验证码', {
-                    type: 'error'
-                  });
-                }
-                await useVerifyCode().start(personRef, 'phone');
-                await getPersonPhoneCode();
-              }
-            "
-                  >
-                    {{
-                      text.length > 0
-                        ? text + t("login.pureInfo")
-                        : t("login.pureGetVerifyCode")
-                    }}
-                  </el-button>
-                </div>
-              </el-form-item>
+              <!--              <el-form-item label="图形验证码" prop="code">-->
+              <!--                <el-input-->
+              <!--                  v-model="graphCode"-->
+              <!--                  clearable-->
+              <!--                  :placeholder="t('login.pureVerifyCode')"-->
+              <!--                >-->
+              <!--                  <template v-slot:append>-->
+              <!--                    <el-image style="width: 100%;" :src="imageCode" alt="code" @click="getImage"/>-->
+              <!--                  </template>-->
+              <!--                </el-input>-->
+              <!--              </el-form-item>-->
+              <!--              <el-form-item label="验证码" prop="smsCode">-->
+              <!--                <div class="w-full flex">-->
+              <!--                  <el-input-->
+              <!--                    v-model="form.smsCode"-->
+              <!--                    clearable-->
+              <!--                    :placeholder="t('login.pureSmsVerifyCode')"-->
+              <!--                  />-->
+              <!--                  <el-button-->
+              <!--                    :disabled="!form.tel && !graphCode"-->
+              <!--                    class="ml-2"-->
+              <!--                    @click="-->
+              <!--              async () => {-->
+              <!--                if (!graphCode) {-->
+              <!--                  message('请输入验证码', {-->
+              <!--                    type: 'error'-->
+              <!--                  });-->
+              <!--                }-->
+              <!--                await useVerifyCode().start(personRef, 'phone');-->
+              <!--                await getPersonPhoneCode();-->
+              <!--              }-->
+              <!--            "-->
+              <!--                  >-->
+              <!--                    {{-->
+              <!--                      text.length > 0-->
+              <!--                        ? text + t("login.pureInfo")-->
+              <!--                        : t("login.pureGetVerifyCode")-->
+              <!--                    }}-->
+              <!--                  </el-button>-->
+              <!--                </div>-->
+              <!--              </el-form-item>-->
               <el-form-item label="住址：">
                 <el-input
                   v-model="form.address"

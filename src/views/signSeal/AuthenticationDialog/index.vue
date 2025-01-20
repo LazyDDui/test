@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h, reactive, ref, toRaw } from "vue";
+import {h, reactive, ref, toRaw} from "vue";
 import Btn from "@/views/signSeal/AuthenticationDialog/btn/index.vue";
 import {
   addDialog,
@@ -15,14 +15,14 @@ import {
   changeAuthenticationApi,
   getCurrentAuthentication
 } from "@/api/test";
-import { useSeal } from "@/store/useSeal";
-import { storeToRefs } from "pinia";
-import { ElMessage } from "element-plus";
-import { http } from "@/utils/http";
-import { CertStatusMap } from "@/utils/map";
+import {useSeal} from "@/store/useSeal";
+import {storeToRefs} from "pinia";
+import {ElMessage} from "element-plus";
+import {http} from "@/utils/http";
+import {CertStatusMap} from "@/utils/map";
 
-const { setAuth, getSealManageInfo } = useSeal();
-const { auth } = storeToRefs(useSeal());
+const {setAuth, getSealManageInfo} = useSeal();
+const {auth} = storeToRefs(useSeal());
 type ShTable = {
   cols: TableColumnList;
   tableData: any[];
@@ -108,13 +108,14 @@ const addAuthentication = () => {
           placeholder="请输入名称"
         />
         <el-button size="default" type="primary" @click="emit('search', form)"
-        >搜索</el-button
+        >搜索
+        </el-button
         >
       </div>
     </el-row>
 
 
-    <pure-table style="margin-top: 20px" :data="tableData" :columns="columns" />
+    <pure-table style="margin-top: 20px" :data="tableData" :columns="columns"/>
     <el-row style="margin-top: 20px; justify-content: flex-end; width: 100%">
       <el-pagination
         background

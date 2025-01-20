@@ -38,7 +38,8 @@ export default ({mode}: ConfigEnv): UserConfigExport => {
           // target: "http://192.168.101.115:9999",
           target: VITE_BASE_URL,
           changeOrigin: true, // 是否允许跨域
-          secure: false
+          secure: false,
+          // rewrite: path => path.replace(/^\/api/, ""),
         },
         "/admin": {
           // 请求接口中要替换的标识
