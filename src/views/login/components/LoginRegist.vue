@@ -1,27 +1,28 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
-import { ref, reactive } from "vue";
+import {useI18n} from "vue-i18n";
+import {ref, reactive, h} from "vue";
 import Motion from "../utils/motion";
-import { message } from "@/utils/message";
-import { updateRules } from "../utils/rule";
-import type { FormInstance } from "element-plus";
-import { useVerifyCode } from "../utils/verifyCode";
-import { $t, transformI18n } from "@/plugins/i18n";
-import { useUserStoreHook } from "@/store/modules/user";
-import { useRenderIcon } from "@/components/ReIcon/src/hooks";
+import {message} from "@/utils/message";
+import {updateRules} from "../utils/rule";
+import type {FormInstance} from "element-plus";
+import {useVerifyCode} from "../utils/verifyCode";
+import {$t, transformI18n} from "@/plugins/i18n";
+import {useUserStoreHook} from "@/store/modules/user";
+import {useRenderIcon} from "@/components/ReIcon/src/hooks";
 import Lock from "@iconify-icons/ri/lock-fill";
 import Iphone from "@iconify-icons/ep/iphone";
 import User from "@iconify-icons/ri/user-3-fill";
-import { v4 as uuidv4 } from "uuid";
+import {v4 as uuidv4} from "uuid";
 import {
   getUserGraphCode,
   getUserSmsCodeApi,
   login,
   userRegisterApi
 } from "@/api/test";
-import { useRouter } from "vue-router";
+import {useRouter} from "vue-router";
+import {addDialog} from "@/components/ReDialog/index";
 
-const { t } = useI18n();
+const {t} = useI18n();
 const checked = ref(false);
 const loading = ref(false);
 const router = useRouter();
@@ -38,7 +39,7 @@ const ruleForm = reactive({
 
 const graphCode = ref("");
 const ruleFormRef = ref<FormInstance>();
-const { isDisabled, text } = useVerifyCode();
+const {isDisabled, text} = useVerifyCode();
 const repeatPasswordRule = [
   {
     validator: (rule, value, callback) => {
@@ -124,25 +125,25 @@ const getPhoneCode = async () => {
     :rules="updateRules"
     size="large"
   >
-<!--    <Motion>-->
-<!--      <el-form-item-->
-<!--        :rules="[-->
-<!--          {-->
-<!--            required: true,-->
-<!--            message: transformI18n($t('login.pureUsernameReg')),-->
-<!--            trigger: 'blur'-->
-<!--          }-->
-<!--        ]"-->
-<!--        prop="loginName"-->
-<!--      >-->
-<!--        <el-input-->
-<!--          v-model="ruleForm.loginName"-->
-<!--          clearable-->
-<!--          :placeholder="t('login.pureUsername')"-->
-<!--          :prefix-icon="useRenderIcon(User)"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--    </Motion>-->
+    <!--    <Motion>-->
+    <!--      <el-form-item-->
+    <!--        :rules="[-->
+    <!--          {-->
+    <!--            required: true,-->
+    <!--            message: transformI18n($t('login.pureUsernameReg')),-->
+    <!--            trigger: 'blur'-->
+    <!--          }-->
+    <!--        ]"-->
+    <!--        prop="loginName"-->
+    <!--      >-->
+    <!--        <el-input-->
+    <!--          v-model="ruleForm.loginName"-->
+    <!--          clearable-->
+    <!--          :placeholder="t('login.pureUsername')"-->
+    <!--          :prefix-icon="useRenderIcon(User)"-->
+    <!--        />-->
+    <!--      </el-form-item>-->
+    <!--    </Motion>-->
 
     <Motion :delay="100">
       <el-form-item prop="phone">
@@ -164,7 +165,7 @@ const getPhoneCode = async () => {
           :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
         >
           <template v-slot:append>
-            <el-image :src="imageCode" alt="code" @click="getImage" />
+            <el-image :src="imageCode" alt="code" @click="getImage"/>
           </template>
         </el-input>
       </el-form-item>
@@ -235,7 +236,20 @@ const getPhoneCode = async () => {
           <el-checkbox v-model="checked">
             {{ t("login.pureReadAccept") }}
           </el-checkbox>
-          <el-button link type="primary"> 隐私协议、用户服务协议 </el-button>
+          <el-button link type="primary" @click="()=>{
+            addDialog({title:'',
+            contentRenderer(){
+              return h('iframe',{
+                style:{
+                  width:'100%',
+                  height:'400px'
+                },
+                src:'http://182.151.13.73:9099/doc/%E9%9A%90%E7%A7%81%E6%9D%A1%E6%AC%BEv1.html'
+              })
+            }
+            })
+          }"> 隐私协议、用户服务协议
+          </el-button>
         </div>
       </el-form-item>
     </Motion>

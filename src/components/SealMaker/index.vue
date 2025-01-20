@@ -2,7 +2,7 @@
 
 import {getBase64, stripBase64Prefix} from "@/utils/common";
 import {SealTypeMap, StampShapeTypeCompanyMap, StampShapeTypePersonalMap} from "@/utils/map";
-import {computed, ref} from "vue";
+import {computed, ref, toRaw, watchEffect} from "vue";
 import ShImageUpload from "@/views/components/shImageUpload/index.vue";
 import {stampSealMakerApi, stampTemplatePageApi} from "@/api/test";
 import {useSeal} from "@/store/useSeal";
@@ -49,36 +49,43 @@ const currentChoose = ref({
 })
 
 const companyStampChange = async (e) => {
-  companyForm.value = {
-    type: companyForm.value.type,
-    //印章编码
-    code: "",
-    //印章名称
-    name: "",
-    //印章图片
-    stamp: "",
-    //印章长度mm
-    stampLength: "",
-    //印章宽度mm
-    stampWidth: "",
-  }
-  if (e) {
-    companyForm.value.name = SealTypeMap.get(e)
-  } else {
-    companyForm.value.name = ""
-  }
-  currentTemplatePage.value = {
-    id: "",
-    template: "",
-    width: 0,
-    length: 0
-  }
 
-  currentChoose.value.id = ""
-  companyForm.value.stamp = '';
-  currentChoose.value.stamp = ''
-  // currentType.value = e
-  await currentChange(1, e)
+  const f = JSON.parse(JSON.stringify(toRaw(chooseList.value))).find((item) => {
+    return e == item.type
+  })
+
+  if (f) {
+    await chooseChange(f)
+  } else {
+    companyForm.value = {
+      type: companyForm.value.type,
+      //印章编码
+      code: "",
+      //印章名称
+      name: "",
+      //印章图片
+      stamp: "",
+      //印章长度mm
+      stampLength: "",
+      //印章宽度mm
+      stampWidth: "",
+    }
+    if (e) {
+      companyForm.value.name = SealTypeMap.get(e)
+    } else {
+      companyForm.value.name = ""
+    }
+    currentTemplatePage.value = {
+      id: "",
+      template: "",
+      width: 0,
+      length: 0
+    }
+    currentChoose.value.id = ""
+    companyForm.value.stamp = '';
+    currentChoose.value.stamp = ''
+    await currentChange(1, e)
+  }
 }
 
 const currentChange = async (e: number, type: string) => {
@@ -106,10 +113,13 @@ const templatePage = ref({
   total: 0
 });
 
+// const find = computed(() => {
+//   return chooseList.value.find((item) => {
+//     return companyForm.value.type == item.type
+//   })
+// })
 const find = computed(() => {
-  return chooseList.value.find((item) => {
-    return companyForm.value.type == item.type
-  })
+  return currentChoose.value.id
 })
 
 const add = async (isPic?: boolean) => {
@@ -220,6 +230,7 @@ const add = async (isPic?: boolean) => {
     }
   }
   emit("change", chooseList.value)
+  console.log(chooseList.value)
 }
 
 const clear = () => {
@@ -245,15 +256,16 @@ const clear = () => {
 }
 
 const chooseChange = async (item: any) => {
+  const i = JSON.parse(JSON.stringify(item))
   //@ts-ignore
-  currentChoose.value = item
+  currentChoose.value = JSON.parse(JSON.stringify(item))
   //@ts-ignore
-  companyForm.value = item
-  await currentChange(1, item.type)
-  currentTemplatePage.value.id = item.id
-  currentTemplatePage.value.template = item.template
-  currentTemplatePage.value.width = item.stampWidth
-  currentTemplatePage.value.length = item.length
+  companyForm.value = i
+  await currentChange(1, i.type)
+  currentTemplatePage.value.id = i.id
+  currentTemplatePage.value.template = i.template
+  currentTemplatePage.value.width = i.stampWidth
+  currentTemplatePage.value.length = i.length
   createType.value = currentChoose.value.isTemp
 }
 
@@ -317,6 +329,7 @@ const removeChoose = (item: any) => {
             <el-col
               @click="()=>{
                 currentTemplatePage = item
+
               }"
               class="stampTemp" :span="8"
               v-for="(item,index) in templatePage.records" :key="index">
@@ -414,6 +427,7 @@ const removeChoose = (item: any) => {
               <el-image style="width: 120px;height: 120px" :src="getBase64(item.stamp)"></el-image>
               <span @click.stop="removeChoose(item)" v-if="item.id" class="iconfont"
                     style="font-size: 20px;position: absolute;right: 20px;top: 10px;cursor: pointer;">&#xe612;</span>
+              <div>{{item.name}}</div>
             </div>
           </div>
         </div>
@@ -446,5 +460,8 @@ const removeChoose = (item: any) => {
 
 .cList {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>
