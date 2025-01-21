@@ -123,6 +123,7 @@ const handleChange = (uploadFile, uploadFiles) => {
   console.log("change", uploadFile);
   name.value = uploadFile.name;
   chkFile.value = uploadFile.raw;
+  submitUpload()
 };
 const handleExceed: UploadProps["onExceed"] = async files => {
   uploadRef.value!.clearFiles();
@@ -171,7 +172,6 @@ const handleProgress = (ev, file, files) => {
             width: 800px;
             background-color: white;
             height: 64px;
-            margin-top: 10px;
           "
         >
           <img
@@ -181,10 +181,11 @@ const handleProgress = (ev, file, files) => {
           />
           <div class="upload">{{ name }}</div>
         </el-button>
+        <el-button class="check">
+          {{ btnFlag ? "立即验证" : "取消" }}
+        </el-button>
       </el-upload>
-      <el-button class="check" @click="submitUpload()">
-        {{ btnFlag ? "立即验证" : "取消" }}
-      </el-button>
+
     </div>
     <div v-if="flag" class="result">
       <div
