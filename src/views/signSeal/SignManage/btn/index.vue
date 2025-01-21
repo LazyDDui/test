@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSeal } from "@/store/useSeal";
 import { useRouter } from "vue-router";
+import {closeAllDialog} from "@/components/ReDialog/index";
 
 type BtnProps = {
   dwClick: () => void;
@@ -23,6 +24,7 @@ const reSign = () => {
   setTimeout(() => {
     router.push("/pdf");
   });
+  closeAllDialog()
 };
 
 </script>
