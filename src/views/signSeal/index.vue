@@ -39,6 +39,7 @@ import {enIdNo} from "@/utils/common";
 import {useDataThemeChange} from "@/layout/hooks/useDataThemeChange";
 import {message} from "@/utils/message";
 import SealFooter from "@/components/Common/SealFooter.vue";
+import Verify from "@/views/verify/index.vue";
 
 const router = useRouter();
 
@@ -46,7 +47,14 @@ const total = ref(0);
 const {getList} = useSeal();
 
 const toGoPage = () => {
-  router.push({name: "verify"});
+  // router.push({name: "verify"});
+  addDialog({
+    fullscreen: true,
+    hideFooter: true,
+    contentRenderer() {
+      return h(Verify)
+    }
+  })
 };
 const userAuthenlicationInfo = ref<any[]>([{}]);
 const getUserAuthenlication = async () => {
@@ -389,7 +397,7 @@ const apiCreate = () => {
           </div>
         </div>
       </div>
-      <SealFooter style="max-width: 1200px;margin: 0 auto"/>
+      <SealFooter style="max-width: 90vw;margin: 0 auto"/>
     </div>
     <el-dialog v-model="unCertGetSealShow">
       <template #title>主体类型</template>
@@ -442,7 +450,7 @@ const apiCreate = () => {
 }
 
 .shBox {
-  width: 1200px;
+  width: 90vw;
   margin: 0 auto;
 
   .header {
@@ -478,7 +486,7 @@ const apiCreate = () => {
   .text {
     //display: flex;
     //justify-content: space-between;
-    width: 100%;
+    width: 90vw;
     height: 70vh;
     //overflow-y: scroll;
     .innerText {
@@ -488,7 +496,7 @@ const apiCreate = () => {
       height: calc(70vh);
 
       .left-side {
-        flex: 1;
+        flex: 20vw;
         display: flex;
         flex-direction: column;
         margin-right: 10px;
@@ -626,7 +634,8 @@ const apiCreate = () => {
       }
 
       .right-side {
-        flex: 4;
+        //flex: 4;
+        width: 70vw;
         background-color: #fff;
         border: 1px solid #fff;
         border-radius: 10px;

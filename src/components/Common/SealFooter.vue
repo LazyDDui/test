@@ -29,7 +29,7 @@ defineOptions({
   width: 100%;
   height: 4.5vh;
   margin: 0 auto;
-  max-width: 1200px;
+  width: 90vw;
   margin: 0.8vh;
   display: flex;
   color: #fff;

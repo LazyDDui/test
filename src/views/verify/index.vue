@@ -27,6 +27,10 @@ const name = ref<string>("上传PDF、OFD格式文档");
 const chkFile = ref<object>(null);
 const isShow = ref<boolean>(false);
 
+defineOptions({
+  name: "Verify"
+})
+
 const router = useRouter()
 
 const showDetail = ref(false)
@@ -138,9 +142,9 @@ const handleProgress = (ev, file, files) => {
 </script>
 
 <template>
-  <span @click="()=>{
-    router.push(`/SignManage`)
-  }" class="iconfont" style="cursor:pointer;;font-size: 22px;display: inline-block;margin: 16px 20px;">&#xe60f;</span>
+  <!--  <span @click="()=>{-->
+  <!--    router.push(`/SignManage`)-->
+  <!--  }" class="iconfont" style="cursor:pointer;;font-size: 22px;display: inline-block;margin: 16px 20px;">&#xe60f;</span>-->
   <div class="body-content">
     <div class="tc head">
       <h2>签章验证</h2>
