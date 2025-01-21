@@ -225,7 +225,7 @@ onBeforeUnmount(() => {
         </el-col>
         <el-col class="priceContent" :span="12">
           <div class="price">
-            ¥{{ Number(item.price) }}
+            ¥{{ Number(item.price) / 100 }}
           </div>
         </el-col>
       </el-row>
@@ -272,7 +272,7 @@ onBeforeUnmount(() => {
         </el-col>
         <el-col class="priceContent" :span="12">
           <div class="price">
-            ¥{{ Number(item.price) }}
+            ¥{{ Number(item.price) / 100 }}
           </div>
         </el-col>
         <h3>价格明细</h3>
@@ -291,7 +291,7 @@ onBeforeUnmount(() => {
         </el-col>
         <el-col class="priceContent" :span="12">
           <div class="price">
-            ¥{{ Number(item.price) }}
+            ¥{{ Number(item.price) / 100 }}
           </div>
         </el-col>
       </el-row>
@@ -326,7 +326,7 @@ onBeforeUnmount(() => {
   <el-row style="width: 100%; justify-content: center">
     <el-button style="width: 200px" type="primary" @click="toBack" :disabled="step == 1">上一步</el-button>
     <!--    <el-button @click="toNext" :disabled="step == 4">下一步</el-button>-->
-    <el-button style="width: 200px" type="primary" @click="submit" :disabled="step == 3">
+    <el-button style="width: 200px" type="primary" @click="submit" :disabled="step == 3 || currentRight.length==0">
       {{ "下一步" }}
     </el-button>
   </el-row>

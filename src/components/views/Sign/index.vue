@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {
   ElMessage,
   genFileId,
@@ -8,31 +8,31 @@ import {
   UploadProps,
   UploadRawFile
 } from "element-plus";
-import { storeToRefs } from "pinia";
+import {storeToRefs} from "pinia";
 import {
   downloadFileApi,
   preSign,
   sealUpload,
   uploadFileApi
 } from "@/api/test";
-import { http } from "@/utils/http";
-import { useRoute, useRouter } from "vue-router";
-import { fp } from "@/utils";
-import { useMainStore } from "@/store/useMainStore";
-import { useSeal } from "@/store/useSeal";
-import { closeAllDialog } from "@/components/ReDialog/index";
-import { v4 as uuidv4 } from "uuid";
-import { getFileBlob, preViewFile } from "@/utils/common";
+import {http} from "@/utils/http";
+import {useRoute, useRouter} from "vue-router";
+import {fp} from "@/utils";
+import {useMainStore} from "@/store/useMainStore";
+import {useSeal} from "@/store/useSeal";
+import {closeAllDialog} from "@/components/ReDialog/index";
+import {v4 as uuidv4} from "uuid";
+import {getFileBlob, preViewFile} from "@/utils/common";
 
 onMounted(() => {
   console.log(uuidv4());
 });
 
-const { screen } = storeToRefs(useMainStore());
-const { fileId } = storeToRefs(useSeal());
-const { setDocName } = useSeal();
+const {screen} = storeToRefs(useMainStore());
+const {fileId} = storeToRefs(useSeal());
+const {setDocName} = useSeal();
 
-const { setFileId } = useSeal();
+const {setFileId} = useSeal();
 
 const route = useRoute();
 const id = route.query.id;
@@ -56,7 +56,7 @@ const handleExceed: UploadProps["onExceed"] = async files => {
   upload.value!.clearFiles();
   const file = files[0] as UploadRawFile;
   f.value = file.raw;
-  const { data } = await uploadFileApi(f.value);
+  const {data} = await uploadFileApi(f.value);
   setFileId(data.fileId);
   file.uid = genFileId();
   upload.value!.handleStart(file);
@@ -72,13 +72,13 @@ const change = async (e: UploadFile) => {
   f.value = e.raw;
   const file = new FormData();
   file.append("file", f.value);
-  const { data } = await uploadFileApi(f.value);
+  const {data} = await uploadFileApi(f.value);
   setFileId(data.fileId);
 };
 
 // const { screen } = storeToRefs(useMainStore());
 
-const { getSubjectId, setSealInfo } = useSeal();
+const {getSubjectId, setSealInfo} = useSeal();
 
 const sign = () => {
   if (fileNo.value) {
@@ -118,20 +118,7 @@ const sign = () => {
         width: `${screen.width - 200}px`
       }"
     >
-      <el-button style="flex: 1; background-color: white; height: 64px">
-        <img
-          alt="upload"
-          style="width: 30px; height: 20px"
-          :src="fp('verify/下载.png')"
-        />
-        <div class="upload">
-          {{
-            defaultName
-              ? defaultName
-              : "请选择定稿的签署文档（支持PDF、word格式，文件大小<10M）"
-          }}
-        </div>
-      </el-button>
+
       <el-upload
         ref="upload"
         type="file"
@@ -142,17 +129,38 @@ const sign = () => {
         :on-exceed="handleExceed"
         @change="change"
       >
-        <el-button
-          style="
+        <el-row :style="{
+        width: `${screen.width - 200}px`,
+        alignItems:'center',
+        display:'flex'
+      }">
+          <el-button style="flex: 1; background-color: white; height: 64px">
+            <img
+              alt="upload"
+              style="width: 30px; height: 20px"
+              :src="fp('verify/下载.png')"
+            />
+            <div class="upload">
+              {{
+                defaultName
+                  ? defaultName
+                  : "请选择定稿的签署文档（支持PDF、word格式，文件大小<10M）"
+              }}
+            </div>
+          </el-button>
+          <el-button
+            style="
             background-color: #0a4fd3;
             width: 200px;
             height: 64px;
-            margin-top: 10px;
             color: #ffffff;
             margin-left: 20px;
           "
-          >选择文件</el-button
-        >
+          >选择文件
+          </el-button
+          >
+        </el-row>
+
       </el-upload>
     </div>
     <el-form :model="form" :style="{ width: `${screen.width - 200}px` }">

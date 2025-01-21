@@ -18,7 +18,7 @@ const {t} = useI18n();
 const psdRef = ref()
 
 const psd = reactive({
-  oldPin: "",
+  // oldPin: "",
   newPin: "",
   code: ""
 });
@@ -41,39 +41,46 @@ const submit = () => {
   http
     .post(`/app/userAuthentication/seal/changePin`, {
       data: {
-        oldPassword: psd.oldPin,
+        // oldPassword: psd.oldPin,
         newPassword: psd.newPin,
         sealId: props.data.id,
-        code:psd.code
+        code: psd.code
       }
     })
-    .then(() => {
-      message("修改成功", {
-        type: "success"
-      });
-      closeAllDialog();
+    .then((res) => {
+      if (res.code == "0") {
+        message("修改成功", {
+          type: "success"
+        });
+        closeAllDialog();
+      } else {
+        message(res.msg, {
+          type: "error"
+        })
+      }
+
     })
 };
 </script>
 
 <template>
   <el-form ref="psdRef" style="display: flex;flex-direction: column;align-items: center" v-model="psd">
-    <el-form-item label="旧密码" label-width="100" prop="oldPin">
-      <el-input
-        maxlength="6"
-        v-model="psd.oldPin"
-        style="margin-bottom: 20px;width: 300px"
-        placeholder="请输入旧密码"
-      />
-    </el-form-item>
+    <!--    <el-form-item label="旧密码" label-width="100" prop="oldPin">-->
+    <!--      <el-input-->
+    <!--        maxlength="6"-->
+    <!--        v-model="psd.oldPin"-->
+    <!--        style="margin-bottom: 20px;width: 300px"-->
+    <!--        placeholder="请输入旧密码"-->
+    <!--      />-->
+    <!--    </el-form-item>-->
     <el-form-item label="新密码" label-width="100" prop="newPin">
       <el-input style="margin-bottom: 20px;width: 300px" maxlength="6" v-model="psd.newPin" placeholder="请输入新密码"/>
     </el-form-item>
     <el-form-item label="确认新密码" label-width="100" prop="newPin">
-      <el-input style="margin-bottom: 20px;width: 300px" maxlength="6" v-model="psd.newPin"
+      <el-input style="margin-bottom: 20px;width: 300px" maxlength="6" v-model="review"
                 placeholder="请输入确认新密码"/>
     </el-form-item>
-    <el-form-item label="验证码" prop="code">
+    <el-form-item label-width="100" label="验证码" prop="code">
       <div class="w-full flex">
         <el-input
           v-model="psd.code"

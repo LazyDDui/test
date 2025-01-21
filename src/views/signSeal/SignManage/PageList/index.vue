@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { h, reactive, ref } from "vue";
+import {h, reactive, ref} from "vue";
 import Btn from "@/views/signSeal/SignManage/btn/index.vue";
-import { getSignRequestFile } from "@/api/test";
-import { http } from "@/utils/http";
-import { message } from "@/utils/message";
-import { useSeal } from "@/store/useSeal";
-import { storeToRefs } from "pinia";
-import { downloadPdf } from "@/utils/common";
+import {getSignRequestFile} from "@/api/test";
+import {http} from "@/utils/http";
+import {message} from "@/utils/message";
+import {useSeal} from "@/store/useSeal";
+import {storeToRefs} from "pinia";
+import {downloadPdf} from "@/utils/common";
 import {addDialog} from "@/components/ReDialog/index";
 
-const { getList } = useSeal();
-const { fileList } = storeToRefs(useSeal());
+const {getList} = useSeal();
+const {fileList} = storeToRefs(useSeal());
+
+const loading = ref(false)
 
 const state = ref({
   records: [],
@@ -82,11 +84,13 @@ const form = reactive({
 });
 
 const currentChange = async (e: number) => {
+  loading.value = true
   current.value = e;
-  const { data } = await getSignRequestFile(e, {
+  const {data} = await getSignRequestFile(e, {
     docName: form.docName
   });
   state.value = data;
+  loading.value = false
 };
 
 currentChange(1);
@@ -102,12 +106,12 @@ currentChange(1);
     />
     <el-button
       type="primary"
-      @click="
-        getList(current, {
-          docName: form.docName
-        })
-      "
-      >搜索</el-button
+      @click="()=>{
+          currentChange(state.current)
+          getList(current, {})
+}"
+    >搜索
+    </el-button
     >
     <!--    <el-select-->
     <!--      v-model="form.userStatus"-->
@@ -136,6 +140,7 @@ currentChange(1);
     <!--      />-->
     <!--    </el-select>-->
     <pure-table
+      v-loading="loading"
       style="margin-top: 20px"
       :data="state.records"
       :columns="columns"

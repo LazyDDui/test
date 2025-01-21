@@ -17,7 +17,7 @@ const props = defineProps<BtnProps>();
 const reSign = () => {
   setFileId(props.data.srcFileId);
   setSealInfo({
-    appno: props.data.id
+    appno: props.data.requestId
   });
   setDocName(props.data.docName)
   setTimeout(() => {

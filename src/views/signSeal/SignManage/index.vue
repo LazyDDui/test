@@ -13,11 +13,13 @@ import {useSeal} from "@/store/useSeal";
 import Loading from "@/components/Common/Loading.vue";
 import Renew from "@/views/signSeal/SignManage/renew/index.vue";
 
-const loading = ref(false)
+const loadList = ref(false)
 
 type SignManageProps = {
   sealManageFn: () => void;
 }
+
+const loading = ref(false)
 
 const props = defineProps<SignManageProps>()
 const StatusMap = new Map([
@@ -39,7 +41,7 @@ const getStatus = (item: any) => {
 const columns: TableColumnList = [
   {
     label: "印章编码",
-    prop: "id",
+    prop: "code",
     width: 180,
     align: "center"
   },
@@ -155,12 +157,16 @@ const columns: TableColumnList = [
               URL.revokeObjectURL(blobUrl);
               loading.value = false
             })
-            .catch(error => {
+            .catch((error) => {
                 loading.value = false
-                console.error(
-                  "There was a problem with the fetch operation:",
-                  error
-                )
+                message("下载失败", {
+                  type: "error"
+                })
+                // message(error.)
+                // console.error(
+                //   "There was a problem with the fetch operation:",
+                //   error
+                // )
               }
             );
         }
@@ -216,12 +222,14 @@ const tableData = ref({
 const {getSealManageInfo} = useSeal()
 
 const getList = async () => {
+  loadList.value = true
   const {data} = await getUserAuthentication(
     tableData.value.current,
     form.name
   );
   tableData.value = data;
   await getSealManageInfo()
+  loadList.value = false
 };
 
 const currentChange = async e => {
@@ -240,6 +248,7 @@ getList();
     />
     <el-button type="primary" @click="getList">搜索</el-button>
     <pure-table
+      v-loading="loadList"
       style="margin-top: 20px"
       :data="tableData.records"
       :columns="columns"

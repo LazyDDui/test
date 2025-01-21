@@ -384,6 +384,7 @@ const end = (e: any) => {
     ).then((originImg: {
       width: number
     }) => {
+      const groups = []
       for (let i = 0; i < pages.value.length; i++) {
 
         fabric.Image.fromURL(stamps.value[i], (img: any) => {
@@ -413,11 +414,11 @@ const end = (e: any) => {
             type: sealKinds.value.find(item => item.select).type,
             uId: uId
           };
+
           gaiCanvas.on("object:moving", options => {
             const obj = options.target;
             obj.set("left", gai.width - img.width! / 2 * nw / 2 / img.width / 2);
             const halfHeight = (obj.height! / 2) / img.width;
-
             if (obj.top! < halfHeight) {
               obj.set("top", halfHeight);
             }
@@ -427,22 +428,34 @@ const end = (e: any) => {
               obj.set("top", maxTop);
             }
 
-            // 同步所有其他物体的位置
-            toRaw(qfStamp.value).forEach((otherObj, index) => {
-              otherObj.set({
-                top: obj.top
-              })
-              gaiFabric.value[index].renderAll()
-            });
+
+            // for (const i in toRaw(qfStamp.value)) {
+            //   if (qfStamp.value[i].uid == obj.stateProperties.uid) {
+            //     // console.log(qfStamp.value[i].group)
+            //     qfStamp.value[i].group.forEach((item, index) => {
+            //       console.log(item)
+            //       item.set({
+            //         top: obj.top
+            //       })
+            //
+            //       gaiFabric.value[index].renderAll()
+            //
+            //     })
+            //
+            //   }
+            // }
 
             obj.setCoords();
 
           });
 
           gaiCanvas.add(group);
-          qfStamp.value.push(group)
+          groups.push(group)
+
         });
       }
+
+      qfStamp.value.push({uId: uId, group: groups})
     });
   }
 };

@@ -17,11 +17,14 @@ import {ElLoading} from "element-plus";
 import {message} from "@/utils/message";
 import {addDialog} from "@/components/ReDialog/index";
 import {fp} from "@/utils";
+import {useRouter} from "vue-router";
 
 const sign = ref();
 const psw = ref();
 const pdfInfo = ref();
 const appno = ref("");
+
+const router = useRouter()
 
 const {getPdf} = useSeal();
 const {fileId, sealInfo, docName} = storeToRefs(useSeal());
@@ -128,6 +131,12 @@ const submit = async () => {
       ]
     }
   });
+  if (res.code == "1") {
+    message(res.msg, {
+      type: "error"
+    })
+    return
+  }
   appno.value = res.data.appno;
   await http.post("/app/sign/query", {
     data: {
@@ -180,8 +189,12 @@ const getFile = () => {
           message("签署成功", {
             type: "success"
           })
+
           // loadingPdf.value.close();
           loading.value = false
+          setTimeout(() => {
+            router.replace(`/SignManage`)
+          }, 800)
           return;
         }
       });

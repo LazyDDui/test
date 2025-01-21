@@ -5,11 +5,11 @@
  * @LastEditors: zheng xinyi
  * @LastEditTime: 2024-05-11 17:05:49
  */
-import { ref } from "vue";
-import { defineStore } from "pinia";
-import { downloadFileApi, getSignRequestFile } from "@/api/test";
-import { http } from "@/utils/http";
-import { preViewFile } from "@/utils/common";
+import {ref} from "vue";
+import {defineStore} from "pinia";
+import {downloadFileApi, getSignRequestFile} from "@/api/test";
+import {http} from "@/utils/http";
+import {preViewFile} from "@/utils/common";
 
 export const useSeal = defineStore("seal", () => {
   const userInfo = ref(
@@ -79,8 +79,8 @@ export const useSeal = defineStore("seal", () => {
 
   const fileList = ref<any>([]);
 
-  const getList = async (page: number, search?: any = {}) => {
-    const { data } = await getSignRequestFile(page, search);
+  const getList = async (page: number, searchData?: any) => {
+    const {data} = await getSignRequestFile(page, searchData ? searchData : {});
     fileList.value = data;
   };
 

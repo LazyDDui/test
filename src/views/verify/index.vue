@@ -14,6 +14,7 @@ import {checkFile} from "@/api/test";
 import {fp} from "@/utils";
 import SealFooter from "@/components/Common/SealFooter.vue";
 import {c} from "vite/dist/node/types.d-aGj9QkWt";
+import {useRouter} from "vue-router";
 
 const isDisabled = ref<boolean>(false);
 const centerDialogVisible = ref<boolean>(false);
@@ -25,6 +26,8 @@ const list = ref<any[]>([]);
 const name = ref<string>("上传PDF、OFD格式文档");
 const chkFile = ref<object>(null);
 const isShow = ref<boolean>(false);
+
+const router = useRouter()
 
 const showDetail = ref(false)
 
@@ -137,6 +140,9 @@ const handleProgress = (ev, file, files) => {
 </script>
 
 <template>
+  <span @click="()=>{
+    router.push(`/SignManage`)
+  }" class="iconfont" style="cursor:pointer;;font-size: 22px;display: inline-block;margin: 16px 20px;">&#xe60f;</span>
   <div class="body-content">
     <div class="tc head">
       <h2>签章验证</h2>
@@ -304,12 +310,15 @@ const handleProgress = (ev, file, files) => {
         </div>
       </div>
     </div>
-    <el-dialog title="印章列表" v-model="showDetail" style="width: 90vw" @close="()=>{
+    <el-dialog title="印章列表" v-model="showDetail" style="width: 92vw" @close="()=>{
           currentList = [];
           showDetail = false
         }">
-      <div style="display: flex;justify-content: space-between;flex-wrap: wrap;height: 80vh;overflow-y: scroll">
-        <div v-for="(item, index) in currentList" :key="index" class="tb-table" style="padding: 10px;border: 1px dashed red;margin-bottom: 20px;border-radius: 10px;">
+      <div style="display: flex;flex-wrap: wrap;height: 80vh;overflow-y: scroll">
+        <div
+          v-for="(item, index) in currentList.concat(...currentList).concat(...currentList).concat(...currentList).concat(...currentList)"
+          :key="index" class="tb-table"
+          style="height: 400px;width: 24%;padding: 10px;border: 1px dashed black;margin-bottom: 20px;margin-right: 10px;border-radius: 10px;">
           <div class="tb-row">
             <div class="tb-col seal-sign">
               <label>印章图像：</label>
@@ -591,5 +600,33 @@ const handleProgress = (ev, file, files) => {
   line-height: 64px;
   border-radius: 8px;
   margin-left: 20px;
+}
+
+.tb-row {
+  display: flex;
+  background-color: #fff;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: rgb(204, 204, 204);
+  border-bottom: 1px solid #ccc;
+  padding: 4px 0;
+
+  .seal-sign {
+    //height: 190px;
+  }
+
+  .tb-col {
+    flex: 1;
+    display: flex;
+    color: #666;
+    font-weight: bold;
+    font-size: 16px;
+
+    label {
+      color: #333;
+      font-weight: bold;
+      font-size: 16px;
+    }
+  }
 }
 </style>

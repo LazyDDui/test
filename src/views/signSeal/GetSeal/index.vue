@@ -43,11 +43,11 @@ const personStamp = ref("")
 
 
 const form = ref({
-  type: "",
+  type: "99",
   //印章编码
   code: "",
   //印章名称
-  name: "",
+  name: "个人私章",
   // //印章形状
   // shape: "",
   // //印章图片
@@ -96,7 +96,15 @@ const submit = async () => {
     //第一步
     if (props.type == "1") {
       if (!pin.value.last || pin.value.last != pin.value.first) {
-        message("请输入pin码")
+        message("请输入pin码", {
+          type: "error"
+        })
+        return
+      }
+      if (!form.value.stamp) {
+        message("请上传实物印迹", {
+          type: "error"
+        })
         return
       }
       loading.value = true
@@ -521,7 +529,7 @@ onBeforeUnmount(() => {
               <el-row>
                 <el-col @click="selectStampTemplate(item)" class="stampTemp" :span="8"
                         v-for="(item,index) in templatePage.records" :key="index">
-                  <el-image style="width: 60px;height: 60px;object-fit: contain" :src="getBase64(item.pic)"
+                  <el-image style="width: 140px;height: 140px;object-fit: contain" :src="getBase64(item.pic)"
                             :alt="index"></el-image>
                   <el-tag :type="item.select?`danger`:`info`">{{ item.description }}</el-tag>
                 </el-col>
@@ -571,20 +579,8 @@ onBeforeUnmount(() => {
               <div style="font-weight: 600;">章预览</div>
             </div>
           </el-col>
-        </el-row>
-        <h2 v-if="!ai">个人信息</h2>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item v-if="!ai" label="印章名称：">
-
-              <el-input v-model="form.name" placeholder="请输入印章名称"/>
-            </el-form-item>
-            <!--            <el-form-item label="印章编码：">-->
-            <!--              <el-input v-model="form.code" placeholder="请输入印章编码"/>-->
-            <!--            </el-form-item>-->
-          </el-col>
           <el-col v-if="!ai" :span="12" style="display: flex">
-            <el-form-item>
+            <el-form-item required>
               <div
                 style="
                   display: flex;
@@ -609,6 +605,19 @@ onBeforeUnmount(() => {
             </el-form-item>
           </el-col>
         </el-row>
+        <!--        <h2 v-if="!ai">个人信息</h2>-->
+        <!--        <el-row>-->
+        <!--          <el-col :span="12">-->
+        <!--            <el-form-item v-if="!ai" label="印章名称：">-->
+
+        <!--              <el-input v-model="form.name" placeholder="请输入印章名称"/>-->
+        <!--            </el-form-item>-->
+        <!--            &lt;!&ndash;            <el-form-item label="印章编码：">&ndash;&gt;-->
+        <!--            &lt;!&ndash;              <el-input v-model="form.code" placeholder="请输入印章编码"/>&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </el-form-item>&ndash;&gt;-->
+        <!--          </el-col>-->
+
+        <!--        </el-row>-->
         <h2>确认密码</h2>
         <el-row>
           <el-form-item label="密码：">
@@ -644,7 +653,7 @@ onBeforeUnmount(() => {
         </el-col>
         <el-col class="priceContent" :span="12">
           <div class="price">
-            ¥{{ Number(item.price) }}
+            ¥{{ Number(item.price) / 100 }}
           </div>
         </el-col>
         <h3>价格明细</h3>
