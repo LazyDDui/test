@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import {getBase64, stripBase64Prefix} from "@/utils/common";
 import {OrderStatusMap, SealTypeMap, StampShapeMap} from "@/utils/map";
 import ReQrcode from "@/components/ReQrcode";
 import Motion from "@/views/login/utils/motion";
-import ShImageUpload from "@/views/components/shImageUpload/index.vue";
 import {onBeforeUnmount, reactive, ref} from "vue";
 import {useSeal} from "@/store/useSeal";
 import {storeToRefs} from "pinia";
 import {createSealOrderApi, getOderQueryApi, getRightsDefinitionApi, orderPayApi} from "@/api/test";
 import {message} from "@/utils/message";
+import I from "../../../../assets/image/rightsBg.png"
 
 type RenewProps = {
   data: any;
@@ -189,28 +188,36 @@ onBeforeUnmount(() => {
   }
 })
 
+
 </script>
 
 <template>
   <div v-if="auth.type == '1'" class="sealBox">
     <Motion v-if="step === 1">
       <h2>第1步，选择权益</h2>
-      <el-row :key="item.id" @click="chooseRights(item)"
-              :style="{border:item.select?`1px dashed red`:`1px dashed rgb(224, 224, 235)`}" class="rightsItem"
-              v-for="(item) in rights.records">
-        <el-col :span="12">
-          <div class="title">{{ item.name }}</div>
-          <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
-          <div class="content">{{ item.expireTime }}之前有效</div>
-          <div class="content">签署份数:{{ item.signMaxNum }}</div>
-        </el-col>
-        <el-col class="priceContent" :span="12">
-          <div class="price">
-            ¥{{ Number(item.price) }}
+      <div style="display: flex;flex-wrap: wrap;width: 800px;">
+        <div :key="item.id" @click="chooseRights(item)"
+             :style="{width:'300px',marginRight:'20px',marginBottom:'20px',position:'relative',backgroundSize:'100% 100%',backgroundImage:item.select?``:`linear-gradient(to bottom, white, #FCF7ED)`}"
+             class="rightsItem"
+             v-for="(item) in rights.records">
+          <img v-if="item.select" style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;z-index: -1;"
+               alt="bg"
+               src="../../../../assets/image/rightsBg.png"/>
+          <div>
+            <div class="title">{{ item.name }}</div>
+            <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
+            <div class="content">{{ item.expireTime }}之前有效</div>
+            <div class="content">签署份数:{{ item.signMaxNum }}</div>
           </div>
-        </el-col>
-        <h3>价格明细</h3>
-      </el-row>
+          <div class="priceContent">
+            <div class="price">
+              ¥{{ Number(item.price) / 100 }}
+            </div>
+          </div>
+          <h3>价格明细</h3>
+        </div>
+      </div>
+
     </Motion>
     <Motion v-if="step === 2">
       <h2>第2步，确认订单</h2>
@@ -334,7 +341,7 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .sealBox {
-  padding: 20px;
+  padding: 10px;
 
   h2 {
     width: 100%;

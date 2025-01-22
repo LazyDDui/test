@@ -110,7 +110,6 @@ const columns: TableColumnList = [
         addClick: (type) => {
           addDialog({
             hideFooter: true,
-            width: '80vw',
             title: getTitle(),
             contentRenderer({options, index}) {
               return h(Renew, {

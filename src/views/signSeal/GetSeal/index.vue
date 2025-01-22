@@ -499,6 +499,7 @@ onBeforeUnmount(() => {
   }
 })
 
+
 </script>
 
 <template>
@@ -511,7 +512,7 @@ onBeforeUnmount(() => {
             <el-form-item label="申领方式：">
               <el-radio-group v-model="createType">
                 <el-radio value="1" size="large">制作申领</el-radio>
-<!--                <el-radio value="2" size="large">上传实物印迹</el-radio>-->
+                <!--                <el-radio value="2" size="large">上传实物印迹</el-radio>-->
               </el-radio-group>
             </el-form-item>
             <el-form-item label="印章类型：">
@@ -642,22 +643,29 @@ onBeforeUnmount(() => {
     </Motion>
     <Motion v-if="step === 2">
       <h2>第2步，选择权益</h2>
-      <el-row :key="item.id" @click="chooseCompanyRights(item)"
-              :style="{border:item.select?`1px dashed red`:`1px dashed rgb(224, 224, 235)`}" class="rightsItem"
-              v-for="(item) in companyRights.records">
-        <el-col :span="12">
-          <div class="title">{{ item.name }}</div>
-          <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
-          <div class="content">{{ item.expireTime }}之前有效</div>
-          <div class="content">签署份数:{{ item.signMaxNum }}</div>
-        </el-col>
-        <el-col class="priceContent" :span="12">
-          <div class="price">
-            ¥{{ Number(item.price) / 100 }}
+      <div style="display: flex;flex-wrap: wrap;width: 800px;">
+
+        <div :key="item.id" @click="chooseCompanyRights(item)"
+             :style="{width:'300px',marginRight:'20px',marginBottom:'20px',position:'relative',backgroundSize:'100% 100%',backgroundImage:item.select?``:`linear-gradient(to bottom, white, #FCF7ED)`}"
+             class="rightsItem"
+             v-for="(item) in companyRights.records">
+          <img v-if="item.select" style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;z-index: -1;"
+               alt="bg"
+               src="../../../assets/image/rightsBg.png"/>
+          <div>
+            <div class="title">{{ item.name }}</div>
+            <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
+            <div class="content">{{ item.expireTime }}之前有效</div>
+            <div class="content">签署份数:{{ item.signMaxNum }}</div>
           </div>
-        </el-col>
-        <h3>价格明细</h3>
-      </el-row>
+          <div class="priceContent">
+            <div class="price">
+              ¥{{ Number(item.price) / 100 }}
+            </div>
+          </div>
+          <h3>价格明细</h3>
+        </div>
+      </div>
     </Motion>
     <Motion v-if="step === 3">
       <h2>第3步，确认订单</h2>
@@ -732,22 +740,29 @@ onBeforeUnmount(() => {
     </Motion>
     <Motion v-if="step === 2">
       <h2>第2步，选择权益</h2>
-      <el-row :key="item.id" @click="chooseCompanyRights(item)"
-              :style="{border:item.select?`1px dashed red`:`1px dashed rgb(224, 224, 235)`}" class="rightsItem"
-              v-for="(item) in companyRights.records">
-        <el-col :span="12">
-          <div class="title">{{ item.name }}</div>
-          <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
-          <div class="content">{{ item.expireTime }}之前有效</div>
-          <div class="content">签署份数:{{ item.signMaxNum }}</div>
-        </el-col>
-        <el-col class="priceContent" :span="12">
-          <div class="price">
-            ¥{{ Number(item.price) / 100 }}
+      <div style="display: flex;flex-wrap: wrap;width: 800px;">
+        <div :key="item.id" @click="chooseCompanyRights(item)"
+             :style="{width:'300px',marginRight:'20px',marginBottom:'20px',position:'relative',backgroundSize:'100% 100%',backgroundImage:item.select?``:`linear-gradient(to bottom, white, #FCF7ED)`}"
+             class="rightsItem"
+             v-for="(item) in companyRights.records">
+          <img v-if="item.select" style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;z-index: -1;"
+               alt="bg"
+               src="../../../assets/image/rightsBg.png"/>
+          <div>
+            <div class="title">{{ item.name }}</div>
+            <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
+            <div class="content">{{ item.expireTime }}之前有效</div>
+            <div class="content">签署份数:{{ item.signMaxNum }}</div>
           </div>
-        </el-col>
-        <h3>价格明细</h3>
-      </el-row>
+          <div class="priceContent">
+            <div class="price">
+              ¥{{ Number(item.price) / 100 }}
+            </div>
+          </div>
+          <h3>价格明细</h3>
+        </div>
+
+      </div>
     </Motion>
     <Motion v-if="step === 3">
       <h2>第3步，确认订单</h2>
