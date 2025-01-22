@@ -14,10 +14,11 @@ import {checkFile} from "@/api/test";
 import {fp} from "@/utils";
 import Op1 from "@/components/views/Service/Option/Op1.vue";
 import Op4 from "@/components/views/Service/Option/Op4.vue"
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 
 const route = useRoute()
 
+const router = useRouter()
 const n = route.query.name
 
 const isDisabled = ref<boolean>(false);
@@ -99,7 +100,7 @@ const {screen} = storeToRefs(useMainStore());
           <a href="./index.html"><img
             src="../../../src/assets/image/bigguohui.ac95d823.png"
             alt="1">
-            全国电子印章管理与服务平台{{n}}{{n=='广西'?"壮族自治区":"省"}}平台
+            全国电子印章管理与服务平台{{ n }}{{ n == '广西' ? "壮族自治区" : "省" }}平台
           </a>
         </div>
       </div>
@@ -113,7 +114,7 @@ const {screen} = storeToRefs(useMainStore());
         <dl class="words">
           <dt>
             <img src="../../../src/assets/image/bigguohui.ac95d823.png"
-                 :alt="n"><span>全国电子印章管理与服务平台{{n}}{{n=='广西'?"壮族自治区":"省"}}平台</span>
+                 :alt="n"><span>全国电子印章管理与服务平台{{ n }}{{ n == '广西' ? "壮族自治区" : "省" }}平台</span>
           </dt>
           <dd>公安备案 全国互认 一键核验</dd>
         </dl>
@@ -121,7 +122,9 @@ const {screen} = storeToRefs(useMainStore());
     </div>
     <div class="service">
       <div class="w">
-        <div class="apply">
+        <div class="apply" @click="()=>{
+         router.push(`/login`)
+        }">
           <div data-v-f0e458c2=""><h2 data-v-f0e458c2="">申领印章</h2>
             <p data-v-f0e458c2="">在线申领 高效便捷</p><span data-v-f0e458c2="" class="btn">立即申领 &gt;&gt;</span>
           </div>
@@ -129,13 +132,17 @@ const {screen} = storeToRefs(useMainStore());
                class="icon">
         </div>
         <div class="links">
-          <div data-v-f0e458c2="" class="item">
+          <div @click="()=>{
+          router.push(`/login`)
+        }" data-v-f0e458c2="" class="item">
             <div data-v-f0e458c2=""><h2 data-v-f0e458c2="">印章使用</h2>
               <p data-v-f0e458c2="">简单应用 安全管控</p><img src="../../../src/assets/image/无标题.png"
                                                               class="arrow-right"></div>
             <img data-v-f0e458c2="" src="../../../src/assets/image/system_pic1.479a694a.png" alt="签章应用"
                  class="icon"></div>
-          <div data-v-f0e458c2="" class="item">
+          <div @click="()=>{
+          router.push(`/login`)
+        }" data-v-f0e458c2="" class="item">
             <div data-v-f0e458c2=""><h2 data-v-f0e458c2="">签章验证</h2>
               <p data-v-f0e458c2="">统一验证 互信互认</p><img src="../../../src/assets/image/无标题.png"
                                                               class="arrow-right"></div>
