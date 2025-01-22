@@ -1,75 +1,92 @@
 <script setup lang="ts">
 import ShContainer from "@/components/Common/ShContainer.vue";
-import { fp } from "@/utils";
-import c from "../../../views/html/news/64.html"
+import {fp} from "@/utils";
+import {useRouter} from "vue-router";
+
+const router = useRouter()
 
 const list = [
   {
     label: "全国电子印章管理与服务平台广东省平台",
-    href: "https://www.cic-gd.com/"
+    href: "https://www.cic-gd.com/",
+    name: "广东"
   },
   {
     label: "全国电子印章管理与服务平台山东省平台",
-    href: "https://www.cic-shd.com/"
+    href: "https://www.cic-shd.com/",
+    name: "山东"
   },
   {
     label: "全国电子印章管理与服务平台四川省平台",
-    href: "https://www.cic-sc.com/"
+    href: "https://www.cic-sc.com/",
+    name: "四川"
   },
   {
     label: "全国电子印章管理与服务平台广西壮族自治区平台",
-    href: "https://www.cic-gx.com/"
+    href: "https://www.cic-gx.com/",
+    name: "广西"
   },
   {
     label: "全国电子印章管理与服务平台贵州省平台",
-    href: "https://www.cic-gzh.com/"
+    href: "https://www.cic-gzh.com/",
+    name: "贵州"
   },
   {
     label: "全国电子印章管理与服务平台江苏省平台",
-    href: "https://www.cic-js.com/"
+    href: "https://www.cic-js.com/",
+    name: "江苏"
   },
   {
     label: "全国电子印章管理与服务平台浙江省平台",
-    href: "https://www.cic-zhj.com/"
+    href: "https://www.cic-zhj.com/",
+    name: "浙江"
   },
   {
     label: "全国电子印章管理与服务平台重庆市平台",
-    href: "https://www.cic-cq.com/"
+    href: "https://www.cic-cq.com/",
+    name: "重庆"
   },
   {
     label: "全国电子印章管理与服务平台湖北省平台",
-    href: "https://www.cic-hb.com/"
+    href: "https://www.cic-hb.com/",
+    name: "湖北"
   },
   {
     label: "全国电子印章管理与服务平台河北省平台",
-    href: "https://www.cic-heb.com/"
+    href: "https://www.cic-heb.com/",
+    name: "河北"
   },
   {
     label: "全国电子印章管理与服务平台福建省平台",
-    href: "https://www.cic-fj.com/"
+    href: "https://www.cic-fj.com/",
+    name: "福建"
   },
   {
     label: "全国电子印章管理与服务平台江西省平台",
-    href: "https://www.cic-jx.com/"
+    href: "https://www.cic-jx.com/",
+    name: "江西"
   },
   {
     label: "全国电子印章管理与服务平台陕西省平台",
-    href: "https://www.cic-shx.com/"
+    href: "https://www.cic-shx.com/",
+    name: "陕西"
   },
   {
     label: "全国电子印章管理与服务平台湖南省平台",
-    href: "https://www.cic-hun.com/"
+    href: "https://www.cic-hun.com/",
+    name: "湖南"
   },
   {
     label: "全国电子印章管理与服务平台河南省平台",
-    href: "https://www.cic-hen.com/"
+    href: "https://www.cic-hen.com/",
+    name: "河南"
   },
   {
     label: "全国电子印章管理与服务平台海南省平台",
-    href: "https://www.cic-hain.com/"
+    href: "https://www.cic-hain.com/",
+    name: "海南"
   }
 ]
-
 
 
 </script>
@@ -81,7 +98,10 @@ const list = [
         <h2>全国电子印章管理与服务平台省级服务门户</h2>
       </div>
       <ShContainer class="sites flex">
-        <a :href="item.href" v-for="(item,index) in list" :key="index.toString()">
+        <a @click="()=>{
+            router.push(`/mh/platform?name=${item.name}`)
+        }" v-for="(item,index) in list" :key="index.toString()">
+
           <div style="display: flex">
             <img :alt="item.label" style="width: 21px;height: 24px;" :src="fp('index/icoguohui.png')"/>
             <p style="padding: 0 2px 0 10px;">{{ item.label }}</p>
