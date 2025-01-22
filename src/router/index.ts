@@ -123,7 +123,7 @@ const whiteList = [
   "/mh/product",
   "/mh/solution",
   "/mh/news",
-  "/mh/verify",
+  "/mh/mhVerify",
   "/mh/service",
   "/mh/feedback",
   "/mh/about",
@@ -131,7 +131,8 @@ const whiteList = [
   "/welcome",
   "/shApi",
   "/test",
-  "/mPdf"
+  "/mPdf",
+  "/mh/platform",
 ];
 
 const { VITE_HIDE_HOME } = import.meta.env;

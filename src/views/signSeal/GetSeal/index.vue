@@ -511,7 +511,7 @@ onBeforeUnmount(() => {
             <el-form-item label="申领方式：">
               <el-radio-group v-model="createType">
                 <el-radio value="1" size="large">制作申领</el-radio>
-                <el-radio value="2" size="large">上传实物印迹</el-radio>
+<!--                <el-radio value="2" size="large">上传实物印迹</el-radio>-->
               </el-radio-group>
             </el-form-item>
             <el-form-item label="印章类型：">

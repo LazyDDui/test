@@ -180,12 +180,12 @@ const getFile = () => {
         if (res.data[0].state == "0") {
           clearInterval(timer);
           timer = null;
-          downloadPdf(
-            res.data[0].signFileUrl,
-            docName.value.endsWith(".pdf")
-              ? docName.value
-              : docName.value + ".pdf"
-          );
+          // downloadPdf(
+          //   res.data[0].signFileUrl,
+          //   docName.value.endsWith(".pdf")
+          //     ? docName.value
+          //     : docName.value + ".pdf"
+          // );
           message("签署成功", {
             type: "success"
           })

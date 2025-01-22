@@ -27,7 +27,9 @@
         "
         @click="
           () => {
-            router.push(item.route);
+            if(!item.children){
+                          router.push(item.route);
+            }
           }
         "
       >
@@ -42,7 +44,10 @@
             v-for="(i, j) in item.children"
             :key="j"
             class="innerNav"
-            @click="router.push(i.route)"
+            @click="()=>{
+              console.log(i.route)
+              router.push(i.route)
+            }"
           >
             {{ i.label }}
           </div>
@@ -54,8 +59,8 @@
         />
       </div>
     </div>
-    <v-spacer />
-    <v-spacer />
+    <v-spacer/>
+    <v-spacer/>
     <v-btn
       v-if="mainStore.isMobile"
       variant="text"
@@ -68,15 +73,15 @@
         :height="24"
         :src="fp('index/menuf.png')"
       />
-      <v-img v-else :width="24" :height="24" :src="fp('index/menu.png')" />
+      <v-img v-else :width="24" :height="24" :src="fp('index/menu.png')"/>
     </v-btn>
   </header>
 </template>
 <script lang="ts" setup>
-import { useMainStore } from "@/store/useMainStore";
-import { defineEmits, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { fp } from "@/utils";
+import {useMainStore} from "@/store/useMainStore";
+import {defineEmits, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import {fp} from "@/utils";
 
 const emit = defineEmits(["update:rail", "update:mini", "update:visible"]);
 const route = useRoute();
@@ -103,7 +108,7 @@ const navBars = ref([
     children: [
       {
         label: "签章验证",
-        route: "/mh/verify"
+        route: "/mh/mhVerify"
       },
       {
         label: "省级门户",
@@ -113,10 +118,6 @@ const navBars = ref([
         label: "api服务",
         route: "/login"
       }
-      // {
-      //   lalel: "",
-      //   route: "/feedback"
-      // }
     ]
   },
   {

@@ -36,8 +36,8 @@ export default [
   },
   {
     path: "/mh",
-    redirect: "/home",
-    name: "home",
+    // redirect: "/mh/home",
+    name: "mh",
     meta: {
       title: "Componets",
       icon: "mdi-cube-scan",
@@ -101,14 +101,14 @@ export default [
         children: []
       },
       {
-        path: "verify",
-        name: "verify",
+        path: "mhVerify",
+        name: "mhVerify",
         meta: {
           title: "签章验证-全国电子印章管理与服务平台",
           icon: "mdi-alpha-t",
           keepAlive: false
         },
-        component: () => import("@/views/mh/verify.vue"),
+        component: () => import("@/views/mh/mhVerify.vue"),
         children: []
       },
       {
@@ -120,6 +120,17 @@ export default [
           keepAlive: false
         },
         component: () => import("@/views/mh/service.vue"),
+        children: []
+      },
+      {
+        path:"platform",
+        name: "platform",
+        meta: {
+          title: "服务与支持-全国电子印章管理与服务平台",
+          icon: "mdi-alpha-t",
+          keepAlive: false
+        },
+        component: () => import("@/views/mh/platform.vue"),
         children: []
       }
     ]
