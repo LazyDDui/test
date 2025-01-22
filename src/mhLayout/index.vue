@@ -1,11 +1,12 @@
 <template>
   <v-layout
-      :class="{
+    :class="{
 			mini_nav: navState.isMini
 		}">
     <!--		<Navigation v-model:value="navState.menuVisible" :rail="navState.rail" :routes="navState.routes" />-->
     <main class="app_main">
-      <Header v-model:rail="navState.rail" v-model:mini="navState.isMini" v-model:visible="navState.menuVisible"/>
+      <Header v-if="!route.fullPath.includes('/mh/platform')" v-model:rail="navState.rail"
+              v-model:mini="navState.isMini" v-model:visible="navState.menuVisible"/>
       <div class="router">
         <RouterView/>
       </div>
@@ -18,7 +19,7 @@
   </v-layout>
 </template>
 <script setup lang="ts">
-import {RouterView,useRouter} from 'vue-router'
+import {RouterView, useRoute, useRouter} from 'vue-router'
 import Settings from '@/components/Settings/index.vue'
 import Header from './wigets/Header.vue'
 import {reactive, computed, watch} from 'vue'
@@ -27,9 +28,10 @@ import Footer from "@/components/views/Footer/index.vue"
 import ContactUs from "@/components/ContactUs/index.vue";
 
 
-
 const mainStore = useMainStore()
 const router = useRouter()
+const route = useRoute()
+console.log(route)
 const navState = reactive({
   menuVisible: true,
   rail: !mainStore.isMobile,
