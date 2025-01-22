@@ -1,0 +1,176 @@
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900|Noto+Serif+SC:200,300,400,500,600,700,900");
+*{margin: 0;padding: 0;}
+li{ list-style:none;}
+body,input,select,textarea,button{font-size: 16px; font-family:'Noto Sans SC', "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif; color:#666;}
+body{ padding-top: 80px;}
+div{margin: 0 auto;}
+img{border: 0;vertical-align: middle;}
+a{text-decoration: none; color: #808080; transition: color .3s;}
+a:hover{text-decoration: none;color:#166BAA;}
+.clearfix:after{content:"."; display:block; height:0; clear:both; visibility:hidden;}
+*html .clearfix{ height:1%;}
+*+html .clearfix{height:1%;}
+:focus{outline: none;}
+::-moz-focus-inner{ border: 0;}
+input[type="button"], input[type="submit"], input[type="reset"] , input[type="disabled"]{-webkit-appearance: none;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none !important;}
+input::placeholder { color: #999; }
+.fl{float: left;}
+.fr{float: right;}
+.tc{ text-align:center;}
+.tr{ text-align:right;}
+.tc{ text-align:center;}
+.w{ width:1200px;}
+.none{ display:none;}
+.ico{ display:inline-block; vertical-align:middle; background-size: cover; background-repeat:no-repeat; background-position:center center; font-style: normal;}
+.ico-close{ background-image:url(../images/icoclose.png); width:14px; height: 14px; position: absolute; right: 20px; top:16px; transition: transform .5s;}
+.ico-close:hover{ transform: rotate(90deg); cursor: pointer;}
+.ico-top{ background-image:url(../images/icotop.png);}
+.ico-phone{ background-image:url(../images/icophone.png);}
+.ico-more{ background-image:url(../images/icomore.png);}
+.ico-guohui{ background-image:url(../images/icoguohui.png);}
+.ico-guohui2{ background-image:url(../images/icoguohui2.png);}
+.ico-screen{ background-image:url(../images/icoscreen.png);}
+.ico-seal{ background-image:url(../images/icoseal.png);}
+.ico-tbas1{ background-image:url(../images/icotbas1.png);}
+.ico-tbas2{ background-image:url(../images/icotbas2.png);}
+.ico-tbas3{ background-image:url(../images/icotbas3.png);}
+.ico-tbas4{ background-image:url(../images/icotbas4.png);}
+.ico-tbas5{ background-image:url(../images/icotbas5.png);}
+.ico-case1{ background-image:url(../images/icocase1.png);}
+.ico-case2{ background-image:url(../images/icocase2.png);}
+.ico-case3{ background-image:url(../images/icocase3.png);}
+.ico-case4{ background-image:url(../images/icocase4.png);}
+.ico-case5{ background-image:url(../images/icocase5.png);}
+.ico-case6{ background-image:url(../images/icocase6.png);}
+.ico-case7{ background-image:url(../images/icocase7.png);}
+.ico-c1{ background-image:url(../images/icoc1.png);}
+.ico-c2{ background-image:url(../images/icoc2.png);}
+.ico-s1{ background-image:url(../images/icos1.png);}
+.ico-s2{ background-image:url(../images/icos2.png);}
+.ico-s3{ background-image:url(../images/icos3.png);}
+.ico-s4{ background-image:url(../images/icos4.png);}
+.ico-s07{ background-image:url(../images/icos07.png);}
+.ico-s08{ background-image:url(../images/icos08.png);}
+.ico-s09{ background-image:url(../images/icos09.png);}
+.ico-s10{ background-image:url(../images/icos10.png);}
+.ico-ser1{ background-image:url(../images/icoser1.png);}
+.ico-ser2{ background-image:url(../images/icoser2.png);}
+.ico-ser3{ background-image:url(../images/icoser3.png);}
+.ico-ser4{ background-image:url(../images/icoser4.png);}
+.ico-download{ background-image:url(../images/icodownload.png);}
+.ico-saas{ background-image:url(../images/icosaas.png);}
+.ico-basic{ background-image:url(../images/icobasic.png);}
+.ico-sealunit{ background-image:url(../images/icosealunit.png);}
+.ico-sealperson{ background-image:url(../images/icosealperson.png);}
+.ico-saast1{ background-image:url(../images/icosaast1.png);}
+.ico-saast2{ background-image:url(../images/icosaast2.png);}
+.ico-saast3{ background-image:url(../images/icosaast3.png);}
+.ico-saast4{ background-image:url(../images/icosaast4.png);}
+.ico-flow1{ background-image:url(../images/icoflow1.png);}
+.ico-flow2{ background-image:url(../images/icoflow2.png);}
+.ico-flow3{ background-image:url(../images/icoflow3.png);}
+.ico-flow4{ background-image:url(../images/icoflow4.png);}
+.ico-b1{ background-image:url(../images/icobasic1.png);}
+.ico-b2{ background-image:url(../images/icobasic2.png);}
+.ico-b3{ background-image:url(../images/icobasic3.png);}
+.ico-b4{ background-image:url(../images/icobasic4.png);}
+.blank{ height: 100px; line-height: 100px; overflow: hidden;}
+
+.input{ border:none; background: #F4F4F4; height:50px; line-height:50px; text-indent:12px; border-radius: 8px; margin-right: 20px; width: 600px;}
+.btn{ display: inline-block; text-align:center; padding: 0; border: none; cursor:pointer; margin: 0; transition: opacity .2s;}
+.btn:hover{ opacity: 0.85;}
+.btn-client{ background: #E2F3FF; border-radius: 4px; border: 1px solid #1890FF; color: #1890FF; font-size:16px; width: 200px; height: 50px; line-height: 50px; text-align: center; padding: 0; margin:10px auto 15px auto;}
+.btn-search{ width: 180px; height: 50px; line-height: 50px; background: #1D76F9; border-radius: 8px; font-size: 16px; color: #FFFFFF;}
+.btn-client .ico{ background-image:url(../images/icowin.png); width:20px; height: 20px; margin-right: 15px;}
+.btn-client .ico-note{ background-image:url(../images/iconote.png);}
+.btn-client .ico-android{ background-image:url(../images/icoandroid.png); width: 16px; height: 20px;}
+.btn-apply{ background-color: #1D76F9; color: #fff; width:160px; height: 48px; line-height: 48px; display: inline-block; text-align: center; font-weight: 400; border-radius: 8px; font-size: 17px; color: #FFFFFF;}
+.transform-img{ overflow: hidden;}
+.transform-img img{ -webkit-transition: all 0.5s; -moz-transition: all 0.5s; -o-transition: all 0.5s; display: block;}
+.transform-img:hover img{-webkit-transform: scale(1.1); -moz-transform: scale(1.1); -o-transform: scale(1.1); -ms-transform: scale(1.1); }
+
+/*标题*/
+.head{ padding: 0 90px; margin: -15px 0 0 0;}
+.head h2{ font-weight:600; color:#333; padding-bottom: 20px; font-size:36px;}
+.head p{ font-weight: 400; font-size: 16px; color: #999; line-height: 30px;}
+
+/*广告*/
+.ad img{ display:block; max-width:100%;}
+
+/*字体*/
+.f0{color: #1D76F9;}
+.f1{color: #c4954d;}
+
+/*布局*/
+.flex{ display: flex; flex-direction: row;}
+
+.ur-here{ color: #333; padding:20px 0 30px 0; font-size: 15px; font-weight: 400;}
+.ur-here a{ color: #A7A7A7;}
+.ur-here span.arrow{ display: inline-block; width: 5px; height: 5px; border-top: 1px solid #A7A7A7; border-right: 1px solid #A7A7A7; transform: rotate(45deg); background-color: transparent; margin: 0 10px;}
+.ur-here a.back{ display: inline-block; width: 68px; text-align:center; height: 28px; line-height:28px; background: #E2F3FF;border-radius: 14px;border: 1px solid #1890FF; font-size: 14px; color: #1890FF; margin-left: 20px;}
+.ur-here .ico{ width: 12px; height: 11px; background-image:url(../images/icoback1.png); margin-right: 5px;}
+
+.sidebar{ position: fixed; right: 10px; bottom: 200px; transition: all .5s; height:90px; text-align: center; background: #fff; color: #333; border-radius: 50%; box-shadow: 0px 0px 10px 0px rgba(25,43,68,0.1); z-index: 999;}
+.sidebar li{ width: 90px; height:90px; box-sizing: border-box; padding-top: 18px; font-weight: 400; font-size: 15px; cursor: pointer;}
+.sidebar li a{ color: #333;}
+.sidebar li .ico{  height: 32px; margin: 0 0 3px 0;}
+.sidebar li span{ display: block;}
+.sidebar:hover{ background: #F5F8FF; bottom: 190px;}
+
+.toTop{ position: fixed; right: 10px; bottom: 50px; transition: all .5s;}
+.toTop a{ width: 90px; height: 90px;background: #FFFFFF; color: #333; font-size: 15px; box-shadow: 0px 0px 10px 0px rgba(25,43,68,0.1);border-radius: 50%; align-items: center; justify-content: center; flex-direction: column;}
+.toTop a .ico{ width: 22px; height: 26px;background-size: 100%;}
+.toTop:hover{ bottom: 40px;}
+.toTop a:hover{ background: #F5F8FF;}
+
+@media screen and (max-width: 768px) {
+    .blank{ height: 50px; line-height: 50px;}
+    .head{ padding: 0 15px; margin: -10px 0 0 0;}
+    .head h2{ padding-bottom: 15px; font-size:24px;}
+    .head p{ font-size: 14px; line-height: 22px; text-align: justify;}
+    .head p br{ display: none;}
+
+    .ur-here{ padding:10px 15px 20px 15px; font-size: 12px;}
+    .ur-here span.arrow{ margin: 0 5px;}
+    .ur-here a.back{ width: 55px; height:20px; line-height:20px; border-radius: 12px; font-size: 12px; margin-left: 0; margin-top: 5px;}
+    .ur-here .ico{ margin-right: 3px; width: 9px; height: 8px;}
+
+    .input{ height:42px; line-height:42px; text-indent:12px; border-radius: 8px; margin-right: 10px; font-size: 14px; width: 240px;}
+    .btn-search{ width: 100px; height: 42px; line-height: 42px; font-size: 14px;}
+
+    .sidebar{ bottom: 130px; height:72px;}
+    .sidebar li{ width:72px; height:72px; padding-top: 10px; font-size: 12px; cursor: pointer;}
+    .sidebar li .ico{  height: 26px;}
+    .sidebar li span{ display: block;}
+    .sidebar:hover{ bottom: 120px;}
+
+    .toTop a{ width: 72px; height: 72px; font-size: 12px;}
+}
+
+/*动画*/
+@keyframes autoScale
+{
+    0%{
+        transform: scale(1);
+    }
+    25%{
+        transform: scale(1.08);
+    }
+    50%{
+        transform: scale(1);
+    }
+    75%{
+        transform: scale(1.08);
+    }
+}
+/*动画*/
+@keyframes autoMove
+{
+    0%{
+        margin-top: -10px;
+    }
+    50%{
+        margin-top: -12px;
+    }
+}

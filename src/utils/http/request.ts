@@ -91,6 +91,7 @@ class PureHttp {
           "/shApi",
           "/mPdf",
           "/mh/platform",
+          "/mh/details",
         ];
         return whiteList.some(url => config.url.endsWith(url))
           ? config

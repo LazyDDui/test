@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ShContainer from "@/components/Common/ShContainer.vue";
 import { fp } from "@/utils";
+import c from "../../../views/html/news/64.html"
 
 const list = [
   {

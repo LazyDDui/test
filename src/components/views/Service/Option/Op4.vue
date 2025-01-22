@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { useMainStore } from "@/store/useMainStore";
-import { fp } from "@/utils";
+import {storeToRefs} from "pinia";
+import {useMainStore} from "@/store/useMainStore";
+import {fp} from "@/utils";
 
-const { isMobile } = storeToRefs(useMainStore());
+const {isMobile} = storeToRefs(useMainStore());
 </script>
 
 <template>
@@ -14,7 +14,7 @@ const { isMobile } = storeToRefs(useMainStore());
     }"
   >
     <div class="title">在线客服</div>
-    <v-img class="bg" alt="bg" :src="fp('service/contact.jpg')" />
+    <v-img class="bg" alt="bg" src="../../../../../src/assets/image/contactUs.png"/>
   </div>
 </template>
 

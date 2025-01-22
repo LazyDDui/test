@@ -132,6 +132,17 @@ export default [
         },
         component: () => import("@/views/mh/platform.vue"),
         children: []
+      },
+      {
+        path:"details",
+        name: "details",
+        meta: {
+          title: "服务与支持-全国电子印章管理与服务平台",
+          icon: "mdi-alpha-t",
+          keepAlive: false
+        },
+        component: () => import("@/views/mh/mhDetail.vue"),
+        children: []
       }
     ]
   },
