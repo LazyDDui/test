@@ -23,6 +23,13 @@ export const phoneLoginApi = (data: object) =>
 ///saas/sign/init
 
 export const signInit = () => http.post("/app/sign/init");
+export const checkFileOld = (file) =>
+  http.post(`/app/sign/verifyOld`,{data: file},
+    {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
 export const checkFile = file =>
   http.post(
     "/app/sign/verify",

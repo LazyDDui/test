@@ -131,10 +131,10 @@ const navBars = ref([
 ]);
 
 const routeActive = (routes: string) => {
-  if (routes === "" && (route.path == "/verify" || route.path == "/service")) {
+  if (routes === "" && (route.fullPath == "/mh/verify" || route.fullPath == "/mh/service")) {
     return true;
   }
-  return routes == route.path;
+  return routes == route.fullPath;
 };
 
 const mainStore = useMainStore();

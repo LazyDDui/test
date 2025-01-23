@@ -326,6 +326,7 @@ const companyRule = reactive<FormRules>({});
                   "
                 >
                   <ShImageUpload
+                    upload-url="/app/func/ocr/idCard"
                     @change="
                       id => {
                         form.facePath = id;
@@ -345,6 +346,7 @@ const companyRule = reactive<FormRules>({});
                   "
                 >
                   <ShImageUpload
+                    upload-url="/app/func/ocr/idCard"
                     @change="
                       id => {
                         form.backPath = id;
@@ -499,6 +501,7 @@ const companyRule = reactive<FormRules>({});
                   "
                 >
                   <ShImageUpload
+                    upload-url="/app/func/ocr/idCard"
                     @change="
                       id => {
                         companyForm.juriFacePath = id;
@@ -517,6 +520,7 @@ const companyRule = reactive<FormRules>({});
                   "
                 >
                   <ShImageUpload
+                    upload-url="/app/func/ocr/idCard"
                     @change="
                       id => {
                         companyForm.juriBackPath = id;
@@ -564,6 +568,7 @@ const companyRule = reactive<FormRules>({});
                     "
                   >
                     <ShImageUpload
+                      upload-url="/app/func/ocr/idCard"
                       @change="
                         id => {
                           companyForm.operatorFacePath = id;
@@ -582,6 +587,7 @@ const companyRule = reactive<FormRules>({});
                     "
                   >
                     <ShImageUpload
+                      upload-url="/app/func/ocr/idCard"
                       @change="
                         id => {
                           companyForm.operatorBackPath = id;

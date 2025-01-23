@@ -10,7 +10,7 @@ import type {
 import {ElMessage} from "element-plus";
 import {storeToRefs} from "pinia";
 import {useMainStore} from "@/store/useMainStore";
-import {checkFile} from "@/api/test";
+import {checkFile, checkFileOld} from "@/api/test";
 import {fp} from "@/utils";
 import SealFooter from "@/components/Common/SealFooter.vue";
 import {useRouter} from "vue-router";
@@ -27,7 +27,7 @@ const chkFile = ref<object>(null);
 const isShow = ref<boolean>(false);
 
 defineOptions({
-  name: "Verify"
+  name: "SealVerify"
 })
 
 const router = useRouter()
@@ -37,13 +37,6 @@ const showDetail = ref(false)
 const {screen} = storeToRefs(useMainStore());
 
 const currentList = ref([])
-
-
-const d = [
-  {id: "zz", name: 'pppp', desc: "wwwwww"},
-  {id: "zz", name: 'pppp', desc: "wwwwww"},
-  {id: "pp", name: 'zz', desc: "wwwwww"}
-];
 
 const finalList = ref([])
 
@@ -75,6 +68,26 @@ const filterList = (data: any[]) => {
 }
 
 
+const resFn = (res) => {
+  if (res.data && res.data.length > 0) {
+    isShow.value = false;
+    list.value = res.data;
+    finalList.value = filterList(res.data)
+    flag.value = true;
+    isDisabled.value = true;
+    btnFlag.value = false;
+    dialogVisible.value = false;
+  } else {
+    isShow.value = true;
+    list.value = res.data;
+    finalList.value = filterList(res.data)
+    flag.value = true;
+    isDisabled.value = true;
+    btnFlag.value = false;
+    dialogVisible.value = false;
+  }
+}
+
 const submitUpload = async () => {
   if (!chkFile.value) {
     centerDialogVisible.value = true;
@@ -83,33 +96,23 @@ const submitUpload = async () => {
       dialogVisible.value = true;
       const formData = new FormData();
       formData.append("file", chkFile.value);
-      const res = await checkFile(formData);
-      if (res.code == "00") {
-        if (res.data && res.data.length > 0) {
-          isShow.value = false;
-          list.value = res.data;
-          finalList.value = filterList(res.data)
-          flag.value = true;
-          isDisabled.value = true;
-          btnFlag.value = false;
-          dialogVisible.value = false;
+
+      const resOld: any = await checkFileOld(formData)
+      if (resOld.code == '0') {
+        resFn(resOld)
+      } else {
+        const res: any = await checkFile(formData);
+        if (res.code == "0") {
+          resFn(res)
         } else {
-          isShow.value = true;
-          list.value = res.data;
-          finalList.value = filterList(res.data)
-          console.log(finalList.value)
-          flag.value = true;
-          isDisabled.value = true;
-          btnFlag.value = false;
+          ElMessage({
+            message: "服务器内部错误",
+            type: "error"
+          });
           dialogVisible.value = false;
         }
-      } else {
-        ElMessage({
-          message: "服务器内部错误",
-          type: "error"
-        });
-        dialogVisible.value = false;
       }
+
     } else {
       btnFlag.value = true;
       flag.value = false;

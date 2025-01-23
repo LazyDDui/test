@@ -39,7 +39,7 @@ import {enIdNo} from "@/utils/common";
 import {useDataThemeChange} from "@/layout/hooks/useDataThemeChange";
 import {message} from "@/utils/message";
 import SealFooter from "@/components/Common/SealFooter.vue";
-import Verify from "@/views/verify/index.vue";
+import SealVerify from "@/components/Common/SealVerify.vue";
 
 const router = useRouter();
 
@@ -52,7 +52,7 @@ const toGoPage = () => {
     fullscreen: true,
     hideFooter: true,
     contentRenderer() {
-      return h(Verify)
+      return h(SealVerify)
     }
   })
 };

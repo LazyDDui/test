@@ -37,7 +37,7 @@ const staticValue = ref("1");
 const {getSealManageInfo} = useSeal();
 const {auth} = storeToRefs(useSeal())
 const props = defineProps<GetSealProps>();
-const qrCode = ref("http://182.151.13.73:9999/pay/open/getQrCode/667726500140683264")
+const qrCode = ref("")
 
 const personStamp = ref("")
 
@@ -660,7 +660,7 @@ onBeforeUnmount(() => {
           </div>
           <div class="priceContent">
             <div class="price">
-              ¥{{ Number(item.price) / 100 }}
+              ¥{{ Number(item.price) / 100 * sealId.length }}
             </div>
           </div>
           <h3>价格明细</h3>
@@ -669,21 +669,29 @@ onBeforeUnmount(() => {
     </Motion>
     <Motion v-if="step === 3">
       <h2>第3步，确认订单</h2>
-      <el-row :key="item.id"
-              style="border:1px solid rgb(224, 224, 235);" class="rightsItem"
-              v-for="(item) in currentRightCom">
-        <el-col :span="12">
+
+
+      <div :key="item.id"
+           :style="{width:'300px',marginRight:'20px',marginBottom:'20px',position:'relative',backgroundSize:'100% 100%',backgroundImage:item.select?``:`linear-gradient(to bottom, white, #FCF7ED)`}"
+           class="rightsItem"
+           v-for="(item) in currentRightCom">
+        <img v-if="item.select" style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;z-index: -1;"
+             alt="bg"
+             src="../../../assets/image/rightsBg.png"/>
+        <div>
           <div class="title">{{ item.name }}</div>
           <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
           <div class="content">{{ item.expireTime }}之前有效</div>
           <div class="content">签署份数:{{ item.signMaxNum }}</div>
-        </el-col>
-        <el-col class="priceContent" :span="12">
+        </div>
+        <div class="priceContent">
           <div class="price">
             ¥{{ Number(item.price) / 100 * sealId.length }}
           </div>
-        </el-col>
-      </el-row>
+        </div>
+        <h3>价格明细</h3>
+      </div>
+
       <h2>联系地址</h2>
       <el-form v-model="companyInfo" style="margin-top: 10px;">
         <el-form-item label="联系人">
@@ -756,31 +764,37 @@ onBeforeUnmount(() => {
           </div>
           <div class="priceContent">
             <div class="price">
-              ¥{{ Number(item.price) / 100 }}
+              ¥{{ Number(item.price) / 100 * sealId.length }}
             </div>
           </div>
           <h3>价格明细</h3>
         </div>
-
       </div>
     </Motion>
     <Motion v-if="step === 3">
       <h2>第3步，确认订单</h2>
-      <el-row :key="item.id"
-              style="border:1px solid rgb(224, 224, 235);" class="rightsItem"
-              v-for="(item) in currentRightCom">
-        <el-col :span="12">
-          <div class="title">{{ item.name }}</div>
-          <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
-          <div class="content">{{ item.expireTime }}之前有效</div>
-          <div class="content">签署份数:{{ item.signMaxNum }}</div>
-        </el-col>
-        <el-col class="priceContent" :span="12">
-          <div class="price">
-            ¥{{ Number(item.price) / 100 * sealId.length }}
+      <div style="display: flex;flex-wrap: wrap;width: 800px;">
+        <div :key="item.id"
+             :style="{width:'300px',marginRight:'20px',marginBottom:'20px',position:'relative',backgroundSize:'100% 100%',backgroundImage:item.select?``:`linear-gradient(to bottom, white, #FCF7ED)`}"
+             class="rightsItem"
+             v-for="(item) in currentRightCom">
+          <img v-if="item.select" style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;z-index: -1;"
+               alt="bg"
+               src="../../../assets/image/rightsBg.png"/>
+          <div>
+            <div class="title">{{ item.name }}</div>
+            <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
+            <div class="content">{{ item.expireTime }}之前有效</div>
+            <div class="content">签署份数:{{ item.signMaxNum }}</div>
           </div>
-        </el-col>
-      </el-row>
+          <div class="priceContent">
+            <div class="price">
+              ¥{{ Number(item.price) / 100 * sealId.length }}
+            </div>
+          </div>
+          <h3>价格明细</h3>
+        </div>
+      </div>
       <h2>联系地址</h2>
       <el-form v-model="companyInfo" style="margin-top: 10px;">
         <el-form-item label="联系人">
