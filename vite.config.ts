@@ -20,7 +20,7 @@ export default ({mode}: ConfigEnv): UserConfigExport => {
 
   console.log(VITE_BASE_URL)
   return {
-    base: VITE_PUBLIC_PATH,
+    base: './',
     root,
     resolve: {
       alias

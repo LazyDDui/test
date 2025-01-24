@@ -14,7 +14,7 @@ import NProgress from "../progress";
 import {getToken, formatToken} from "@/utils/auth";
 import {useUserStoreHook} from "@/store/modules/user";
 import {message} from "@/utils/message";
-import {removeLetters} from "@/utils/common";
+import {baseUrl, removeLetters} from "@/utils/common";
 import router from "@/router";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
@@ -31,7 +31,7 @@ const defaultConfig: AxiosRequestConfig = {
   paramsSerializer: {
     serialize: stringify as unknown as CustomParamsSerializer
   },
-  baseURL: "http://182.151.13.73:9099/api",
+  baseURL: baseUrl,
   // withCredentials: true
 };
 

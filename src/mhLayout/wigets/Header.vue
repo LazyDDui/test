@@ -103,19 +103,19 @@ const navBars = ref([
     route: "/mh/solution"
   },
   {
-    label: "服务与支持",
+    label: "印章服务",
     route: "",
     children: [
       {
         label: "签章验证",
         route: "/mh/mhVerify"
       },
+      // {
+      //   label: "省级门户",
+      //   route: "/mh/service"
+      // },
       {
-        label: "省级门户",
-        route: "/mh/service"
-      },
-      {
-        label: "企业登陆",
+        label: "印章使用",
         route: "/login"
       }
     ]

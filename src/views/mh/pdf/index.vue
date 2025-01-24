@@ -6,6 +6,7 @@ import {http} from "@/utils/http";
 import {useSeal} from "@/store/useSeal";
 import ShPdf from "@/components/ShPdf/index.vue";
 import {
+  baseUrl,
   downLoadFile,
   downloadPdf,
   getBase64,
@@ -38,7 +39,7 @@ const getPdfFile = async () => {
   console.log(fileId.value);
   // const blob = await getPdf();
   // pdf.value = preViewFile(blob);
-  pdf.value = "http://182.151.13.73:9999" + "/app/file/" + fileId.value;
+  pdf.value = baseUrl + "/app/file/" + fileId.value;
   // console.log(import.meta.env.VITE_BASE_URL)
 };
 

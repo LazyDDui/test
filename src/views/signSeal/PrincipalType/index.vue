@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import {useRouter} from "vue-router";
 import {SealTypeMap} from "@/utils/map";
 import Header from "@/components/Common/Header.vue";
@@ -13,6 +13,7 @@ import {v4 as uuidv4} from "uuid";
 import {getUserGraphCode, getUserSmsCodeApi} from "@/api/test";
 import {storeToRefs} from "pinia";
 import {useSeal} from "@/store/useSeal";
+import ReQrcode from "@/components/ReQrcode/src";
 
 type PrinciType = {
   change: (form: any) => void;
@@ -125,14 +126,14 @@ const initialCompanyForm = {
 const randomStr = ref("");
 const randomStrCompany = ref("")
 
-const getImage = async () => {
-  randomStr.value = uuidv4();
-  const result = await getUserGraphCode(randomStr.value);
-  //@ts-ignore
-  imageCode.value = URL.createObjectURL(result);
-};
-
-getImage();
+// const getImage = async () => {
+//   randomStr.value = uuidv4();
+//   const result = await getUserGraphCode(randomStr.value);
+//   //@ts-ignore
+//   imageCode.value = URL.createObjectURL(result);
+// };
+//
+// getImage();
 
 const getCompanyImage = async () => {
   randomStrCompany.value = uuidv4()
@@ -173,8 +174,11 @@ const getCompanyPhoneCode = async () => {
   const res: any = await getUserSmsCodeApi(
     randomStrCompany.value,
     graphCodeCompany.value,
-    auth.value.juriTel
+    companyForm.value.juriTel
   );
+  if (res.code == "0") {
+    lock.value = true
+  }
   if (res.code == "1") {
     message(res.msg, {
       type: "error"
@@ -222,6 +226,8 @@ const personRule = reactive<FormRules>({
 
 
 const companyRule = reactive<FormRules>({});
+const lock = ref(false)
+
 
 </script>
 
@@ -243,7 +249,7 @@ const companyRule = reactive<FormRules>({});
           </el-form-item>
           <h2>个人信息</h2>
           <el-row>
-            <el-col :span="12">
+            <el-col :span="10">
               <el-form-item label="姓名：" prop="name" required>
                 <el-input
                   v-model="form.name"
@@ -258,7 +264,7 @@ const companyRule = reactive<FormRules>({});
                   @change="change(form)"
                 />
               </el-form-item>
-              <el-form-item label="实名手机号码：" prop="tel">
+              <el-form-item label="实名手机号码：" prop="tel" required>
                 <el-input
                   disabled
                   v-model="form.tel"
@@ -315,7 +321,7 @@ const companyRule = reactive<FormRules>({});
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="12" style="display: flex">
+            <el-col :span="14" style="display: flex">
               <el-form-item prop="facePath">
                 <div
                   style="
@@ -328,8 +334,14 @@ const companyRule = reactive<FormRules>({});
                   <ShImageUpload
                     upload-url="/app/func/ocr/idCard"
                     @change="
-                      id => {
+                      (id,data,res) => {
+                        console.log(res)
+                        if(res.code == '0'){
                         form.facePath = id;
+                        form.name = data.ocr.name
+                        form.idCard = data.ocr.idcard
+                        form.address = data.ocr.address
+                        }
                       }
                     "
                   />
@@ -346,7 +358,6 @@ const companyRule = reactive<FormRules>({});
                   "
                 >
                   <ShImageUpload
-                    upload-url="/app/func/ocr/idCard"
                     @change="
                       id => {
                         form.backPath = id;
@@ -363,7 +374,7 @@ const companyRule = reactive<FormRules>({});
       <el-tab-pane class="content" label="企业认证" name="company">
         <el-form ref="companyRef" :model="companyForm" label-width="auto">
           <h2>信息录入</h2>
-          <el-form-item label="企业类型：">
+          <el-form-item label="企业类型：" required>
             <el-radio-group
               v-model="companyForm.unitType"
               @change="change(companyForm)"
@@ -372,7 +383,7 @@ const companyRule = reactive<FormRules>({});
               <el-radio value="1" size="large">事业单位</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="办理人员：">
+          <el-form-item label="办理人员：" required>
             <el-radio-group v-model="companyStaticValue">
               <el-radio value="0" size="large">法定代表人</el-radio>
               <el-radio value="1" size="large">经办人</el-radio>
@@ -380,22 +391,22 @@ const companyRule = reactive<FormRules>({});
           </el-form-item>
           <h2>单位信息</h2>
           <el-row>
-            <el-col :span="12">
-              <el-form-item label="单位名称：">
+            <el-col :span="10">
+              <el-form-item label="单位名称：" required>
                 <el-input
                   v-model="companyForm.custName"
                   placeholder="请输入单位名称"
                   @change="change(companyForm)"
                 />
               </el-form-item>
-              <el-form-item label="统一信用代码：">
+              <el-form-item label="统一信用代码：" required>
                 <el-input
                   v-model="companyForm.custCreditNo"
                   placeholder="请输入统一信用代码"
                   @change="change(companyForm)"
                 />
               </el-form-item>
-              <el-form-item label="住址：">
+              <el-form-item label="住址：" required>
                 <el-input
                   v-model="companyForm.address"
                   placeholder="请输入住所"
@@ -403,8 +414,8 @@ const companyRule = reactive<FormRules>({});
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item>
+            <el-col :span="14">
+              <el-form-item required>
                 <div
                   style="
                     display: flex;
@@ -415,8 +426,17 @@ const companyRule = reactive<FormRules>({});
                   <ShImageUpload
                     upload-url="/app/func/ocr/businessPicture"
                     @change="
-                      id => {
+                      (id,data) => {
                         companyForm.businessPicture = id;
+                        if(data.ocr.businessLicense){
+                            companyForm.custName = data.ocr.detail.name
+                            companyForm.custCreditNo = data.ocr.detail.unionId
+                            companyForm.address = data.ocr.detail.addr
+                        }else {
+                          message('验证失败',{
+                            type:'error'
+                          })
+                        }
                       }
                     "
                   />
@@ -427,22 +447,24 @@ const companyRule = reactive<FormRules>({});
           </el-row>
           <h2>法定代表人信息</h2>
           <el-row>
-            <el-col :span="12">
-              <el-form-item label="法定代表人姓名：">
+            <el-col :span="10">
+              <el-form-item label="法定代表人姓名：" required>
                 <el-input
                   v-model="companyForm.juriName"
                   placeholder="请输入法定代表人姓名"
                   @change="change(companyForm)"
                 />
               </el-form-item>
-              <el-form-item label="法定代表人手机号：">
+              <el-form-item label="法定代表人手机号：" required>
                 <el-input
+                  :disabled="lock"
+                  :maxlength="11"
                   v-model="companyForm.juriTel"
                   placeholder="请输入法定代表人手机号"
                   @change="change(companyForm)"
                 />
               </el-form-item>
-              <el-form-item label="图形验证码" prop="code">
+              <el-form-item label="图形验证码" required>
                 <el-input
                   v-model="graphCodeCompany"
                   clearable
@@ -453,7 +475,7 @@ const companyRule = reactive<FormRules>({});
                   </template>
                 </el-input>
               </el-form-item>
-              <el-form-item label="验证码" prop="smsCode">
+              <el-form-item label="验证码" prop="smsCode" required>
                 <div class="w-full flex">
                   <el-input
                     v-model="companyForm.smsCode"
@@ -483,7 +505,7 @@ const companyRule = reactive<FormRules>({});
                   </el-button>
                 </div>
               </el-form-item>
-              <el-form-item label="法定代表人身份证号：">
+              <el-form-item label="法定代表人身份证号：" required>
                 <el-input
                   v-model="companyForm.juriIdNo"
                   placeholder="请输入法定代表人身份证号"
@@ -491,8 +513,8 @@ const companyRule = reactive<FormRules>({});
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="12" style="display: flex">
-              <el-form-item style="margin-right: 20px">
+            <el-col :span="14" style="display: flex">
+              <el-form-item style="margin-right: 20px" required>
                 <div
                   style="
                     display: flex;
@@ -503,15 +525,20 @@ const companyRule = reactive<FormRules>({});
                   <ShImageUpload
                     upload-url="/app/func/ocr/idCard"
                     @change="
-                      id => {
+                      (id,data,res) => {
+                        if(res.code == '0'){
                         companyForm.juriFacePath = id;
+                        companyForm.juriIdNo = data.ocr.idcard
+                        companyForm.juriName = data.ocr.name
+                        }
+
                       }
                     "
                   />
                   <div>法人身份证人像面</div>
                 </div>
               </el-form-item>
-              <el-form-item>
+              <el-form-item required>
                 <div
                   style="
                     display: flex;
@@ -520,7 +547,6 @@ const companyRule = reactive<FormRules>({});
                   "
                 >
                   <ShImageUpload
-                    upload-url="/app/func/ocr/idCard"
                     @change="
                       id => {
                         companyForm.juriBackPath = id;
@@ -535,7 +561,7 @@ const companyRule = reactive<FormRules>({});
           <template v-if="companyStaticValue == '1'">
             <h2>经办人信息</h2>
             <el-row>
-              <el-col :span="12">
+              <el-col :span="10">
                 <el-form-item label="经办人姓名：">
                   <el-input
                     v-model="companyForm.operatorName"
@@ -558,7 +584,7 @@ const companyRule = reactive<FormRules>({});
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="12" style="display: flex">
+              <el-col :span="14" style="display: flex">
                 <el-form-item style="margin-right: 20px">
                   <div
                     style="
@@ -570,8 +596,13 @@ const companyRule = reactive<FormRules>({});
                     <ShImageUpload
                       upload-url="/app/func/ocr/idCard"
                       @change="
-                        id => {
+                        (id,data,res) => {
+                          if(res.code == '0'){
                           companyForm.operatorFacePath = id;
+                          companyForm.operatorName = data.ocr.name
+                          companyForm.operatorIdNo = data.ocr.idcard
+                          }
+
                         }
                       "
                     />
@@ -587,7 +618,6 @@ const companyRule = reactive<FormRules>({});
                     "
                   >
                     <ShImageUpload
-                      upload-url="/app/func/ocr/idCard"
                       @change="
                         id => {
                           companyForm.operatorBackPath = id;
@@ -641,7 +671,8 @@ h2 {
   width: 100%;
   font-weight: 600;
   border-bottom: 0.1px solid #9ca3af;
-  margin-bottom: 4px;
+  padding-bottom: 6px;
+  margin-bottom: 20px;
   color: black;
 }
 

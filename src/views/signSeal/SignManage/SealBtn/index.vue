@@ -8,7 +8,7 @@ import Loading from "@/components/Common/Loading.vue";
 
 type BtnProps = {
   detailClick: () => void;
-  addClick: (type:"1" | "2") => void;
+  addClick: (type: "1" | "2") => void;
   data: any;
   getList: () => void;
 };
@@ -41,12 +41,18 @@ const remove = () => {
             reason: "..."
           }
         })
-        .then(() => {
-          message("注销成功", {
-            type: "success"
-          });
-          done();
-          props.getList();
+        .then((res) => {
+          if (res.code == '0') {
+            message("注销成功", {
+              type: "success"
+            });
+            done();
+            props.getList();
+          } else {
+            message("注销失败", {
+              type: res.msg
+            })
+          }
         });
     }
   });

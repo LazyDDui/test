@@ -169,7 +169,7 @@ const reGetQrcode = async () => {
   timer = setInterval(() => {
     getOderQueryApi(orderInfo.value.orderNo).then((res) => {
       orderStatus.value = res.data
-      if (res.data === "1") {
+      if (res.data == "1") {
         clearInterval(timer)
         message("已支付", {
           type: "success"
@@ -206,8 +206,10 @@ onBeforeUnmount(() => {
           <div>
             <div class="title">{{ item.name }}</div>
             <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
-            <div class="content">{{ item.expireTime }}之前有效</div>
-            <div class="content">签署份数:{{ item.signMaxNum }}</div>
+            <div class="content" v-if="item.signMaxNum == -1">一年之内有效</div>
+            <div class="content" v-else>{{ item.expireTime }}之前有效</div>
+            <div class="content" v-if="item.signMaxNum == -1">签署份数:无限次</div>
+            <div class="content" v-else>签署份数:{{ item.signMaxNum }}</div>
           </div>
           <div class="priceContent">
             <div class="price">
@@ -232,8 +234,10 @@ onBeforeUnmount(() => {
           <div>
             <div class="title">{{ item.name }}</div>
             <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
-            <div class="content">{{ item.expireTime }}之前有效</div>
-            <div class="content">签署份数:{{ item.signMaxNum }}</div>
+            <div class="content" v-if="item.signMaxNum == -1">一年之内有效</div>
+            <div class="content" v-else>{{ item.expireTime }}之前有效</div>
+            <div class="content" v-if="item.signMaxNum == -1">签署份数:无限次</div>
+            <div class="content" v-else>签署份数:{{ item.signMaxNum }}</div>
           </div>
           <div class="priceContent">
             <div class="price">
@@ -286,8 +290,10 @@ onBeforeUnmount(() => {
           <div>
             <div class="title">{{ item.name }}</div>
             <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
-            <div class="content">{{ item.expireTime }}之前有效</div>
-            <div class="content">签署份数:{{ item.signMaxNum }}</div>
+            <div class="content" v-if="item.signMaxNum == -1">一年之内有效</div>
+            <div class="content" v-else>{{ item.expireTime }}之前有效</div>
+            <div class="content" v-if="item.signMaxNum == -1">签署份数:无限次</div>
+            <div class="content" v-else>签署份数:{{ item.signMaxNum }}</div>
           </div>
           <div class="priceContent">
             <div class="price">
@@ -311,8 +317,10 @@ onBeforeUnmount(() => {
           <div>
             <div class="title">{{ item.name }}</div>
             <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
-            <div class="content">{{ item.expireTime }}之前有效</div>
-            <div class="content">签署份数:{{ item.signMaxNum }}</div>
+            <div class="content" v-if="item.signMaxNum == -1">一年之内有效</div>
+            <div class="content" v-else>{{ item.expireTime }}之前有效</div>
+            <div class="content" v-if="item.signMaxNum == -1">签署份数:无限次</div>
+            <div class="content" v-else>签署份数:{{ item.signMaxNum }}</div>
           </div>
           <div class="priceContent">
             <div class="price">
@@ -338,7 +346,7 @@ onBeforeUnmount(() => {
     <Motion v-if="step == 3">
       <el-row style="display: flex;justify-content: center">
         <el-col :xl="6" :lg="6" :md="12" :sm="24" :xs="24">
-          <el-card shadow="hover" class="mb-[10px] text-center">
+          <el-card shadow="hover" class="mb-[20px] text-center">
             <div class="font-bold">请扫码支付</div>
             <div class="font-bold">{{ OrderStatusMap.get(orderStatus) }}</div>
             <ReQrcode :text="qrCode"/>

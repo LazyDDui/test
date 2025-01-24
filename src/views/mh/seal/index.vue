@@ -6,6 +6,7 @@ import { companyCertApi, companySign, personSign } from "@/api/test";
 import { downloadPdf } from "@/utils";
 import { http } from "@/utils/http";
 import {ElMessage} from "element-plus";
+import {baseUrl} from "@/utils/common";
 
 let sealLoading = ref(false);
 let sealData = ref([]);
@@ -38,7 +39,7 @@ const downloadBA = r => {
     })
     .then(res => {
       downloadPdf(
-        res.data.fileTempUrl.replace("http://182.151.13.73:9190", "")
+        res.data.fileTempUrl.replace(baseUrl, "")
       );
     });
 };

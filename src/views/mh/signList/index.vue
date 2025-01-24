@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import {http} from "@/utils/http";
+import {baseUrl} from "@/utils/common";
 
 const router = useRouter();
 
@@ -72,11 +73,11 @@ async function downloadPdf(url, filename = "document.pdf") {
 }
 
 const downloadFile1 = (data: any) => {
-  downloadPdf(data.signedFileUrl.replace("http://182.151.13.73:9099", ""), data.docName);
+  downloadPdf(data.signedFileUrl.replace(baseUrl, ""), data.docName);
 };
 
 const downloadFile2 = (data: any) => {
-  downloadPdf(data.fileUrl.replace("http://182.151.13.73:9099", ""), data.docName);
+  downloadPdf(data.fileUrl.replace(baseUrl, ""), data.docName);
 };
 
 

@@ -655,8 +655,10 @@ onBeforeUnmount(() => {
           <div>
             <div class="title">{{ item.name }}</div>
             <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
-            <div class="content">{{ item.expireTime }}之前有效</div>
-            <div class="content">签署份数:{{ item.signMaxNum }}</div>
+            <div class="content" v-if="item.signMaxNum == -1">一年之内有效</div>
+            <div class="content" v-else>{{ item.expireTime }}之前有效</div>
+            <div class="content" v-if="item.signMaxNum == -1">签署份数:无限次</div>
+            <div class="content" v-else>签署份数:{{ item.signMaxNum }}</div>
           </div>
           <div class="priceContent">
             <div class="price">
@@ -681,8 +683,10 @@ onBeforeUnmount(() => {
         <div>
           <div class="title">{{ item.name }}</div>
           <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
-          <div class="content">{{ item.expireTime }}之前有效</div>
-          <div class="content">签署份数:{{ item.signMaxNum }}</div>
+          <div class="content" v-if="item.signMaxNum == -1">一年之内有效</div>
+          <div class="content" v-else>{{ item.expireTime }}之前有效</div>
+          <div class="content" v-if="item.signMaxNum == -1">签署份数:无限次</div>
+          <div class="content" v-else>签署份数:{{ item.signMaxNum }}</div>
         </div>
         <div class="priceContent">
           <div class="price">
@@ -759,8 +763,10 @@ onBeforeUnmount(() => {
           <div>
             <div class="title">{{ item.name }}</div>
             <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
-            <div class="content">{{ item.expireTime }}之前有效</div>
-            <div class="content">签署份数:{{ item.signMaxNum }}</div>
+            <div class="content" v-if="item.signMaxNum == -1">一年之内有效</div>
+            <div class="content" v-else>{{ item.expireTime }}之前有效</div>
+            <div class="content" v-if="item.signMaxNum == -1">签署份数:无限次</div>
+            <div class="content" v-else>签署份数:{{ item.signMaxNum }}</div>
           </div>
           <div class="priceContent">
             <div class="price">
@@ -784,8 +790,10 @@ onBeforeUnmount(() => {
           <div>
             <div class="title">{{ item.name }}</div>
             <div class="content">{{ item.sealType == '1' ? "企业公章" : "个人私章" }}</div>
-            <div class="content">{{ item.expireTime }}之前有效</div>
-            <div class="content">签署份数:{{ item.signMaxNum }}</div>
+            <div class="content" v-if="item.signMaxNum == -1">一年之内有效</div>
+            <div class="content" v-else>{{ item.expireTime }}之前有效</div>
+            <div class="content" v-if="item.signMaxNum == -1">签署份数:无限次</div>
+            <div class="content" v-else>签署份数:{{ item.signMaxNum }}</div>
           </div>
           <div class="priceContent">
             <div class="price">

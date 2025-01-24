@@ -10,12 +10,13 @@ import {useVxeTable} from "@/plugins/vxeTable";
 import {useElementPlus} from "@/plugins/elementPlus";
 import {injectResponsiveStorage} from "@/utils/responsive";
 
+
 import Table from "@pureadmin/table";
 import PureDescriptions from "@pureadmin/descriptions";
 
 import 'vuetify/styles'
 import '@/assets/scss/index.scss'
-import { vuetify } from '@/plugins/vuetify'
+import {vuetify} from '@/plugins/vuetify'
 
 // 引入重置样式
 import "./style/reset.scss";

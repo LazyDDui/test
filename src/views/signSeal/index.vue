@@ -2,7 +2,7 @@
 import {fp} from "@/utils";
 import {addDialog, closeAllDialog} from "@/components/ReDialog/index";
 import Sign from "@/components/views/Sign/index.vue";
-import {h} from "vue";
+import {h, watch, watchEffect} from "vue";
 import {useRouter} from "vue-router";
 import {
   changeAuthenticationApi,
@@ -160,6 +160,8 @@ const unCertForm = ref({});
 // };
 
 let clearUnCertInnerForm = null;
+const phone = ref("")
+
 
 const goToCert = () => {
   addDialog({

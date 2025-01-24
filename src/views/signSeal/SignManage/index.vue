@@ -48,7 +48,7 @@ const columns: TableColumnList = [
   {
     label: "印章名称",
     prop: "name",
-    width: 160,
+    width: 120,
     align: "center"
   },
   {
@@ -63,7 +63,8 @@ const columns: TableColumnList = [
   {
     label: "权益到期时间",
     prop: "expireTime",
-    align: "center"
+    align: "center",
+    width: 180
   },
   {
     label: "签署额度",
@@ -110,6 +111,7 @@ const columns: TableColumnList = [
         addClick: (type) => {
           addDialog({
             hideFooter: true,
+            width:'70vw',
             title: getTitle(),
             contentRenderer({options, index}) {
               return h(Renew, {

@@ -1,5 +1,7 @@
+import {staticUrl} from "@/utils/common";
+
 export const fp = (path: string) => {
-  return "https://chengdulpg.com/seal/" + path;
+  return staticUrl + path;
 };
 
 export async function downloadPdf(url, filename = "document.pdf") {

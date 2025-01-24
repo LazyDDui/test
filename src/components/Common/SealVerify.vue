@@ -14,6 +14,7 @@ import {checkFile, checkFileOld} from "@/api/test";
 import {fp} from "@/utils";
 import SealFooter from "@/components/Common/SealFooter.vue";
 import {useRouter} from "vue-router";
+import {message} from "@/utils/message";
 
 const isDisabled = ref<boolean>(false);
 const centerDialogVisible = ref<boolean>(false);
@@ -97,21 +98,83 @@ const submitUpload = async () => {
       const formData = new FormData();
       formData.append("file", chkFile.value);
 
-      const resOld: any = await checkFileOld(formData)
-      if (resOld.code == '0') {
-        resFn(resOld)
-      } else {
-        const res: any = await checkFile(formData);
-        if (res.code == "0") {
-          resFn(res)
+      checkFileOld(formData).then((resOld) => {
+        if (resOld.code == '0') {
+          resFn(resOld)
+          dialogVisible.value = false
         } else {
-          ElMessage({
-            message: "服务器内部错误",
-            type: "error"
-          });
-          dialogVisible.value = false;
+          checkFile(formData).then((res) => {
+            if (res.code == '0') {
+              resFn(res)
+            } else {
+              message(res.msg, {
+                type: "error"
+              })
+            }
+          }).catch(() => {
+            message('内部错误', {
+              type: "error"
+            })
+          }).finally(() => {
+            dialogVisible.value = false
+          })
         }
-      }
+
+      })
+      // try {
+      //   resOld: any = await checkFileOld(formData)
+      // } catch (e) {
+      //   try {
+      //     const res: any = await checkFile(formData);
+      //     if (res.code == "0") {
+      //       resFn(res)
+      //     } else {
+      //       ElMessage({
+      //         message: "服务器内部错误",
+      //         type: "error"
+      //       });
+      //       dialogVisible.value = false;
+      //     }
+      //   } catch (ee) {
+      //     console.error(ee)
+      //     dialogVisible.value = false;
+      //   }
+      // }
+      // try {
+      //   const resOld: any = await checkFileOld(formData)
+      //   if (resOld.code == '0') {
+      //     resFn(resOld)
+      //   } else {
+      //     const res: any = await checkFile(formData);
+      //     if (res.code == "0") {
+      //       resFn(res)
+      //     } else {
+      //       ElMessage({
+      //         message: "服务器内部错误",
+      //         type: "error"
+      //       });
+      //       dialogVisible.value = false;
+      //     }
+      //   }
+      // } catch (e) {
+      //   try {
+      //     const res: any = await checkFile(formData);
+      //     if (res.code == "0") {
+      //       resFn(res)
+      //     } else {
+      //       ElMessage({
+      //         message: "服务器内部错误",
+      //         type: "error"
+      //       });
+      //       dialogVisible.value = false;
+      //     }
+      //   } catch (ee) {
+      //     console.error(ee)
+      //     dialogVisible.value = false;
+      //   }
+      //
+      // }
+
 
     } else {
       btnFlag.value = true;
@@ -293,7 +356,7 @@ const handleProgress = (ev, file, files) => {
                     :src="fp('verify/hui.png')"
                     width="25px"
                     height="25px"
-                  />&nbsp;&nbsp;全国电子印章管理与服务平台江西省平台
+                  />&nbsp;{{item.makePlat}}
                   </span>
                 </div>
               </div>
@@ -305,7 +368,7 @@ const handleProgress = (ev, file, files) => {
                     :src="fp('verify/hui.png')"
                     width="25px"
                     height="25px"
-                  />&nbsp;&nbsp;公安部第三研究所</span
+                  />&nbsp;&nbsp;{{item.recordPlat }}</span
                   >
                 </div>
               </div>
@@ -320,7 +383,7 @@ const handleProgress = (ev, file, files) => {
         }">
       <div style="display: flex;flex-wrap: wrap;height: 80vh;overflow-y: scroll">
         <div
-          v-for="(item, index) in currentList.concat(...currentList).concat(...currentList).concat(...currentList).concat(...currentList)"
+          v-for="(item, index) in currentList"
           :key="index" class="tb-table"
           style="height: 400px;width: 24%;padding: 10px;border: 1px dashed black;margin-bottom: 20px;margin-right: 10px;border-radius: 10px;">
           <div class="tb-row">
@@ -362,7 +425,7 @@ const handleProgress = (ev, file, files) => {
                 :src="fp('verify/hui.png')"
                 width="25px"
                 height="25px"
-              />&nbsp;&nbsp;全国电子印章管理与服务平台江西省平台
+              />&nbsp;&nbsp;{{item.makePlat }}
                   </span>
             </div>
           </div>
@@ -374,7 +437,7 @@ const handleProgress = (ev, file, files) => {
                 :src="fp('verify/hui.png')"
                 width="25px"
                 height="25px"
-              />&nbsp;&nbsp;公安部第三研究所</span
+              />&nbsp;&nbsp;{{item.recordPlat}}</span
               >
             </div>
           </div>
@@ -402,7 +465,7 @@ const handleProgress = (ev, file, files) => {
         </div>
       </template>
     </el-dialog>
-    <SealFooter/>
+    <!--    <SealFooter/>-->
   </div>
 </template>
 

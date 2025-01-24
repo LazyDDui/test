@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {useRoute} from "vue-router";
+import {newsUrl} from "@/utils/common";
 
 const route = useRoute()
 const num = route.query.num
@@ -7,7 +8,7 @@ const num = route.query.num
 </script>
 
 <template>
-  <iframe :src="`/html/news/${num}.html`">
+  <iframe  :src="`${newsUrl}/${num}.html`">
   </iframe>
 </template>
 

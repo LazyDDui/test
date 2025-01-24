@@ -17,8 +17,8 @@
         <div
           style="
             border: 1px dashed #9ca3af;
-            width: 240px;
-            height: 120px;
+            width: 300px;
+            height: 160px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -34,8 +34,8 @@
       v-else
       style="
         border: 1px dashed #9ca3af;
-        width: 240px;
-        height: 120px;
+            width: 300px;
+            height: 160px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -210,8 +210,15 @@ const fileChange = async (_file, resfileList) => {
         headers: {
           "Content-Type": "multipart/form-data"
         }
-      }).then(({data}) => {
-      emit("change", data.fileId)
+      }).then((res) => {
+      emit("change", res.data.fileId, res.data, res)
+      if (res.code != '0') {
+        fileList.value = []
+        previewFileList.value = []
+      }
+    }).catch(() => {
+      fileList.value = []
+      previewFileList.value = []
     })
   } else {
     http
@@ -228,8 +235,8 @@ const fileChange = async (_file, resfileList) => {
           }
         }
       )
-      .then(({data}) => {
-        emit("change", data.fileId);
+      .then((res) => {
+        emit("change", res.data.fileId, res.data, res);
       });
     updateUploadShown();
   }

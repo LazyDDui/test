@@ -120,3 +120,9 @@ export function encryptCFB(plainText: string): string {
   });
   return encrypted.toString();
 }
+
+export const baseUrl = "https://www.ciceseal.com/api"
+// export const baseUrl = "http://182.151.50.112:17000/api"
+
+export const staticUrl = "https://cic.ciceseal.com/seal/"
+export const newsUrl = "https://www.ciceseal.com/news"

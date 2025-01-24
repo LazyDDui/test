@@ -36,7 +36,7 @@ export default [
   },
   {
     path: "/mh",
-    // redirect: "/mh/home",
+    redirect: "/mh/home",
     name: "mh",
     meta: {
       title: "Componets",
