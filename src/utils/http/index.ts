@@ -17,6 +17,7 @@ import {message} from "@/utils/message";
 import {baseUrl, removeLetters} from "@/utils/common";
 import router from "@/router";
 
+console.log(import.meta.env)
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
   // 请求超时时间
@@ -31,7 +32,7 @@ const defaultConfig: AxiosRequestConfig = {
   paramsSerializer: {
     serialize: stringify as unknown as CustomParamsSerializer
   },
-  baseURL: baseUrl,
+  // baseURL: import.meta.env.MODE == "development" ? '/' : baseUrl,
   // withCredentials: true
 };
 

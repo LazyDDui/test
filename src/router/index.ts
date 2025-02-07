@@ -82,8 +82,8 @@ export const remainingPaths = Object.keys(remainingRouter).map(v => {
 
 /** 创建路由实例 */
 export const router: Router = createRouter({
-  history: getHistoryMode(import.meta.env.VITE_ROUTER_HISTORY),
-  // history: createWebHistory(),
+  // history: getHistoryMode(import.meta.env.VITE_ROUTER_HISTORY),
+  history: createWebHistory(),
   routes: constantRoutes.concat(...(remainingRouter as any)),
   strict: true,
   scrollBehavior(to, from, savedPosition) {

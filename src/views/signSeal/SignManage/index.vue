@@ -40,7 +40,7 @@ const getStatus = (item: any) => {
 
 const columns: TableColumnList = [
   {
-    label: "印章编码",
+    label: "印章序列号",
     prop: "code",
     width: 180,
     align: "center"

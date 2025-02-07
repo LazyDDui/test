@@ -110,10 +110,10 @@ const navBars = ref([
         label: "签章验证",
         route: "/mh/mhVerify"
       },
-      // {
-      //   label: "省级门户",
-      //   route: "/mh/service"
-      // },
+      {
+        label: "省级门户",
+        route: "/mh/service"
+      },
       {
         label: "印章使用",
         route: "/login"

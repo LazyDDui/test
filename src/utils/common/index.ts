@@ -124,5 +124,9 @@ export function encryptCFB(plainText: string): string {
 export const baseUrl = "https://www.ciceseal.com/api"
 // export const baseUrl = "http://182.151.50.112:17000/api"
 
+//测试
+// export const baseUrl = "http://182.151.13.73:9999/api"
+
 export const staticUrl = "https://cic.ciceseal.com/seal/"
+// export const staticUrl = "https://www.ciceseal.com/seal"
 export const newsUrl = "https://www.ciceseal.com/news"

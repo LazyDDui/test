@@ -51,8 +51,6 @@ const initialPersonForm = {
   // smsCode: ""
 };
 
-console.log(initialPersonForm)
-
 // const initialCompanyForm = {
 //   responsibilityIdType: "0",
 //   operatorIdType: "0",
@@ -335,12 +333,12 @@ const lock = ref(false)
                     upload-url="/app/func/ocr/idCard"
                     @change="
                       (id,data,res) => {
-                        console.log(res)
                         if(res.code == '0'){
                         form.facePath = id;
                         form.name = data.ocr.name
                         form.idCard = data.ocr.idcard
                         form.address = data.ocr.address
+                        change(form)
                         }
                       }
                     "
@@ -361,6 +359,7 @@ const lock = ref(false)
                     @change="
                       id => {
                         form.backPath = id;
+                        change(form)
                       }
                     "
                   />
@@ -432,6 +431,7 @@ const lock = ref(false)
                             companyForm.custName = data.ocr.detail.name
                             companyForm.custCreditNo = data.ocr.detail.unionId
                             companyForm.address = data.ocr.detail.addr
+                            change(companyForm)
                         }else {
                           message('验证失败',{
                             type:'error'
@@ -530,6 +530,7 @@ const lock = ref(false)
                         companyForm.juriFacePath = id;
                         companyForm.juriIdNo = data.ocr.idcard
                         companyForm.juriName = data.ocr.name
+                        change(companyForm)
                         }
 
                       }
@@ -550,6 +551,7 @@ const lock = ref(false)
                     @change="
                       id => {
                         companyForm.juriBackPath = id;
+                        change(companyForm)
                       }
                     "
                   />
@@ -601,6 +603,7 @@ const lock = ref(false)
                           companyForm.operatorFacePath = id;
                           companyForm.operatorName = data.ocr.name
                           companyForm.operatorIdNo = data.ocr.idcard
+                          change(companyForm)
                           }
 
                         }
@@ -621,6 +624,7 @@ const lock = ref(false)
                       @change="
                         id => {
                           companyForm.operatorBackPath = id;
+                          change(companyForm)
                         }
                       "
                     />
@@ -640,6 +644,7 @@ const lock = ref(false)
                       @change="
                         id => {
                           companyForm.operatorLetterOfAuthorizationPath = id;
+                          change(companyForm)
                         }
                       "
                     />

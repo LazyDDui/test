@@ -2,13 +2,14 @@
 
 import {getBase64, stripBase64Prefix} from "@/utils/common";
 import {SealTypeMap, StampShapeTypeCompanyMap, StampShapeTypePersonalMap} from "@/utils/map";
-import {computed, ref, toRaw, watchEffect} from "vue";
+import {computed, reactive, ref, toRaw, watchEffect} from "vue";
 import ShImageUpload from "@/views/components/shImageUpload/index.vue";
 import {stampSealMakerApi, stampTemplatePageApi} from "@/api/test";
 import {useSeal} from "@/store/useSeal";
 import {storeToRefs} from "pinia";
 import {v4 as uuidv4} from "uuid";
 import {message} from "@/utils/message";
+import {FormRules} from "element-plus";
 
 defineOptions({
   name: "SealMaker"
@@ -283,10 +284,32 @@ const removeChoose = (item: any) => {
   emit("change", chooseList.value)
 }
 
+const ruleFormRef = ref(null)
+
+
+const rules = reactive<FormRules>({
+  code: [
+    {
+      validator: (rule, value, callback) => {
+        if (value == "") {
+          callback(new Error("印章编码不能为空"))
+        } else if (value.length > 18 || value.length < 13) {
+          callback(new Error("印章编码必须在13位到18位之间"))
+        } else {
+          callback()
+        }
+      }
+    }
+  ]
+})
+
+defineExpose({
+  ruleFormRef
+})
 
 </script>
 <template>
-  <el-form :model="companyForm" label-width="auto">
+  <el-form ref="ruleFormRef" :model="companyForm" label-width="auto" :rules="rules">
     <h2>第1步，印章制作</h2>
     <el-form-item label="印章类型：">
       <el-select
@@ -312,13 +335,14 @@ const removeChoose = (item: any) => {
         <el-form-item label="申领方式：">
           <el-radio-group v-model="createType">
             <el-radio value="1" size="large">制作申领</el-radio>
-<!--            <el-radio value="2" size="large">上传实物印迹</el-radio>-->
+            <!--            <el-radio value="2" size="large">上传实物印迹</el-radio>-->
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="印章编码：">
+        <el-form-item label="印章编码：" prop="code">
           <el-input
             clearable
+            :maxlength="18"
             style="width: 200px;"
             v-model="companyForm.code"
             placeholder="请输入印章编码"
@@ -427,7 +451,7 @@ const removeChoose = (item: any) => {
               <el-image style="width: 120px;height: 120px" :src="getBase64(item.stamp)"></el-image>
               <span @click.stop="removeChoose(item)" v-if="item.id" class="iconfont"
                     style="font-size: 20px;position: absolute;right: 20px;top: 10px;cursor: pointer;">&#xe612;</span>
-              <div>{{item.name}}</div>
+              <div>{{ item.name }}</div>
             </div>
           </div>
         </div>

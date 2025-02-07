@@ -180,6 +180,7 @@ const goToCert = () => {
           }
         },
         change: data => {
+          console.log(data)
           unCertForm.value = data;
         },
         tabClick: tab => {

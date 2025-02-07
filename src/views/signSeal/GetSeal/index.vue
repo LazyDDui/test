@@ -138,6 +138,13 @@ const submit = async () => {
         toNext()
       }
     } else {
+      let valite
+      await companyRef.value.ruleFormRef.validate((val) => {
+        valite = val
+      })
+      if (!valite) {
+        return
+      }
       if (!pin.value.last || (pin.value.last != pin.value.first)) {
         message("请输入pin码")
         return
@@ -499,6 +506,8 @@ onBeforeUnmount(() => {
   }
 })
 
+const companyRef = ref()
+
 
 </script>
 
@@ -726,7 +735,7 @@ onBeforeUnmount(() => {
   </div>
   <div v-else class="sealBox">
     <Motion v-if="step === 1">
-      <SealMaker @change="(e)=>{
+      <SealMaker ref="companyRef" @change="(e)=>{
         companySeal = e
       }"/>
       <h2>确认密码</h2>
