@@ -1,1 +1,0 @@
-import{u as t}from"./useSeal-BVp3TU9Y.js";import{d as s,aB as n,o as r,c as a,e as m}from"./index-UpqzkZig.js";import"./test-Db4VEeMG.js";const _=s({__name:"index",setup(p){const{setAuth:o}=t();return n(t()),(i,e)=>(r(),a("div",{onClick:e[0]||(e[0]=u=>{m(o)("ty")})},"1111111"))}});export{_ as default};

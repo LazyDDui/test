@@ -1,1 +1,0 @@
-import{d as s,n as o,o as n,c as a,e,aS as c,_ as r}from"./index-UpqzkZig.js";const _=["src"],u=s({__name:"mhDetail",setup(m){const t=o().query.num;return(p,f)=>(n(),a("iframe",{src:`${e(c)}/${e(t)}.html`},null,8,_))}}),d=r(u,[["__scopeId","data-v-510c133b"]]);export{d as default};
