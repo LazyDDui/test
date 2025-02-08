@@ -1,1 +1,0 @@
-import{d as a,r,o as p,h as i,i as m,g as c}from"./index-DjhCWRO9.js";const u=a({__name:"index",props:{data:{}},emits:["choose"],setup(l,{emit:t}){const o=t;return(n,e)=>{const s=r("el-button");return p(),i(s,{onClick:e[0]||(e[0]=_=>o("choose",n.data)),type:"text",size:"small"},{default:m(()=>[c("选择该章作为模板 ")]),_:1})}}});export{u as default};

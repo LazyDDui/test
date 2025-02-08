@@ -1,0 +1,1 @@
+import{d as o,q as p,r as s,o as t,h as c}from"./index-D85dHp30.js";const l=o({__name:"index",props:{pic:{}},setup(e){return p(["data:image/png;base64,"+e.pic]),(a,i)=>{const n=s("el-image");return t(),c(n,{style:{width:"100px",height:"100px"},src:"data:image/png;base64,"+a.pic,fit:"contain",lazy:""},null,8,["src"])}}});export{l as _};

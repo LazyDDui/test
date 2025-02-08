@@ -1,0 +1,1 @@
+import{u as t}from"./useSeal-dSWHM-y0.js";import{d as s,aB as n,o as r,c as a,e as m}from"./index-D85dHp30.js";import"./test-C9lHczlZ.js";const _=s({__name:"index",setup(p){const{setAuth:o}=t();return n(t()),(i,e)=>(r(),a("div",{onClick:e[0]||(e[0]=u=>{m(o)("ty")})},"1111111"))}});export{_ as default};
