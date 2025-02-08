@@ -1,0 +1,1 @@
+import{u as t}from"./useSeal-BWhmcOEa.js";import{d as s,aB as n,o as r,c as a,e as m}from"./index-BrdHknTB.js";import"./test-CHyoxGXP.js";const _=s({__name:"index",setup(p){const{setAuth:o}=t();return n(t()),(i,e)=>(r(),a("div",{onClick:e[0]||(e[0]=u=>{m(o)("ty")})},"1111111"))}});export{_ as default};
