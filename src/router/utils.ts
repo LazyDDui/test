@@ -185,8 +185,9 @@ function handleAsyncRoutes(routeList) {
     formatFlatteningRoutes(addAsyncRoutes(routeList)).map(
       (v: RouteRecordRaw) => {
         // 防止重复添加路由
+        console.log(router.options.routes)
         if (
-          router.options.routes[0].children.findIndex(
+          router.options.routes[0].children?.findIndex(
             value => value.path === v.path
           ) !== -1
         ) {
@@ -225,7 +226,6 @@ function initRouter() {
     const asyncRouteList = storageLocal().getItem(key) as any;
     if (asyncRouteList && asyncRouteList?.length > 0) {
       return new Promise(resolve => {
-        console.log(asyncRouteList)
         handleAsyncRoutes(asyncRouteList);
         resolve(router);
       });

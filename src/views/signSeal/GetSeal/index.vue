@@ -138,11 +138,13 @@ const submit = async () => {
         toNext()
       }
     } else {
-      let valite
-      await companyRef.value.ruleFormRef.validate((val) => {
-        valite = val
-      })
-      if (!valite) {
+      // let valite
+      // await companyRef.value.ruleFormRef.validate((val) => {
+      //   valite = val
+      // })
+      // console.log(companySeal.value)
+      const every = companySeal.value.every((item) => (item.code.length >= 13 && item.code.length <= 18) || item.code == "")
+      if (!every) {
         return
       }
       if (!pin.value.last || (pin.value.last != pin.value.first)) {
@@ -579,7 +581,7 @@ const companyRef = ref()
           </el-col>
           <el-col :span="12" v-if="createType == '1'">
             <div style="display: flex;flex-direction: column;align-items: center;">
-              <el-image style="width: 300px;height: 300px;" alt="personPic" v-if="personPic"
+              <el-image style="width: 300px;height: 300px;object-fit: contain" alt="personPic" v-if="personPic"
                         :src="getBase64(personPic)"></el-image>
               <div
                 style="font-size: 40px;display: flex;justify-content: center;align-items: center;width: 300px;height: 300px;border: 1px dashed black;"
@@ -871,7 +873,7 @@ const companyRef = ref()
 
 .el-form-item {
   align-items: center;
-  margin-bottom: 4px !important;
+  //margin-bottom: 16px !important;
 }
 
 .el-input {
@@ -918,7 +920,7 @@ const companyRef = ref()
 
 }
 
-:deep(.el-form-item) {
-  margin-bottom: 10px !important;
-}
+//:deep(.el-form-item) {
+//  margin-bottom: 10px !important;
+//}
 </style>

@@ -37,9 +37,10 @@ const loadingPdf = ref();
 
 const getPdfFile = async () => {
   console.log(fileId.value);
+  console.log(import.meta.env)
   // const blob = await getPdf();
   // pdf.value = preViewFile(blob);
-  pdf.value = baseUrl + "/app/file/" + fileId.value;
+  pdf.value = import.meta.env.MODE == "development" ? (import.meta.env.VITE_BASE_URL + "/app/file/" + fileId.value) : (baseUrl + "/app/file/" + fileId.value);
   // console.log(import.meta.env.VITE_BASE_URL)
 };
 

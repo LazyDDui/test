@@ -33,7 +33,7 @@ defineOptions({
   position: fixed;
   right: 20px;
   top: 30vh;
-
+  z-index: 500;
   .wc {
     margin-top: 2vh;
     cursor: pointer;
@@ -94,6 +94,7 @@ defineOptions({
       transform-origin: 100% 100%;
       font-size: 1vh;
       white-space: nowrap;
+      padding-left: 10px;
 
       span {
         color: #fff;

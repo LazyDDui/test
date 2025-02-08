@@ -291,9 +291,7 @@ const rules = reactive<FormRules>({
   code: [
     {
       validator: (rule, value, callback) => {
-        if (value == "") {
-          callback(new Error("印章编码不能为空"))
-        } else if (value.length > 18 || value.length < 13) {
+        if ((value.length > 18 || value.length < 13) && value) {
           callback(new Error("印章编码必须在13位到18位之间"))
         } else {
           callback()
@@ -429,7 +427,7 @@ defineExpose({
       <el-col :span="12" style="height: 400px;">
         <div style="display: flex">
           <div style="flex:1;">
-            <el-image style="width: 300px;height: 300px;object-fit: cover" v-if="currentChoose.stamp"
+            <el-image style="width: 300px;height: 300px;object-fit: contain" v-if="currentChoose.stamp"
                       :src="getBase64(currentChoose.stamp)">
             </el-image>
             <div v-else
@@ -448,7 +446,7 @@ defineExpose({
               <!--              <div v-if="!item.id" class="addBtn">-->
               <!--                <span class="iconfont">&#xe6f0;</span>-->
               <!--              </div>-->
-              <el-image style="width: 120px;height: 120px" :src="getBase64(item.stamp)"></el-image>
+              <el-image style="width: 120px;height: 120px;object-fit: contain" :src="getBase64(item.stamp)"></el-image>
               <span @click.stop="removeChoose(item)" v-if="item.id" class="iconfont"
                     style="font-size: 20px;position: absolute;right: 20px;top: 10px;cursor: pointer;">&#xe612;</span>
               <div>{{ item.name }}</div>

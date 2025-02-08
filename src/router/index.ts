@@ -129,7 +129,7 @@ const whiteList = [
   "/mh/feedback",
   "/mh/about",
   "/SignManage",
-  "/welcome",
+  "/shData",
   "/shApi",
   "/test",
   "/mPdf",
@@ -140,6 +140,9 @@ const whiteList = [
 const {VITE_HIDE_HOME} = import.meta.env;
 
 router.beforeEach((to: ToRouteType, _from, next) => {
+  if(to.path == '/'){
+    next('/mh/home')
+  }
   const {setScroll} = useMainStore();
   if (to.path == "/mh/home" || to.path == "/mh/product") {
     setScroll(false);
@@ -201,30 +204,30 @@ router.beforeEach((to: ToRouteType, _from, next) => {
         initRouter().then((router: Router) => {
           if (!useMultiTagsStoreHook().getMultiTagsCache) {
             const {path} = to;
-            const route = findRouteByPath(
-              path,
-              router.options.routes[0].children
-            );
-            getTopMenu(true);
+            // const route = findRouteByPath(
+            //   path,
+            //   router.options.routes[0].children
+            // );
+            // getTopMenu(true);
             // query、params模式路由传参数的标签页不在此处处理
-            if (route && route.meta?.title) {
-              if (isAllEmpty(route.parentId) && route.meta?.backstage) {
-                // 此处为动态顶级路由（目录）
-                const {path, name, meta} = route.children[0];
-                useMultiTagsStoreHook().handleTags("push", {
-                  path,
-                  name,
-                  meta
-                });
-              } else {
-                const {path, name, meta} = route;
-                useMultiTagsStoreHook().handleTags("push", {
-                  path,
-                  name,
-                  meta
-                });
-              }
-            }
+            // if (route && route.meta?.title) {
+            //   if (isAllEmpty(route.parentId) && route.meta?.backstage) {
+            //     // 此处为动态顶级路由（目录）
+            //     const {path, name, meta} = route.children[0];
+            //     useMultiTagsStoreHook().handleTags("push", {
+            //       path,
+            //       name,
+            //       meta
+            //     });
+            //   } else {
+            //     const {path, name, meta} = route;
+            //     useMultiTagsStoreHook().handleTags("push", {
+            //       path,
+            //       name,
+            //       meta
+            //     });
+            //   }
+            // }
           }
           // 确保动态路由完全加入路由列表并且不影响静态路由（注意：动态路由刷新时router.beforeEach可能会触发两次，第一次触发动态路由还未完全添加，第二次动态路由才完全添加到路由列表，如果需要在router.beforeEach做一些判断可以在to.name存在的条件下去判断，这样就只会触发一次）
           if (isAllEmpty(to.name)) router.push(to.fullPath);
@@ -244,10 +247,6 @@ router.beforeEach((to: ToRouteType, _from, next) => {
     } else {
       next();
     }
-  }
-  if ((to.path = "/")) {
-    console.log(to)
-    next({path: "/SignManage"});
   }
 });
 

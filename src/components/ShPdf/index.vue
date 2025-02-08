@@ -11,6 +11,7 @@ import {Check, Delete, Back} from "@element-plus/icons-vue";
 import {useRouter} from "vue-router";
 import {v4 as uuidv4} from "uuid";
 import {fp} from "@/utils";
+import obj from "svgo/lib/svgo/css-select-adapter";
 
 const A4 = {
   width: 210,
@@ -417,6 +418,9 @@ const end = (e: any) => {
 
           gaiCanvas.on("object:moving", options => {
             const obj = options.target;
+            if(!obj.stateProperties.uuid){
+              return
+            }
             obj.set("left", gai.width - img.width! / 2 * nw / 2 / img.width / 2);
             const halfHeight = (obj.height! / 2) / img.width;
             if (obj.top! < halfHeight) {

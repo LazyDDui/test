@@ -84,7 +84,7 @@ onMounted(() => {
 const router = useRouter()
 
 const toHome = () => {
-  router.push('/')
+  router.push('/SignManage')
 }
 
 onBeforeUnmount(() => {

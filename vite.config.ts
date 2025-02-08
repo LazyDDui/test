@@ -17,8 +17,6 @@ export default ({mode}: ConfigEnv): UserConfigExport => {
     VITE_COMPRESSION,
     VITE_PUBLIC_PATH
   } = wrapperEnv(loadEnv(mode, root));
-
-  console.log(VITE_BASE_URL)
   return {
     base: './',
     root,
@@ -45,7 +43,7 @@ export default ({mode}: ConfigEnv): UserConfigExport => {
           // 请求接口中要替换的标识
           // target: 'https://test.batonedata.com', // 代理地址
           // target: "http://192.168.101.115:9999",
-          target: "http://182.151.13.73:9999",
+          target: VITE_BASE_URL,
           changeOrigin: true, // 是否允许跨域
           secure: false,
           // rewrite: path => path.replace(/^\/api/, ""),
@@ -54,7 +52,7 @@ export default ({mode}: ConfigEnv): UserConfigExport => {
           // 请求接口中要替换的标识
           // target: 'https://test.batonedata.com', // 代理地址
           // target: "http://192.168.101.115:9999",
-          target: "http://182.151.13.73:9999/api",
+          target: VITE_BASE_URL + 'api',
           changeOrigin: true, // 是否允许跨域
           secure: false
         }

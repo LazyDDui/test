@@ -99,7 +99,7 @@ const list = [
       </div>
       <ShContainer class="sites flex">
         <a @click="()=>{
-            router.push(`/mh/platform?name=${item.name}`)
+            router.push(`/mh/platform`)
         }" v-for="(item,index) in list" :key="index.toString()">
 
           <div style="display: flex">

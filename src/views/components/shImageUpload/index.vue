@@ -63,7 +63,7 @@
         :min-scale="0.2"
         :preview-src-list="previewFileList"
         :initial-index="0"
-        fit="cover"
+        fit="contain"
       />
     </div>
 
@@ -111,7 +111,7 @@
     <!--      </template>-->
     <!--    </el-upload>-->
     <el-dialog v-model="dialogVisible">
-      <img w-full class="full_img" :src="dialogImageUrl" alt="Preview Image"/>
+      <img style="object-fit: contain" w-full class="full_img" :src="dialogImageUrl" alt="Preview Image"/>
     </el-dialog>
   </div>
 </template>

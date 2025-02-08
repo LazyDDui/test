@@ -4,11 +4,19 @@ import Op1 from "@/components/views/Service/Option/Op1.vue";
 import Op4 from "@/components/views/Service/Option/Op4.vue"
 import {useRoute, useRouter} from "vue-router";
 import SealVerify from "@/components/Common/SealVerify.vue";
+import {mgMapKeyWords} from "@/assets/mh/config";
+import {ref} from "vue";
+
+const info = ref(mgMapKeyWords[window.location.origin])
+
+
+document.title = mgMapKeyWords[`window.location.origin`]?.title
 
 const route = useRoute()
 
 const router = useRouter()
 const n = route.query.name
+
 
 </script>
 
@@ -20,15 +28,15 @@ const n = route.query.name
           <a><img
             src="../../../src/assets/image/bigguohui.ac95d823.png"
             alt="1">
-            全国电子印章管理与服务平台{{ n }}{{ n == '广西' ? "壮族自治区" : "省" }}平台
+            {{ info?.title }}
           </a>
         </div>
       </div>
     </div>
     <div class="banner">
       <div class="gif">
-        <img :src="fp(`/mhItem/${n}.jpg`)"/>
-        <video id="video" :src="fp(`/mhItem/${n}.mp4`)" autoplay muted
+        <img :src="info?.imgPath"/>
+        <video id="video" :src="info?.videoPath" autoplay muted
                loop
                class="video"></video>
         <dl class="words">

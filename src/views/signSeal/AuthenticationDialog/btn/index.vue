@@ -28,7 +28,7 @@ const apiClick = () => {
           type: "success"
         });
         setTimeout(() => {
-          router.push("/welcome")
+          router.push("/shData")
         }, 1000)
       });
   }

@@ -40,6 +40,7 @@ import {useDataThemeChange} from "@/layout/hooks/useDataThemeChange";
 import {message} from "@/utils/message";
 import SealFooter from "@/components/Common/SealFooter.vue";
 import SealVerify from "@/components/Common/SealVerify.vue";
+import ContactUs from "@/components/ContactUs/index.vue";
 
 const router = useRouter();
 
@@ -313,7 +314,7 @@ const apiCreate = () => {
                     unCertGetSeal();
                   }
                 } else if (item.name === 'api管理') {
-                  router.push('/welcome');
+                  router.push('/shData');
                 } else if (item.name === 'api开通') {
                   apiCreate();
                 }
@@ -441,6 +442,7 @@ const apiCreate = () => {
       </div>
     </el-dialog>
   </div>
+  <ContactUs/>
 </template>
 
 <style scoped lang="scss">

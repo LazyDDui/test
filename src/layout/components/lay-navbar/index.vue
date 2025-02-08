@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useNav } from "@/layout/hooks/useNav";
+import {useNav} from "@/layout/hooks/useNav";
 import LaySearch from "../lay-search/index.vue";
 import LayNotice from "../lay-notice/index.vue";
 import LayNavMix from "../lay-sidebar/NavMix.vue";
-import { useTranslationLang } from "@/layout/hooks/useTranslationLang";
+import {useTranslationLang} from "@/layout/hooks/useTranslationLang";
 import LaySidebarFullScreen from "../lay-sidebar/components/SidebarFullScreen.vue";
 import LaySidebarBreadCrumb from "../lay-sidebar/components/SidebarBreadCrumb.vue";
 import LaySidebarTopCollapse from "../lay-sidebar/components/SidebarTopCollapse.vue";
@@ -29,7 +29,7 @@ const {
   getDropdownItemClass
 } = useNav();
 
-const { t, locale, translationCh, translationEn } = useTranslationLang();
+const {t, locale, translationCh, translationEn} = useTranslationLang();
 </script>
 
 <template>
@@ -46,79 +46,79 @@ const { t, locale, translationCh, translationEn } = useTranslationLang();
       class="breadcrumb-container"
     />
 
-    <LayNavMix v-if="layout === 'mix'" />
+    <LayNavMix v-if="layout === 'mix'"/>
 
     <div v-if="layout === 'vertical'" class="vertical-header-right">
       <!-- 菜单搜索 -->
-      <LaySearch id="header-search" />
+      <LaySearch id="header-search"/>
       <!-- 国际化 -->
-      <el-dropdown id="header-translation" trigger="click">
-        <GlobalizationIcon
-          class="navbar-bg-hover w-[40px] h-[48px] p-[11px] cursor-pointer outline-none"
-        />
-        <template #dropdown>
-          <el-dropdown-menu class="translation">
-            <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'zh')"
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'zh')]"
-              @click="translationCh"
-            >
-              <IconifyIconOffline
-                v-show="locale === 'zh'"
-                class="check-zh"
-                :icon="Check"
-              />
-              简体中文
-            </el-dropdown-item>
-            <el-dropdown-item
-              :style="getDropdownItemStyle(locale, 'en')"
-              :class="['dark:!text-white', getDropdownItemClass(locale, 'en')]"
-              @click="translationEn"
-            >
-              <span v-show="locale === 'en'" class="check-en">
-                <IconifyIconOffline :icon="Check" />
-              </span>
-              English
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
+<!--      <el-dropdown id="header-translation" trigger="click">-->
+<!--        <GlobalizationIcon-->
+<!--          class="navbar-bg-hover w-[40px] h-[48px] p-[11px] cursor-pointer outline-none"-->
+<!--        />-->
+<!--        <template #dropdown>-->
+<!--          <el-dropdown-menu class="translation">-->
+<!--            <el-dropdown-item-->
+<!--              :style="getDropdownItemStyle(locale, 'zh')"-->
+<!--              :class="['dark:!text-white', getDropdownItemClass(locale, 'zh')]"-->
+<!--              @click="translationCh"-->
+<!--            >-->
+<!--              <IconifyIconOffline-->
+<!--                v-show="locale === 'zh'"-->
+<!--                class="check-zh"-->
+<!--                :icon="Check"-->
+<!--              />-->
+<!--              简体中文-->
+<!--            </el-dropdown-item>-->
+<!--            <el-dropdown-item-->
+<!--              :style="getDropdownItemStyle(locale, 'en')"-->
+<!--              :class="['dark:!text-white', getDropdownItemClass(locale, 'en')]"-->
+<!--              @click="translationEn"-->
+<!--            >-->
+<!--              <span v-show="locale === 'en'" class="check-en">-->
+<!--                <IconifyIconOffline :icon="Check"/>-->
+<!--              </span>-->
+<!--              English-->
+<!--            </el-dropdown-item>-->
+<!--          </el-dropdown-menu>-->
+<!--        </template>-->
+<!--      </el-dropdown>-->
       <!-- 全屏 -->
-      <LaySidebarFullScreen id="full-screen" />
+<!--      <LaySidebarFullScreen id="full-screen"/>-->
       <!-- 消息通知 -->
-      <LayNotice id="header-notice" />
+      <!--      <LayNotice id="header-notice" />-->
       <!-- 退出登录 -->
-      <el-dropdown trigger="click">
-        <span class="el-dropdown-link navbar-bg-hover select-none">
-          <img :src="userAvatar" :style="avatarsStyle" />
-          <p v-if="username" class="dark:text-white">{{ username }}</p>
-        </span>
-        <template #dropdown>
-          <el-dropdown-menu class="logout">
-            <el-dropdown-item @click="toAccountSettings">
-              <IconifyIconOffline
-                :icon="AccountSettingsIcon"
-                style="margin: 5px"
-              />
-              {{ t("buttons.pureAccountSettings") }}
-            </el-dropdown-item>
-            <el-dropdown-item @click="logout">
-              <IconifyIconOffline
-                :icon="LogoutCircleRLine"
-                style="margin: 5px"
-              />
-              {{ t("buttons.pureLoginOut") }}
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-      <span
-        class="set-icon navbar-bg-hover"
-        :title="t('buttons.pureOpenSystemSet')"
-        @click="onPanel"
-      >
-        <IconifyIconOffline :icon="Setting" />
-      </span>
+<!--      <el-dropdown trigger="click">-->
+<!--        <span class="el-dropdown-link navbar-bg-hover select-none">-->
+<!--          <img :src="userAvatar" :style="avatarsStyle"/>-->
+<!--          <p v-if="username" class="dark:text-white">{{ username }}</p>-->
+<!--        </span>-->
+<!--        <template #dropdown>-->
+<!--          <el-dropdown-menu class="logout">-->
+<!--            <el-dropdown-item @click="toAccountSettings">-->
+<!--              <IconifyIconOffline-->
+<!--                :icon="AccountSettingsIcon"-->
+<!--                style="margin: 5px"-->
+<!--              />-->
+<!--              {{ t("buttons.pureAccountSettings") }}-->
+<!--            </el-dropdown-item>-->
+<!--            <el-dropdown-item @click="logout">-->
+<!--              <IconifyIconOffline-->
+<!--                :icon="LogoutCircleRLine"-->
+<!--                style="margin: 5px"-->
+<!--              />-->
+<!--              {{ t("buttons.pureLoginOut") }}-->
+<!--            </el-dropdown-item>-->
+<!--          </el-dropdown-menu>-->
+<!--        </template>-->
+<!--      </el-dropdown>-->
+<!--      <span-->
+<!--        class="set-icon navbar-bg-hover"-->
+<!--        :title="t('buttons.pureOpenSystemSet')"-->
+<!--        @click="onPanel"-->
+<!--      >-->
+<!--        <IconifyIconOffline :icon="Setting"/>-->
+<!--      </span>-->
     </div>
   </div>
 </template>

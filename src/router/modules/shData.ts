@@ -8,19 +8,36 @@ export default {
   path: "/",
   name: "Home",
   component: Layout,
-  redirect: "/mh/home",
   meta: {
     icon: "ep:home-filled",
-    title: $t("menus.pureHome"),
+    title: "电子印章",
     rank: home
   },
   children: [
     {
-      path: "/welcome",
-      name: "Welcome",
+      path: "/shData",
+      name: "shData",
       component: () => import("@/views/sys/shData/index.vue"),
       meta: {
         title: "数据看板",
+        showLink: VITE_HIDE_HOME === "true" ? false : true
+      }
+    },
+    {
+      path: "/shApi",
+      name: "shApi",
+      component: () => import("@/views/sys/shApi/index.vue"),
+      meta: {
+        title: "接口调用记录",
+        showLink: VITE_HIDE_HOME === "true" ? false : true
+      }
+    },
+    {
+      path: "/shPdf",
+      name: "shPdf",
+      component: () => import("@/views/sys/shPdf/index.vue"),
+      meta: {
+        title: "接口文档",
         showLink: VITE_HIDE_HOME === "true" ? false : true
       }
     }

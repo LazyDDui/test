@@ -2,7 +2,8 @@
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import VuePdfEmbed from "vue-pdf-embed";
-import p from '../../../../public/seal/pdf/seal.pdf'
+// import p from '../../../../public/seal/pdf/seal.pdf'
+import p from "../../../assets/pdf/api.pdf"
 
 defineOptions({
   name: "Pdf"
